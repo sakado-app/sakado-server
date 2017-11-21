@@ -1,0 +1,26 @@
+group 'fr.litarvan.sakado'
+version '1.0.0'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+
+    maven {
+        url 'http://litarvan.github.io/maven'
+    }
+}
+
+dependencies {
+    compile 'com.sparkjava:spark-core:2.7.1'
+    compile 'com.google.inject:guice:4.1.0'
+    compile 'com.google.guava:guava:23.4-jre'
+    compile 'commons-io:commons-io:2.6'
+
+    compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.9.1'
+    compile 'org.apache.logging.log4j:log4j-core:2.9.1'
+
+    compile 'fr.litarvan.commons:litarvan-commons:1.0.0'
+}
