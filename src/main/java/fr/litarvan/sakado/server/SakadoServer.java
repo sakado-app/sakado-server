@@ -52,6 +52,7 @@ public class SakadoServer implements App
         log.info("Loading configs...");
 
         configs.from("config/app.json").defaultIn(IOSource.at("app.default.json"));
+        configs.from("config/pronote.json").defaultIn(IOSource.at("pronote.default.json"));
 
         Spark.port(configs.at("app.port", int.class));
         Spark.notFound((request, response) -> {

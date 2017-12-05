@@ -1,6 +1,8 @@
 package fr.litarvan.sakado.server.pronote;
 
-public class RequestException extends Exception
+import java.io.IOException;
+
+public class RequestException extends IOException
 {
     public RequestException(String message)
     {

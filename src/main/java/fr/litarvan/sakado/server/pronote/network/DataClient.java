@@ -83,6 +83,16 @@ public class DataClient
         this.readThread.start();
     }
 
+    public DataHandler push(String request, String token) throws IOException
+    {
+        return push(request, token, null);
+    }
+
+    public DataHandler push(String request) throws IOException
+    {
+        return push(request, null, null);
+    }
+
     public DataHandler push(String request, Object param) throws IOException
     {
         return push(request, null, param);
