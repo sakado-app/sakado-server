@@ -6,6 +6,13 @@ import spark.Response;
 
 public class APIError extends Exception
 {
+    // Auth
+    public static final String INVALID_CREDENTIALS = "Invalid credentials";
+
+    // HTTP
+    public static final String UNAUTHORIZED = "Unauthorized";
+    public static final String MISSING_PARAMETER = "Missing parameter";
+
     private static Gson gson = Main.injector().getInstance(Gson.class);
 
     public static final String NOT_FOUND = "Not Found";

@@ -10,6 +10,7 @@ import fr.litarvan.sakado.server.http.Routes;
 import fr.litarvan.sakado.server.http.error.APIError;
 import fr.litarvan.sakado.server.http.error.HTTPReportField;
 import fr.litarvan.sakado.server.http.error.InRequestException;
+import fr.litarvan.sakado.server.pronote.Pronote;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import spark.Request;
@@ -17,6 +18,7 @@ import spark.Spark;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 
 public class SakadoServer implements App
@@ -33,6 +35,9 @@ public class SakadoServer implements App
 
     @Inject
     private ConfigProvider configs;
+
+    @Inject
+    private Pronote pronote;
 
     @Inject
     private Routes routes;
@@ -53,6 +58,19 @@ public class SakadoServer implements App
 
         configs.from("config/app.json").defaultIn(IOSource.at("app.default.json"));
         configs.from("config/pronote.json").defaultIn(IOSource.at("pronote.default.json"));
+
+        log.info("Starting Pronote service...");
+        try
+        {
+            pronote.init();
+        }
+        catch (IOException e)
+        {
+            log.fatal("Couldn't init Pronote service, shutting down...", e);
+            System.exit(1);
+        }
+
+        log.info("Configuring HTTP server...");
 
         Spark.port(configs.at("app.port", int.class));
         Spark.notFound((request, response) -> {

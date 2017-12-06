@@ -1,6 +1,8 @@
 package fr.litarvan.sakado.server.pronote.network;
 
 import com.google.gson.JsonObject;
+import fr.litarvan.sakado.server.pronote.RequestException;
+import org.apache.commons.lang3.StringUtils;
 
 public class Response
 {
@@ -21,6 +23,14 @@ public class Response
     int getId()
     {
         return id;
+    }
+
+    public void doThrow() throws RequestException
+    {
+        if (status == Status.ERROR || status == Status.INTERNAL_ERROR)
+        {
+            throw new RequestException(StringUtils.capitalize(status.name().toLowerCase()).replace(" ", "") + " : " + error);
+        }
     }
 
     public Status getStatus()

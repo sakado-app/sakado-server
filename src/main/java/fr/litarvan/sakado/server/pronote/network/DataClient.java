@@ -98,7 +98,7 @@ public class DataClient
         return push(request, null, param);
     }
 
-    public DataHandler push(String request, String token, Object param) throws IOException
+    public DataHandler push(String request, String token, Object params) throws IOException
     {
         JsonObject object = new JsonObject();
 
@@ -111,6 +111,7 @@ public class DataClient
         }
 
         object.addProperty("request", request);
+        object.add("params", gson.toJsonTree(params));
 
         String result = gson.toJson(object) + "\n";
 
@@ -138,6 +139,12 @@ public class DataClient
         if (handler == null)
         {
             log.warn("Received response for unknown request id '" + response.getId() + "', ignoring");
+            return;
+        }
+
+        if (handler.getHandler() == null)
+        {
+            log.warn("No handler for request id '" + response.getId());
             return;
         }
 

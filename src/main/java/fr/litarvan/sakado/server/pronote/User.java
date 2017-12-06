@@ -13,21 +13,23 @@ public class User
 {
     private static final Logger log = LogManager.getLogger("Pronote");
 
+    private String username;
     private String token;
 
     private Pronote pronote;
     private Cours[] edt;
 
-    protected User(Pronote pronote, String token)
+    protected User(Pronote pronote, String username, String token)
     {
         this.pronote = pronote;
+        this.username = username;
         this.token = token;
     }
 
-    static User open(Pronote pronote) throws IOException
+    static User open(Pronote pronote, String username) throws IOException
     {
         return waitFor(future -> pronote.getClient().push("open").handle(response -> {
-            future.complete(new User(pronote, response.getResult().get("Token").getAsString()));
+            future.complete(new User(pronote, username, response.getResult().get("token").getAsString()));
         }));
     }
 
@@ -47,8 +49,8 @@ public class User
     {
         Gson gson = new Gson();
 
-        this.edt = waitFor(future -> pronote.getClient().push("edt").handle(r -> {
-            JsonArray array = r.getResult().getAsJsonArray();
+        this.edt = waitFor(future -> pronote.getClient().push("edt", token).handle(r -> {
+            JsonArray array = r.getResult().getAsJsonArray("cours");
             Cours[] cours = new Cours[array.size()];
 
             for (int i = 0; i < array.size(); i++)
@@ -58,6 +60,16 @@ public class User
 
             future.complete(cours);
         }));
+    }
+
+    public boolean isLogged()
+    {
+        return edt != null;
+    }
+
+    public String getUsername()
+    {
+        return username;
     }
 
     String getToken()

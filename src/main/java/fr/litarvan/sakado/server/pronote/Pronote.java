@@ -10,8 +10,8 @@ import fr.litarvan.sakado.server.util.FailableConsumer;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
+import java.util.ArrayList;
+import java.util.List;
 
 @Singleton
 public class Pronote
@@ -20,6 +20,12 @@ public class Pronote
     private ConfigProvider config;
 
     private DataClient client;
+    private List<User> users;
+
+    public Pronote()
+    {
+        this.users = new ArrayList<>();
+    }
 
     public void init() throws IOException
     {
@@ -29,22 +35,64 @@ public class Pronote
 
     public User login(String username, String password) throws IOException
     {
-        User user = User.open(this);
+        User user = get(username);
+
+        if (user != null)
+        {
+            if (user.isLogged())
+            {
+                return user;
+            }
+        }
+        else
+        {
+            user = User.open(this, username);
+        }
 
         JsonObject params = new JsonObject();
         params.addProperty("username", username);
         params.addProperty("password", password);
 
-        Response response = FailableConsumer.waitFor(future -> client.push("login", user.getToken(), params).handle(future::complete));
+        String token = user.getToken();
+        Response response = FailableConsumer.waitFor(future -> client.push("login", token, params).handle(future::complete));
+        response.doThrow();
 
         if (response.getStatus() == Status.FAILED)
         {
             throw new LoginException(response.getError());
         }
 
+        this.users.add(user);
+
         user.tryToUpdate();
 
         return user;
+    }
+
+    public User get(String username)
+    {
+        for (User user : users)
+        {
+            if (user.getUsername().equalsIgnoreCase(username))
+            {
+                return user;
+            }
+        }
+
+        return null;
+    }
+
+    public User getByToken(String token)
+    {
+        for (User user : users)
+        {
+            if (user.getToken().equals(token))
+            {
+                return user;
+            }
+        }
+
+        return null;
     }
 
     public DataClient getClient()
