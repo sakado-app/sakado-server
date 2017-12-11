@@ -4,3 +4,4 @@ config/
 logs/
 build/
 out/
+crashes/

@@ -53,6 +53,8 @@ public class Pronote
         params.addProperty("username", username);
         params.addProperty("password", password);
 
+        this.users.add(user);
+
         String token = user.getToken();
         Response response = FailableConsumer.waitFor(future -> client.push("login", token, params).handle(future::complete));
         response.doThrow();
@@ -61,8 +63,6 @@ public class Pronote
         {
             throw new LoginException(response.getError());
         }
-
-        this.users.add(user);
 
         user.tryToUpdate();
 

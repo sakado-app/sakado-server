@@ -2,6 +2,7 @@ package fr.litarvan.sakado.server.http.controller;
 
 import fr.litarvan.sakado.server.http.Controller;
 import fr.litarvan.sakado.server.http.error.APIError;
+import fr.litarvan.sakado.server.pronote.LoginException;
 import fr.litarvan.sakado.server.pronote.Pronote;
 import fr.litarvan.sakado.server.pronote.User;
 import spark.Request;
@@ -17,11 +18,19 @@ public class AuthController extends Controller
 
     public Object login(Request request, Response response) throws IOException, APIError
     {
-        String username = require(request, "email");
+        String username = require(request, "username");
         String password = require(request, "password");
 
-        User user = pronote.login(username, password);
-        System.out.println(user);
+        User user;
+
+        try
+        {
+            user = pronote.login(username, password);
+        }
+        catch (LoginException e)
+        {
+            throw new APIError(APIError.INVALID_CREDENTIALS, e.getMessage());
+        }
 
         return success(response);
     }
