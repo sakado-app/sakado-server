@@ -19,10 +19,8 @@ package fr.litarvan.sakado.server.pronote;
 
 import com.google.gson.JsonObject;
 import fr.litarvan.commons.config.ConfigProvider;
-import fr.litarvan.sakado.server.pronote.network.DataClient;
-import fr.litarvan.sakado.server.pronote.network.Response;
-import fr.litarvan.sakado.server.pronote.network.Status;
-import fr.litarvan.sakado.server.util.FailableConsumer;
+import fr.litarvan.sakado.server.pronote.network.NetworkClient;
+import fr.litarvan.sakado.server.pronote.network.request.TokenRequest;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -36,7 +34,7 @@ public class Pronote
     @Inject
     private ConfigProvider config;
 
-    private DataClient client;
+    private NetworkClient client;
     private List<User> users;
 
     public Pronote()
@@ -46,8 +44,7 @@ public class Pronote
 
     public void init() throws IOException
     {
-        client = new DataClient(config.at("pronote.server-host"), config.at("pronote.server-port", int.class));
-        client.start();
+        client = new NetworkClient(config.at("pronote.server-host"), config.at("pronote.server-port", int.class));
     }
 
     public User login(String username, String password) throws IOException
@@ -73,12 +70,13 @@ public class Pronote
         this.users.add(user);
 
         String token = user.getToken();
-        Response response = FailableConsumer.waitFor(future -> client.push("login", token, params).handle(future::complete));
-        response.doThrow();
-
-        if (response.getStatus() == Status.FAILED)
+        try
         {
-            throw new LoginException(response.getError());
+            client.push("login", new TokenRequest(token));
+        }
+        catch (Throwable e)
+        {
+            e.printStackTrace();
         }
 
         user.tryToUpdate();
@@ -112,7 +110,7 @@ public class Pronote
         return null;
     }
 
-    public DataClient getClient()
+    public NetworkClient getClient()
     {
         return client;
     }

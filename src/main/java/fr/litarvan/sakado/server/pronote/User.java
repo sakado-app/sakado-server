@@ -17,14 +17,11 @@
  */
 package fr.litarvan.sakado.server.pronote;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
+import fr.litarvan.sakado.server.pronote.network.body.TokenBody;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-
-import static fr.litarvan.sakado.server.util.FailableConsumer.waitFor;
 
 public class User
 {
@@ -35,6 +32,7 @@ public class User
 
     private Pronote pronote;
     private Cours[] edt;
+    private Homework[] homeworks;
 
     protected User(Pronote pronote, String username, String token)
     {
@@ -43,11 +41,10 @@ public class User
         this.token = token;
     }
 
-    static User open(Pronote pronote, String username) throws IOException
+    static User open(Pronote pronote, String username) throws IOException, RequestException
     {
-        return waitFor(future -> pronote.getClient().push("open").handle(response -> {
-            future.complete(new User(pronote, username, response.getResult().get("token").getAsString()));
-        }));
+        TokenBody response = pronote.getClient().push("open", TokenBody.class);
+        return new User(pronote, username, response.getToken());
     }
 
     public void update()
@@ -56,27 +53,16 @@ public class User
         {
             tryToUpdate();
         }
-        catch (IOException e)
+        catch (IOException | RequestException e)
         {
             log.error("Couldn't query user data from Pronote, ignoring", e);
         }
     }
 
-    public void tryToUpdate() throws IOException
+    public void tryToUpdate() throws IOException, RequestException
     {
-        Gson gson = new Gson();
-
-        this.edt = waitFor(future -> pronote.getClient().push("edt", token).handle(r -> {
-            JsonArray array = r.getResult().getAsJsonArray("cours");
-            Cours[] cours = new Cours[array.size()];
-
-            for (int i = 0; i < array.size(); i++)
-            {
-                cours[i] = gson.fromJson(array.get(i), Cours.class);
-            }
-
-            future.complete(cours);
-        }));
+        this.edt = pronote.getClient().push("edt", new TokenBody(token), Cours[].class);
+        this.homeworks = pronote.getClient().push("homeworks", new TokenBody(token), Homework[].class);
     }
 
     public boolean isLogged()
@@ -96,11 +82,11 @@ public class User
 
     public Cours[] getEDT()
     {
-        if (edt == null)
-        {
-            update();
-        }
-
         return edt;
+    }
+
+    public Homework[] getHomeworks()
+    {
+        return homeworks;
     }
 }
