@@ -17,6 +17,7 @@
  */
 package fr.litarvan.sakado.server.pronote;
 
+import fr.litarvan.sakado.server.pronote.network.RequestException;
 import fr.litarvan.sakado.server.pronote.network.body.TokenBody;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

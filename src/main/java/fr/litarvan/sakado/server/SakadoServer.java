@@ -28,6 +28,7 @@ import fr.litarvan.sakado.server.http.error.APIError;
 import fr.litarvan.sakado.server.http.error.HTTPReportField;
 import fr.litarvan.sakado.server.http.error.InRequestException;
 import fr.litarvan.sakado.server.pronote.Pronote;
+import fr.litarvan.sakado.server.pronote.network.RequestException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import spark.Request;
@@ -117,11 +118,11 @@ public class SakadoServer implements App
                 rep.addProperty("type", e.getClass().getName());
             }
 
-            rep.addProperty("message", e.getMessage());
+            rep.addProperty("message", (e instanceof RequestException) ? e.getCause().getMessage() : e.getMessage());
 
             response.body(gson.toJson(rep));
 
-            if (!(e instanceof APIError))
+            if (!(e instanceof APIError)&& !(e instanceof RequestException))
             {
                 exceptionHandler.handle(new InRequestException(e, request));
             }

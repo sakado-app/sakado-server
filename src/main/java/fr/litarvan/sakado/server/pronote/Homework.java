@@ -49,9 +49,9 @@ public class Homework
 
     public static class HomeworkDeserializer extends StdDeserializer<Homework>
     {
-        protected HomeworkDeserializer(Class<?> vc)
+        protected HomeworkDeserializer()
         {
-            super(vc);
+            super(Homework.class);
         }
 
         @Override
@@ -71,7 +71,7 @@ public class Homework
             since.set(Calendar.DAY_OF_MONTH, Integer.parseInt(sinceSplit[0]));
             since.set(Calendar.MONTH, Integer.parseInt(sinceSplit[1]));
 
-            return new Homework(node.get("subject").asText(), node.get("content").asText(), since, day);
+            return new Homework(node.get("subject").asText().trim(), node.get("content").asText().trim(), since, day);
         }
     }
 }

@@ -1,7 +1,6 @@
 package fr.litarvan.sakado.server.pronote.network;
 
 import com.googlecode.jsonrpc4j.JsonRpcClient;
-import fr.litarvan.sakado.server.pronote.RequestException;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -19,7 +18,7 @@ public class NetworkClient
 
     public void push(String request, Object params) throws IOException, RequestException
     {
-        client.invoke(request, params, socket.getOutputStream());
+        push(request, params, Object.class);
     }
 
     public <T> T push(String request, Class<T> returnType) throws IOException, RequestException

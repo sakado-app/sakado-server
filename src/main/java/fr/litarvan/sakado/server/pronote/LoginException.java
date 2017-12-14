@@ -17,6 +17,8 @@
  */
 package fr.litarvan.sakado.server.pronote;
 
+import fr.litarvan.sakado.server.pronote.network.RequestException;
+
 public class LoginException extends RequestException
 {
     public LoginException(String message)

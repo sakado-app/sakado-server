@@ -19,9 +19,12 @@ package fr.litarvan.sakado.server.http.controller;
 
 import fr.litarvan.sakado.server.http.Controller;
 import fr.litarvan.sakado.server.http.error.APIError;
+import fr.litarvan.sakado.server.pronote.Homework;
 import fr.litarvan.sakado.server.pronote.LoginException;
 import fr.litarvan.sakado.server.pronote.Pronote;
 import fr.litarvan.sakado.server.pronote.User;
+import fr.litarvan.sakado.server.pronote.network.RequestException;
+import java.text.SimpleDateFormat;
 import spark.Request;
 import spark.Response;
 
@@ -33,7 +36,7 @@ public class AuthController extends Controller
     @Inject
     private Pronote pronote;
 
-    public Object login(Request request, Response response) throws IOException, APIError
+    public Object login(Request request, Response response) throws IOException, RequestException, APIError
     {
         String username = require(request, "username");
         String password = require(request, "password");
@@ -47,6 +50,15 @@ public class AuthController extends Controller
         catch (LoginException e)
         {
             throw new APIError(APIError.INVALID_CREDENTIALS, e.getMessage());
+        }
+
+        Homework[] homeworks = user.getHomeworks();
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM");
+
+        for (int i = 0; i < homeworks.length; i++)
+        {
+            Homework homework = homeworks[i];
+            System.out.println("Devoir #" + i + " en " + homework.getSubject() + "\n pour le " + format.format(homework.getUntil().getTime()) + ", donné le " + format.format(homework.getSince().getTime()) + " :\n    " + homework.getContent() + "\n");
         }
 
         return success(response);

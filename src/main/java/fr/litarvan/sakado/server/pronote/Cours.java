@@ -25,15 +25,22 @@ public class Cours
     private String prof;
     private String salle;
 
+    private int length;
+
     private int day;
     private int hour;
 
-    Cours(String info, String name, String prof, String salle, int day, int hour)
+    public Cours()
+    {
+    }
+
+    public Cours(String info, String name, String prof, String salle, int length, int day, int hour)
     {
         this.info = info;
         this.name = name;
         this.prof = prof;
         this.salle = salle;
+        this.length = length;
         this.day = day;
         this.hour = hour;
     }
@@ -56,6 +63,11 @@ public class Cours
     public String getSalle()
     {
         return salle;
+    }
+
+    public int getLength()
+    {
+        return length;
     }
 
     public int getDay()

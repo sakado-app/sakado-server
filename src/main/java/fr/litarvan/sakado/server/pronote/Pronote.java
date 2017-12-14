@@ -20,7 +20,9 @@ package fr.litarvan.sakado.server.pronote;
 import com.google.gson.JsonObject;
 import fr.litarvan.commons.config.ConfigProvider;
 import fr.litarvan.sakado.server.pronote.network.NetworkClient;
-import fr.litarvan.sakado.server.pronote.network.request.TokenRequest;
+import fr.litarvan.sakado.server.pronote.network.RequestException;
+import fr.litarvan.sakado.server.pronote.network.body.LoginRequest;
+import fr.litarvan.sakado.server.pronote.network.body.TokenBody;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -47,7 +49,7 @@ public class Pronote
         client = new NetworkClient(config.at("pronote.server-host"), config.at("pronote.server-port", int.class));
     }
 
-    public User login(String username, String password) throws IOException
+    public User login(String username, String password) throws IOException, RequestException
     {
         User user = get(username);
 
@@ -63,21 +65,10 @@ public class Pronote
             user = User.open(this, username);
         }
 
-        JsonObject params = new JsonObject();
-        params.addProperty("username", username);
-        params.addProperty("password", password);
-
         this.users.add(user);
 
         String token = user.getToken();
-        try
-        {
-            client.push("login", new TokenRequest(token));
-        }
-        catch (Throwable e)
-        {
-            e.printStackTrace();
-        }
+        client.push("login", new LoginRequest(token, username, password));
 
         user.tryToUpdate();
 
