@@ -17,12 +17,10 @@
  */
 package fr.litarvan.sakado.server.pronote;
 
-import com.google.gson.JsonObject;
 import fr.litarvan.commons.config.ConfigProvider;
 import fr.litarvan.sakado.server.pronote.network.NetworkClient;
 import fr.litarvan.sakado.server.pronote.network.RequestException;
 import fr.litarvan.sakado.server.pronote.network.body.LoginRequest;
-import fr.litarvan.sakado.server.pronote.network.body.TokenBody;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
