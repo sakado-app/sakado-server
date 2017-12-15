@@ -21,6 +21,7 @@ import fr.litarvan.commons.config.ConfigProvider;
 import fr.litarvan.sakado.server.pronote.network.NetworkClient;
 import fr.litarvan.sakado.server.pronote.network.RequestException;
 import fr.litarvan.sakado.server.pronote.network.body.LoginRequest;
+import fr.litarvan.sakado.server.pronote.network.body.LoginResponse;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -66,7 +67,10 @@ public class Pronote
         this.users.add(user);
 
         String token = user.getToken();
-        client.push("login", new LoginRequest(token, username, password));
+        LoginResponse response = client.push("login", new LoginRequest(token, username, password), LoginResponse.class);
+
+        user.setName(response.getName());
+        user.setClasse(response.getClasse());
 
         user.tryToUpdate();
 

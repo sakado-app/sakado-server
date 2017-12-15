@@ -29,6 +29,8 @@ public class User
     private static final Logger log = LogManager.getLogger("Pronote");
 
     private String username;
+    private String name;
+    private String classe;
     private String token;
 
     private Pronote pronote;
@@ -74,6 +76,26 @@ public class User
     public String getUsername()
     {
         return username;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public String getClasse()
+    {
+        return classe;
+    }
+
+    public void setClasse(String classe)
+    {
+        this.classe = classe;
     }
 
     String getToken()

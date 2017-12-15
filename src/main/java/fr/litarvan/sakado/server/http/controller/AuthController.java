@@ -52,14 +52,7 @@ public class AuthController extends Controller
             throw new APIError(APIError.INVALID_CREDENTIALS, e.getMessage());
         }
 
-        Homework[] homeworks = user.getHomeworks();
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM");
-
-        for (int i = 0; i < homeworks.length; i++)
-        {
-            Homework homework = homeworks[i];
-            System.out.println("Devoir #" + i + " en " + homework.getSubject() + "\n pour le " + format.format(homework.getUntil().getTime()) + ", donné le " + format.format(homework.getSince().getTime()) + " :\n    " + homework.getContent() + "\n");
-        }
+        System.out.print(user);
 
         return success(response);
     }
