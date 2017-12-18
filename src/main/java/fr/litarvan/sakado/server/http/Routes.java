@@ -28,10 +28,15 @@ public final class Routes
     @Inject
     private AuthController auth;
 
+    @Inject
+    private PollController poll;
+
     public void load()
     {
         path("/auth", () -> {
             get("/login", auth::login);
         });
+
+        get("/poll", poll::poll);
     }
 }

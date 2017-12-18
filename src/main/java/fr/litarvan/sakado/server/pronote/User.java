@@ -130,7 +130,7 @@ public class User
         this.classe = classe;
     }
 
-    String getToken()
+    public String getToken()
     {
         return token;
     }

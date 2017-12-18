@@ -17,6 +17,7 @@
  */
 package fr.litarvan.sakado.server.http.controller;
 
+import com.google.gson.JsonObject;
 import fr.litarvan.sakado.server.http.Controller;
 import fr.litarvan.sakado.server.http.error.APIError;
 import fr.litarvan.sakado.server.pronote.LoginException;
@@ -53,6 +54,10 @@ public class AuthController extends Controller
         }
 
         System.out.println(user);
+
+        JsonObject rep = new JsonObject();
+        rep.addProperty("success", "true");
+        rep.addProperty("token", user.getToken());
 
         return success(response);
     }

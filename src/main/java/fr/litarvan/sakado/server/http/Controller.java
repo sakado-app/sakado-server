@@ -20,6 +20,7 @@ package fr.litarvan.sakado.server.http;
 import com.google.gson.Gson;
 import fr.litarvan.sakado.server.http.error.APIError;
 import fr.litarvan.sakado.server.pronote.Pronote;
+import fr.litarvan.sakado.server.pronote.User;
 import spark.Request;
 import spark.Response;
 
@@ -60,17 +61,16 @@ public class Controller
     }
 
 
-    protected void requireLogged(Request request) throws APIError
+    protected User requireLogged(Request request) throws APIError
     {
-        if (!isLogged(request))
+        User user = pronote.getByToken(request.headers("Token"));
+
+        if (user == null)
         {
             throw new APIError(APIError.UNAUTHORIZED, "You can't do that without being logged");
         }
-    }
 
-    protected boolean isLogged(Request request)
-    {
-        return pronote.getByToken(request.headers("Token")) != null;
+        return user;
     }
 
     public String success(Response response)
