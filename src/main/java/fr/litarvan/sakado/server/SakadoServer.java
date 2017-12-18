@@ -24,6 +24,7 @@ import fr.litarvan.commons.config.ConfigProvider;
 import fr.litarvan.commons.crash.ExceptionHandler;
 import fr.litarvan.commons.io.IOSource;
 import fr.litarvan.sakado.server.classe.Classe;
+import fr.litarvan.sakado.server.classe.ClasseManager;
 import fr.litarvan.sakado.server.http.Routes;
 import fr.litarvan.sakado.server.http.error.APIError;
 import fr.litarvan.sakado.server.http.error.HTTPReportField;
@@ -31,6 +32,7 @@ import fr.litarvan.sakado.server.http.error.InRequestException;
 import fr.litarvan.sakado.server.pronote.Pronote;
 import fr.litarvan.sakado.server.pronote.network.RequestException;
 import fr.litarvan.sakado.server.routine.RoutineService;
+import fr.litarvan.sakado.server.routine.task.AwayCheckTask;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import spark.Request;
@@ -67,12 +69,8 @@ public class SakadoServer implements App
     @Inject
     private RoutineService routine;
 
-    private List<Classe> classes;
-
-    public SakadoServer()
-    {
-        this.classes = new ArrayList<>();
-    }
+    @Inject
+    private ClasseManager classeManager;
 
     @Override
     public void start()
@@ -103,6 +101,7 @@ public class SakadoServer implements App
         }
 
         log.info("Starting Routing service...");
+        routine.add(AwayCheckTask.class);
         routine.start();
 
         log.info("Configuring HTTP server...");
@@ -154,11 +153,6 @@ public class SakadoServer implements App
         System.out.println();
         log.info("====> Done ! Sakado Server started on " + new InetSocketAddress(Spark.port()));
         System.out.println();
-    }
-
-    public List<Classe> getClasses()
-    {
-        return classes;
     }
 
     @Override

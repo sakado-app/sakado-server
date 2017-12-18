@@ -1,4 +1,6 @@
 {
   "server-host": "127.0.0.1",
-  "server-port": 13556
+  "server-port": 13556,
+  "links": {
+  }
 }

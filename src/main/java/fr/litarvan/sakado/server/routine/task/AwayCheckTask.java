@@ -24,13 +24,14 @@ public class AwayCheckTask implements RoutineTask
 
         for (Cours cours : user.getEDT())
         {
-            if (cours.getInfo().equalsIgnoreCase("Prof. absent"))
+            if ("Prof. absent".equalsIgnoreCase(cours.getInfo()))
             {
                 away.add(cours);
             }
         }
 
         result.set("away", away);
+
         user.push(result);
     }
 }

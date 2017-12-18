@@ -3,6 +3,7 @@ package fr.litarvan.sakado.server.routine;
 import fr.litarvan.sakado.server.Main;
 import fr.litarvan.sakado.server.SakadoServer;
 import fr.litarvan.sakado.server.classe.Classe;
+import fr.litarvan.sakado.server.classe.ClasseManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,14 +21,14 @@ public class RoutineService
     private static final Logger log = LogManager.getLogger("RoutineService");
     public static final long RATE = 15 * 60 * 1000; // Every 15 minutes
 
-    private SakadoServer server;
+    private ClasseManager classeManager;
     private int id;
     private List<RoutineTask> tasks;
 
     @Inject
-    public RoutineService(SakadoServer server)
+    public RoutineService(ClasseManager classeManager)
     {
-        this.server = server;
+        this.classeManager = classeManager;
         this.id = 0;
         this.tasks = new ArrayList<>();
     }
@@ -40,16 +41,23 @@ public class RoutineService
             @Override
             public void run()
             {
-                log.info("Executing Routine #{}", id);
-                id++;
+                int id = RoutineService.this.id++;
 
-                execute(server.getClasses().toArray(new Classe[server.getClasses().size()]));
+                log.info("Executing Routine #{}", id);
+                execute(classeManager.getClasses());
+                log.info("Routine #{} done", id);
             }
-        }, 5 * 60 * 1000, RATE);
+        }, /*5 **/ 60 * 1000, RATE);
     }
 
     public void execute(Classe[] classes)
     {
+        if (classes.length == 0)
+        {
+            log.warn("Skipped Routine because of empty classe list");
+            return;
+        }
+
         ExecutorService pool = Executors.newFixedThreadPool(classes.length);
         Stream.of(classes).forEach(cl -> pool.submit(() -> execute(cl)));
 
@@ -58,7 +66,17 @@ public class RoutineService
 
     public void execute(Classe classe)
     {
-        tasks.forEach(task -> task.apply(classe));
+        tasks.forEach(task ->
+        {
+            try
+            {
+                task.apply(classe);
+            }
+            catch (Throwable t)
+            {
+                log.error("Error thrown during routine task '" + task.getClass().getSimpleName() + "', skipping", t);
+            }
+        });
     }
 
     public void add(Class<? extends RoutineTask> task)

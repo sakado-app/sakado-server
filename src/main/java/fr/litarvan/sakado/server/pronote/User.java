@@ -31,6 +31,7 @@ public class User
 {
     private static final Logger log = LogManager.getLogger("Pronote");
 
+    private String pronoteUrl;
     private String username;
     private String name;
     private String classe;
@@ -42,18 +43,19 @@ public class User
 
     private final List<RoutineResult> queue;
 
-    protected User(Pronote pronote, String username, String token)
+    protected User(Pronote pronote, String pronoteUrl, String username, String token)
     {
         this.pronote = pronote;
+        this.pronoteUrl = pronoteUrl;
         this.username = username;
         this.token = token;
         this.queue = new ArrayList<>();
     }
 
-    static User open(Pronote pronote, String username) throws IOException, RequestException
+    static User open(Pronote pronote, String pronoteUrl, String username) throws IOException, RequestException
     {
         TokenBody response = pronote.getClient().push("open", TokenBody.class);
-        return new User(pronote, username, response.getToken());
+        return new User(pronote, pronoteUrl, username, response.getToken());
     }
 
     public void update()
@@ -96,6 +98,11 @@ public class User
     public boolean isLogged()
     {
         return edt != null;
+    }
+
+    public String getPronoteUrl()
+    {
+        return pronoteUrl;
     }
 
     public String getUsername()

@@ -18,10 +18,14 @@
 package fr.litarvan.sakado.server.pronote;
 
 import fr.litarvan.commons.config.ConfigProvider;
+import fr.litarvan.sakado.server.classe.Classe;
+import fr.litarvan.sakado.server.classe.ClasseManager;
 import fr.litarvan.sakado.server.pronote.network.NetworkClient;
 import fr.litarvan.sakado.server.pronote.network.RequestException;
 import fr.litarvan.sakado.server.pronote.network.body.LoginRequest;
 import fr.litarvan.sakado.server.pronote.network.body.LoginResponse;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -32,8 +36,13 @@ import java.util.List;
 @Singleton
 public class Pronote
 {
+    private static final Logger log = LogManager.getLogger("Pronote");
+
     @Inject
     private ConfigProvider config;
+
+    @Inject
+    private ClasseManager classeManager;
 
     private NetworkClient client;
     private List<User> users;
@@ -48,8 +57,24 @@ public class Pronote
         client = new NetworkClient(config.at("pronote.server-host"), config.at("pronote.server-port", int.class));
     }
 
-    public User login(String username, String password) throws IOException, RequestException
+    public User login(String link, String username, String password) throws IOException, RequestException
     {
+        if (!link.startsWith("http://") && !link.startsWith("https://"))
+        {
+            link = "http://" + link;
+        }
+
+        if (link.endsWith("eleve.html"))
+        {
+            link = link.substring(0, link.length() - 10);
+        }
+
+        if (!link.endsWith("/"))
+        {
+            link += "/";
+        }
+
+        log.info("Logging in '{}' (from {})", username, link);
         User user = get(username);
 
         if (user != null)
@@ -61,16 +86,37 @@ public class Pronote
         }
         else
         {
-            user = User.open(this, username);
+            user = User.open(this, link, username);
         }
 
         this.users.add(user);
 
         String token = user.getToken();
-        LoginResponse response = client.push("login", new LoginRequest(token, username, password), LoginResponse.class);
+        LoginResponse response = client.push("login", new LoginRequest(token, link, username, password), LoginResponse.class);
 
         user.setName(response.getName());
         user.setClasse(response.getClasse());
+
+        log.info("Successfully logged user '{}' : {} ({})", username, user.getName(), user.getClasse());
+
+        Classe classe = classeManager.of(user);
+
+        if (classe == null)
+        {
+            classe = classeManager.get(link, user.getClasse());
+
+            if (classe == null)
+            {
+                classe = new Classe(link, user.getClasse());
+                classeManager.add(classe);
+
+                log.info("Created classe '{}' on {} (for {}) ", user.getClasse(), link, user.getName());
+            }
+
+            log.info("Added '{}' to classe '{}' on {}", user.getName(), user.getClasse(), link);
+        }
+
+        classe.getLoggedUsers().add(user);
 
         user.tryToUpdate();
 

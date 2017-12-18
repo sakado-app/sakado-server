@@ -39,18 +39,20 @@ public class AuthController extends Controller
         String username = require(request, "username");
         String password = require(request, "password");
 
+        String link = require(request, "link");
+
         User user;
 
         try
         {
-            user = pronote.login(username, password);
+            user = pronote.login(link, username, password);
         }
         catch (LoginException e)
         {
             throw new APIError(APIError.INVALID_CREDENTIALS, e.getMessage());
         }
 
-        System.out.print(user);
+        System.out.println(user);
 
         return success(response);
     }

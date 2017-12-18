@@ -3,7 +3,6 @@ package fr.litarvan.sakado.server.classe;
 import fr.litarvan.sakado.server.pronote.User;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Classe
 {
