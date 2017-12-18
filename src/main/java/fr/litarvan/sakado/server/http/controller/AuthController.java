@@ -59,6 +59,6 @@ public class AuthController extends Controller
         rep.addProperty("success", "true");
         rep.addProperty("token", user.getToken());
 
-        return success(response);
+        return json(rep, response);
     }
 }
