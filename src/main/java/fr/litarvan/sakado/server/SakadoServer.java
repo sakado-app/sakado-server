@@ -25,6 +25,7 @@ import fr.litarvan.commons.crash.ExceptionHandler;
 import fr.litarvan.commons.io.IOSource;
 import fr.litarvan.sakado.server.classe.Classe;
 import fr.litarvan.sakado.server.classe.ClasseManager;
+import fr.litarvan.sakado.server.http.Controller;
 import fr.litarvan.sakado.server.http.Routes;
 import fr.litarvan.sakado.server.http.error.APIError;
 import fr.litarvan.sakado.server.http.error.HTTPReportField;
@@ -35,6 +36,7 @@ import fr.litarvan.sakado.server.routine.RoutineService;
 import fr.litarvan.sakado.server.routine.task.AwayCheckTask;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import spark.Filter;
 import spark.Request;
 import spark.Spark;
 
@@ -117,6 +119,23 @@ public class SakadoServer implements App
             return gson.toJson(obj);
         });
 
+
+        // Disable CORS protection
+        Filter corsFilter = (request, response) ->
+        {
+            response.header("Access-Control-Allow-Origin", "http://127.0.0.1:4200");
+
+            if (request.requestMethod().toLowerCase().equals("options"))
+            {
+                response.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+                response.header("Access-Control-Allow-Headers", "origin, x-csrftoken, content-type, token, accept");
+
+                response.body(Controller.SUCCESS);
+            }
+        };
+
+        Spark.after(corsFilter);
+
         // Exception handling
         Spark.exception(Exception.class, (e, request, response) ->
         {
@@ -141,6 +160,16 @@ public class SakadoServer implements App
             if (!(e instanceof APIError)&& !(e instanceof RequestException))
             {
                 exceptionHandler.handle(new InRequestException(e, request));
+            }
+            else
+            {
+                try
+                {
+                    corsFilter.handle(request, response);
+                }
+                catch (Exception ignored)
+                {
+                }
             }
         });
 

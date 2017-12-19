@@ -29,7 +29,7 @@ public final class Routes
     private AuthController auth;
 
     @Inject
-    private PollController poll;
+    private MainController main;
 
     public void load()
     {
@@ -37,6 +37,7 @@ public final class Routes
             get("/login", auth::login);
         });
 
-        get("/poll", poll::poll);
+        get("/poll", main::poll);
+        get("/links", main::links);
     }
 }

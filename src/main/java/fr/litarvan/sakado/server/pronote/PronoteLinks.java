@@ -8,17 +8,18 @@ import javax.inject.Singleton;
 @Singleton
 public class PronoteLinks
 {
+    private ConfigProvider config;
     private PronoteLink[] links;
 
     @Inject
     public PronoteLinks(ConfigProvider config)
     {
-        this.links = config.at("pronote.links", PronoteLink[].class);
+        this.config = config;
     }
 
     public PronoteLink[] all()
     {
-        return links;
+        return config.at("pronote.links", PronoteLink[].class);
     }
 
     public static class PronoteLink
