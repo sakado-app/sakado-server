@@ -53,11 +53,13 @@ public class AuthController extends Controller
             throw new APIError(APIError.INVALID_CREDENTIALS, e.getMessage());
         }
 
-        System.out.println(user);
-
         JsonObject rep = new JsonObject();
         rep.addProperty("success", "true");
         rep.addProperty("token", user.getToken());
+
+        rep.addProperty("name", user.getName());
+        rep.addProperty("classe", user.getClasse());
+        rep.addProperty("avatar", user.getAvatar());
 
         return json(rep, response);
     }

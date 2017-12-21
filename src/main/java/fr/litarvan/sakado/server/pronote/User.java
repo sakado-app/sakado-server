@@ -35,6 +35,7 @@ public class User
     private String username;
     private String name;
     private String classe;
+    private String avatar;
     private String token;
 
     private Pronote pronote;
@@ -95,6 +96,11 @@ public class User
         }
     }
 
+    public void logout() throws IOException, RequestException
+    {
+        pronote.getClient().push("close", new TokenBody(token));
+    }
+
     public boolean isLogged()
     {
         return edt != null;
@@ -115,7 +121,7 @@ public class User
         return name;
     }
 
-    public void setName(String name)
+    void setName(String name)
     {
         this.name = name;
     }
@@ -125,9 +131,19 @@ public class User
         return classe;
     }
 
-    public void setClasse(String classe)
+    void setClasse(String classe)
     {
         this.classe = classe;
+    }
+
+    public String getAvatar()
+    {
+        return avatar;
+    }
+
+    void setAvatar(String avatar)
+    {
+        this.avatar = avatar;
     }
 
     public String getToken()

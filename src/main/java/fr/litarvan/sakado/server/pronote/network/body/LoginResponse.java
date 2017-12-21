@@ -4,15 +4,17 @@ public class LoginResponse
 {
     private String name;
     private String classe;
+    private String avatar;
 
     public LoginResponse()
     {
     }
 
-    public LoginResponse(String name, String classe)
+    public LoginResponse(String name, String classe, String avatar)
     {
         this.name = name;
         this.classe = classe;
+        this.avatar = avatar;
     }
 
     public String getName()
@@ -23,5 +25,10 @@ public class LoginResponse
     public String getClasse()
     {
         return classe;
+    }
+
+    public String getAvatar()
+    {
+        return avatar;
     }
 }

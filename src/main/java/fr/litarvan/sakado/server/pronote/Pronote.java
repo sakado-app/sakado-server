@@ -77,15 +77,13 @@ public class Pronote
         log.info("Logging in '{}' (from {})", username, link);
         User user = get(username);
 
-        if (user != null)
+        if (user == null || user.isLogged())
         {
-            if (user.isLogged())
+            if (user != null)
             {
-                return user;
+                user.logout();
             }
-        }
-        else
-        {
+
             user = User.open(this, link, username);
         }
 
@@ -96,6 +94,7 @@ public class Pronote
 
         user.setName(response.getName());
         user.setClasse(response.getClasse());
+        user.setAvatar(response.getAvatar());
 
         log.info("Successfully logged user '{}' : {} ({})", username, user.getName(), user.getClasse());
 
