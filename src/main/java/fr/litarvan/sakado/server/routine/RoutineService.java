@@ -4,6 +4,7 @@ import fr.litarvan.sakado.server.Main;
 import fr.litarvan.sakado.server.SakadoServer;
 import fr.litarvan.sakado.server.classe.Classe;
 import fr.litarvan.sakado.server.classe.ClasseManager;
+import fr.litarvan.sakado.server.pronote.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,7 +20,7 @@ import java.util.stream.Stream;
 public class RoutineService
 {
     private static final Logger log = LogManager.getLogger("RoutineService");
-    public static final long RATE = 15 * 60 * 1000; // Every 15 minutes
+    public static final long RATE = /*15 * */60 * 1000; // Every 15 minutes
 
     private ClasseManager classeManager;
     private int id;
@@ -66,6 +67,8 @@ public class RoutineService
 
     public void execute(Classe classe)
     {
+        classe.getLoggedUsers().forEach(User::queueClear);
+
         tasks.forEach(task ->
         {
             try

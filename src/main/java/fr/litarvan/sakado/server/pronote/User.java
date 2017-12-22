@@ -90,9 +90,20 @@ public class User
         synchronized (queue)
         {
             RoutineResult[] result = queue.toArray(new RoutineResult[queue.size()]);
-            queue.clear();
+            for (RoutineResult res : result)
+            {
+                res.setSeen();
+            }
 
             return result;
+        }
+    }
+
+    public void queueClear()
+    {
+        synchronized (queue)
+        {
+            this.queue.clear();
         }
     }
 
