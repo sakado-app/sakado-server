@@ -27,6 +27,7 @@ public class Cours
 
     private int length;
 
+    private int weekday;
     private int day;
     private int hour;
 
@@ -34,13 +35,14 @@ public class Cours
     {
     }
 
-    public Cours(String info, String name, String prof, String salle, int length, int day, int hour)
+    public Cours(String info, String name, String prof, String salle, int length, int weekday, int day, int hour)
     {
         this.info = info;
         this.name = name;
         this.prof = prof;
         this.salle = salle;
         this.length = length;
+        this.weekday = weekday;
         this.day = day;
         this.hour = hour;
     }
@@ -68,6 +70,11 @@ public class Cours
     public int getLength()
     {
         return length;
+    }
+
+    public int getWeekday()
+    {
+        return weekday;
     }
 
     public int getDay()

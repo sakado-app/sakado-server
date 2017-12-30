@@ -35,9 +35,10 @@ public final class Routes
     {
         path("/auth", () -> {
             get("/login", auth::login);
+            get("/validate", auth::validate);
         });
 
-        get("/poll", main::poll);
+        get("/away", main::away);
         get("/links", main::links);
     }
 }

@@ -32,7 +32,7 @@ public class Controller
     public static final String FAILURE = "{\n    \"success\": false\n}";
 
     @Inject
-    private Gson gson;
+    protected Gson gson;
 
     @Inject
     private Pronote pronote;

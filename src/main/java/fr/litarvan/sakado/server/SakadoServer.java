@@ -23,7 +23,6 @@ import fr.litarvan.commons.App;
 import fr.litarvan.commons.config.ConfigProvider;
 import fr.litarvan.commons.crash.ExceptionHandler;
 import fr.litarvan.commons.io.IOSource;
-import fr.litarvan.sakado.server.classe.Classe;
 import fr.litarvan.sakado.server.classe.ClasseManager;
 import fr.litarvan.sakado.server.http.Controller;
 import fr.litarvan.sakado.server.http.Routes;
@@ -31,9 +30,8 @@ import fr.litarvan.sakado.server.http.error.APIError;
 import fr.litarvan.sakado.server.http.error.HTTPReportField;
 import fr.litarvan.sakado.server.http.error.InRequestException;
 import fr.litarvan.sakado.server.pronote.Pronote;
+import fr.litarvan.sakado.server.pronote.RefreshService;
 import fr.litarvan.sakado.server.pronote.network.RequestException;
-import fr.litarvan.sakado.server.routine.RoutineService;
-import fr.litarvan.sakado.server.routine.task.AwayCheckTask;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import spark.Filter;
@@ -69,7 +67,7 @@ public class SakadoServer implements App
     private Routes routes;
 
     @Inject
-    private RoutineService routine;
+    private RefreshService refresh;
 
     @Inject
     private ClasseManager classeManager;
@@ -102,9 +100,7 @@ public class SakadoServer implements App
             System.exit(1);
         }
 
-        log.info("Starting Routing service...");
-        routine.add(AwayCheckTask.class);
-        routine.start();
+        refresh.start();
 
         log.info("Configuring HTTP server...");
 

@@ -19,13 +19,10 @@ package fr.litarvan.sakado.server.pronote;
 
 import fr.litarvan.sakado.server.pronote.network.RequestException;
 import fr.litarvan.sakado.server.pronote.network.body.TokenBody;
-import fr.litarvan.sakado.server.routine.RoutineResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class User
 {
@@ -39,10 +36,8 @@ public class User
     private String token;
 
     private Pronote pronote;
-    private Cours[] edt;
+    private Week[] edt;
     private Homework[] homeworks;
-
-    private final List<RoutineResult> queue;
 
     protected User(Pronote pronote, String pronoteUrl, String username, String token)
     {
@@ -50,7 +45,6 @@ public class User
         this.pronoteUrl = pronoteUrl;
         this.username = username;
         this.token = token;
-        this.queue = new ArrayList<>();
     }
 
     static User open(Pronote pronote, String pronoteUrl, String username) throws IOException, RequestException
@@ -73,38 +67,8 @@ public class User
 
     public void tryToUpdate() throws IOException, RequestException
     {
-        this.edt = pronote.getClient().push("edt", new TokenBody(token), Cours[].class);
+        this.edt = pronote.getClient().push("edt", new TokenBody(token), Week[].class);
         this.homeworks = pronote.getClient().push("homeworks", new TokenBody(token), Homework[].class);
-    }
-
-    public void push(RoutineResult result)
-    {
-        synchronized (queue)
-        {
-            queue.add(result);
-        }
-    }
-
-    public RoutineResult[] poll()
-    {
-        synchronized (queue)
-        {
-            RoutineResult[] result = queue.toArray(new RoutineResult[queue.size()]);
-            for (RoutineResult res : result)
-            {
-                res.setSeen();
-            }
-
-            return result;
-        }
-    }
-
-    public void queueClear()
-    {
-        synchronized (queue)
-        {
-            this.queue.clear();
-        }
     }
 
     public void logout() throws IOException, RequestException
@@ -162,7 +126,7 @@ public class User
         return token;
     }
 
-    public Cours[] getEDT()
+    public Week[] getEDT()
     {
         return edt;
     }

@@ -53,6 +53,16 @@ public class AuthController extends Controller
             throw new APIError(APIError.INVALID_CREDENTIALS, e.getMessage());
         }
 
+        return json(apply(user), response);
+    }
+
+    public Object validate(Request request, Response response) throws APIError
+    {
+        return json(apply(this.requireLogged(request)), response);
+    }
+
+    protected JsonObject apply(User user)
+    {
         JsonObject rep = new JsonObject();
         rep.addProperty("success", "true");
         rep.addProperty("token", user.getToken());
@@ -61,6 +71,6 @@ public class AuthController extends Controller
         rep.addProperty("classe", user.getClasse());
         rep.addProperty("avatar", user.getAvatar());
 
-        return json(rep, response);
+        return rep;
     }
 }
