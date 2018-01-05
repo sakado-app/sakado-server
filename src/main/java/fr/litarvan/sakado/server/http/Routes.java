@@ -40,5 +40,6 @@ public final class Routes
 
         get("/away", main::away);
         get("/links", main::links);
+        get("/next", main::nextCours);
     }
 }

@@ -1,3 +1,20 @@
+/*
+ *  Sakado, an app for school
+ *  Copyright (C) 2017 Adrien 'Litarvan' Navratil
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package fr.litarvan.sakado.server.pronote;
 
 import java.util.Calendar;
@@ -29,25 +46,5 @@ public class Week
     public Cours[] getContent()
     {
         return content;
-    }
-
-    protected String parseWeek(int week)
-    {
-        Calendar current = Calendar.getInstance();
-
-        int month = current.get(Calendar.MONTH);
-        String result = "Du " + week + " " + current.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.FRANCE) + " au ";
-
-        int next = week + 6;
-        int max = 30 + month % 2;
-
-        if (week > max)
-        {
-            next -= max;
-            month++;
-        }
-
-        current.set(Calendar.MONTH, month);
-        return result + next + ' ' + current.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.FRANCE);
     }
 }

@@ -17,6 +17,8 @@
  */
 package fr.litarvan.sakado.server.pronote;
 
+import java.util.Calendar;
+
 public class Cours
 {
     private String info;
@@ -85,6 +87,20 @@ public class Cours
     public int getHour()
     {
         return hour;
+    }
+
+    public Calendar getDate()
+    {
+        Calendar calendar = Calendar.getInstance();
+        if (getDay() > calendar.get(Calendar.DAY_OF_MONTH))
+        {
+            calendar.add(Calendar.MONTH, 1);
+        }
+
+        calendar.set(Calendar.DAY_OF_MONTH, getDay());
+        calendar.set(Calendar.HOUR_OF_DAY, getHour() + 8);
+
+        return calendar;
     }
 
     public boolean isAway()
