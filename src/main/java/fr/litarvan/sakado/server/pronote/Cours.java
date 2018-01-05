@@ -92,7 +92,7 @@ public class Cours
     public Calendar getDate()
     {
         Calendar calendar = Calendar.getInstance();
-        if (getDay() > calendar.get(Calendar.DAY_OF_MONTH))
+        if (getDay() < calendar.get(Calendar.DAY_OF_MONTH))
         {
             calendar.add(Calendar.MONTH, 1);
         }
