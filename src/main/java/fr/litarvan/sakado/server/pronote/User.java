@@ -19,6 +19,7 @@ package fr.litarvan.sakado.server.pronote;
 
 import fr.litarvan.sakado.server.pronote.network.RequestException;
 import fr.litarvan.sakado.server.pronote.network.body.TokenBody;
+import fr.litarvan.sakado.server.push.PushInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,18 +40,21 @@ public class User
     private Week[] edt;
     private Homework[] homeworks;
 
-    protected User(Pronote pronote, String pronoteUrl, String username, String token)
+    private PushInfo push;
+
+    protected User(Pronote pronote, String pronoteUrl, String username, String token, String deviceToken)
     {
         this.pronote = pronote;
         this.pronoteUrl = pronoteUrl;
         this.username = username;
         this.token = token;
+        this.push = new PushInfo(deviceToken);
     }
 
-    static User open(Pronote pronote, String pronoteUrl, String username) throws IOException, RequestException
+    static User open(Pronote pronote, String pronoteUrl, String username, String devicetoken) throws IOException, RequestException
     {
         TokenBody response = pronote.getClient().push("open", TokenBody.class);
-        return new User(pronote, pronoteUrl, username, response.getToken());
+        return new User(pronote, pronoteUrl, username, response.getToken(), devicetoken);
     }
 
     public void update()
@@ -134,5 +138,10 @@ public class User
     public Homework[] getHomeworks()
     {
         return homeworks;
+    }
+
+    public PushInfo getPushInfo()
+    {
+        return this.push;
     }
 }

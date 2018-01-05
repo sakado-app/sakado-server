@@ -8,7 +8,10 @@ import fr.litarvan.sakado.server.pronote.PronoteLinks;
 import fr.litarvan.sakado.server.pronote.User;
 import fr.litarvan.sakado.server.pronote.Week;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
+
 import spark.Request;
 import spark.Response;
 
@@ -33,14 +36,20 @@ public class MainController extends Controller
 
             for (Cours cours : week.getContent())
             {
-                if ("Prof. absent".equalsIgnoreCase(cours.getInfo()))
+                if (cours.isAway())
                 {
                     away.add(cours);
                 }
             }
 
+            Calendar cal = week.getFrom();
+            String from = "Du " + cal.get(Calendar.DAY_OF_MONTH) + " " + cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.FRANCE);
+
+            cal.set(Calendar.DAY_OF_MONTH, 5);
+            from += " au " + cal.get(Calendar.DAY_OF_MONTH) + " " + cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.FRANCE);
+
             JsonObject weekResult = new JsonObject();
-            weekResult.addProperty("from", week.getFrom());
+            weekResult.addProperty("from", from);
             weekResult.add("content", gson.toJsonTree(away));
 
             result[i] = weekResult;

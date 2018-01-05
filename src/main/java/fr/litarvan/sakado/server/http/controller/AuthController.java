@@ -39,6 +39,7 @@ public class AuthController extends Controller
     {
         String username = require(request, "username");
         String password = require(request, "password");
+        String deviceToken = require(request, "deviceToken");
 
         String link = require(request, "link");
 
@@ -46,7 +47,7 @@ public class AuthController extends Controller
 
         try
         {
-            user = pronote.login(link, username, password);
+            user = pronote.login(link, username, password, deviceToken);
         }
         catch (LoginException e)
         {

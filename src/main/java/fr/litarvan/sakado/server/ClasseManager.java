@@ -1,4 +1,4 @@
-package fr.litarvan.sakado.server.classe;
+package fr.litarvan.sakado.server;
 
 import fr.litarvan.sakado.server.pronote.User;
 

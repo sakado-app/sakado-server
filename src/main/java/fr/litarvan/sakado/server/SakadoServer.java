@@ -23,7 +23,6 @@ import fr.litarvan.commons.App;
 import fr.litarvan.commons.config.ConfigProvider;
 import fr.litarvan.commons.crash.ExceptionHandler;
 import fr.litarvan.commons.io.IOSource;
-import fr.litarvan.sakado.server.classe.ClasseManager;
 import fr.litarvan.sakado.server.http.Controller;
 import fr.litarvan.sakado.server.http.Routes;
 import fr.litarvan.sakado.server.http.error.APIError;
@@ -42,8 +41,6 @@ import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.List;
 
 public class SakadoServer implements App
 {
@@ -88,6 +85,7 @@ public class SakadoServer implements App
 
         configs.from("config/app.json").defaultIn(IOSource.at("app.default.json"));
         configs.from("config/pronote.json").defaultIn(IOSource.at("pronote.default.json"));
+        configs.from("config/fcm.json").defaultIn(IOSource.at("fcm.default.json"));
 
         log.info("Starting Pronote service...");
         try

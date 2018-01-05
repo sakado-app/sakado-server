@@ -1,0 +1,94 @@
+package fr.litarvan.sakado.server.push;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import fr.litarvan.commons.config.ConfigProvider;
+import fr.litarvan.sakado.server.pronote.User;
+
+import javax.inject.Inject;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+public class PushService
+{
+    public static final String FCM_SEND_URL = "https://fcm.googleapis.com/fcm/send";
+
+    @Inject
+    private ConfigProvider config;
+
+    @Inject
+    private Gson gson;
+
+    public void send(User user, String message) throws IOException
+    {
+        send(user, null, "Sakado", message, null, null);
+    }
+
+    public void send(User user, String title, String message) throws IOException
+    {
+        send(user, null, title, message, null, null);
+    }
+
+    public void send(User user, PushType type, String message) throws IOException
+    {
+        send(user, type, "Sakado", message);
+    }
+
+    public void send(User user, PushType type, String title, String message) throws IOException
+    {
+        send(user, type.name(), title, message, type.getColor(), type.getIcon());
+    }
+
+    public void send(User user, String type, String title, String message, String color, String icon) throws IOException
+    {
+        if (!user.getPushInfo().isToSend(message))
+        {
+            return;
+        }
+
+        URL url = new URL(FCM_SEND_URL);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestProperty("Authorization", "key=" + config.at("fcm.server-key"));
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestMethod("POST");
+        conn.setDoOutput(true);
+
+        JsonObject data = new JsonObject();
+        data.addProperty("title", title);
+        data.addProperty("message", message);
+
+        if (color != null)
+        {
+            data.addProperty("color", color);
+        }
+
+        if (icon != null)
+        {
+            data.addProperty("icon", icon);
+        }
+
+        if (type != null)
+        {
+            data.addProperty("type", type);
+        }
+
+        JsonObject request = new JsonObject();
+        request.addProperty("to", user.getPushInfo().getDeviceToken());
+        request.add("data", data);
+
+        String requestContent = gson.toJson(request);
+        System.out.println(requestContent);
+
+        OutputStream outputStream = conn.getOutputStream();
+        outputStream.write(requestContent.getBytes());
+
+        if (conn.getResponseCode() != 200)
+        {
+            throw new IllegalStateException("Firebase error : [" + conn.getResponseCode() + "] " + conn.getResponseMessage());
+        }
+
+        user.getPushInfo().sent(message);
+    }
+}

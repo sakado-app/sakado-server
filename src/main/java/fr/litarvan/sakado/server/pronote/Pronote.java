@@ -18,8 +18,8 @@
 package fr.litarvan.sakado.server.pronote;
 
 import fr.litarvan.commons.config.ConfigProvider;
-import fr.litarvan.sakado.server.classe.Classe;
-import fr.litarvan.sakado.server.classe.ClasseManager;
+import fr.litarvan.sakado.server.Classe;
+import fr.litarvan.sakado.server.ClasseManager;
 import fr.litarvan.sakado.server.pronote.network.NetworkClient;
 import fr.litarvan.sakado.server.pronote.network.RequestException;
 import fr.litarvan.sakado.server.pronote.network.body.LoginRequest;
@@ -57,7 +57,7 @@ public class Pronote
         client = new NetworkClient(config.at("pronote.server-host"), config.at("pronote.server-port", int.class));
     }
 
-    public User login(String link, String username, String password) throws IOException, RequestException
+    public User login(String link, String username, String password, String deviceToken) throws IOException, RequestException
     {
         if (!link.startsWith("http://") && !link.startsWith("https://"))
         {
@@ -84,7 +84,7 @@ public class Pronote
                 user.logout();
             }
 
-            user = User.open(this, link, username);
+            user = User.open(this, link, username, deviceToken);
         }
 
         this.users.add(user);

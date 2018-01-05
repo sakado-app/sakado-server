@@ -86,4 +86,9 @@ public class Cours
     {
         return hour;
     }
+
+    public boolean isAway()
+    {
+        return "Prof. absent".equalsIgnoreCase(this.getInfo());
+    }
 }
