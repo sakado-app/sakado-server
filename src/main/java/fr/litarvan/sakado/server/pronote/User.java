@@ -1,6 +1,6 @@
 /*
  *  Sakado, an app for school
- *  Copyright (C) 2017 Adrien 'Litarvan' Navratil
+ *  Copyright (c) 2017-2018 Adrien 'Litarvan' Navratil
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -73,11 +73,6 @@ public class User
     {
         this.edt = pronote.getClient().push("edt", new TokenBody(token), Week[].class);
         this.homeworks = pronote.getClient().push("homeworks", new TokenBody(token), Homework[].class);
-    }
-
-    public void logout() throws IOException, RequestException
-    {
-        pronote.getClient().push("close", new TokenBody(token));
     }
 
     public boolean isLogged()

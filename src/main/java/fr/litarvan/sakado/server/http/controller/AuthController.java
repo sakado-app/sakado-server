@@ -1,6 +1,6 @@
 /*
  *  Sakado, an app for school
- *  Copyright (C) 2017 Adrien 'Litarvan' Navratil
+ *  Copyright (c) 2017-2018 Adrien 'Litarvan' Navratil
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -60,6 +60,12 @@ public class AuthController extends Controller
     public Object validate(Request request, Response response) throws APIError
     {
         return json(apply(this.requireLogged(request)), response);
+    }
+
+    public Object logout(Request request, Response response) throws IOException, RequestException, APIError
+    {
+        this.pronote.logout(requireLogged(request));
+        return success(response);
     }
 
     protected JsonObject apply(User user)

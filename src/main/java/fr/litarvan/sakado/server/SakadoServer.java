@@ -1,6 +1,6 @@
 /*
  *  Sakado, an app for school
- *  Copyright (C) 2017 Adrien 'Litarvan' Navratil
+ *  Copyright (c) 2017-2018 Adrien 'Litarvan' Navratil
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -117,7 +117,7 @@ public class SakadoServer implements App
         // Disable CORS protection
         Filter corsFilter = (request, response) ->
         {
-            response.header("Access-Control-Allow-Origin", "http://127.0.0.1:4200");
+            response.header("Access-Control-Allow-Origin", "*");
 
             if (request.requestMethod().toLowerCase().equals("options"))
             {

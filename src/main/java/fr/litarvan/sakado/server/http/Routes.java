@@ -1,6 +1,6 @@
 /*
  *  Sakado, an app for school
- *  Copyright (C) 2017 Adrien 'Litarvan' Navratil
+ *  Copyright (c) 2017-2018 Adrien 'Litarvan' Navratil
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ public final class Routes
         path("/auth", () -> {
             get("/login", auth::login);
             get("/validate", auth::validate);
+            get("/logout", auth::logout);
         });
 
         get("/away", main::away);

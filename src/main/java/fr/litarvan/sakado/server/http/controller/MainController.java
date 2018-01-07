@@ -1,6 +1,6 @@
 /*
  *  Sakado, an app for school
- *  Copyright (C) 2017 Adrien 'Litarvan' Navratil
+ *  Copyright (c) 2017-2018 Adrien 'Litarvan' Navratil
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -61,10 +61,10 @@ public class MainController extends Controller
             }
 
             Calendar cal = week.getFrom();
-            String from = "Du " + cal.get(Calendar.DAY_OF_MONTH) + " " + cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.FRANCE);
+            String from = "Du " + cal.get(Calendar.DAY_OF_MONTH) + " " + CalendarUtils.parse(cal, Calendar.MONTH);
 
-            cal.set(Calendar.DAY_OF_MONTH, 5);
-            from += " au " + cal.get(Calendar.DAY_OF_MONTH) + " " + cal.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.FRANCE);
+            cal.add(Calendar.DAY_OF_MONTH, 5);
+            from += " au " + cal.get(Calendar.DAY_OF_MONTH) + " " + CalendarUtils.parse(cal, Calendar.MONTH);
 
             JsonObject weekResult = new JsonObject();
             weekResult.addProperty("from", from);

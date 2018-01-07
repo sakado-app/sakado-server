@@ -1,6 +1,6 @@
 /*
  *  Sakado, an app for school
- *  Copyright (C) 2017 Adrien 'Litarvan' Navratil
+ *  Copyright (c) 2017-2018 Adrien 'Litarvan' Navratil
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@ import fr.litarvan.sakado.server.pronote.network.NetworkClient;
 import fr.litarvan.sakado.server.pronote.network.RequestException;
 import fr.litarvan.sakado.server.pronote.network.body.LoginRequest;
 import fr.litarvan.sakado.server.pronote.network.body.LoginResponse;
+import fr.litarvan.sakado.server.pronote.network.body.TokenBody;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -81,7 +82,7 @@ public class Pronote
         {
             if (user != null)
             {
-                user.logout();
+                this.logout(user);
             }
 
             user = User.open(this, link, username, deviceToken);
@@ -146,6 +147,12 @@ public class Pronote
         }
 
         return null;
+    }
+
+    public void logout(User user) throws IOException, RequestException
+    {
+        client.push("close", new TokenBody(user.getToken()));
+        this.users.remove(user);
     }
 
     public NetworkClient getClient()

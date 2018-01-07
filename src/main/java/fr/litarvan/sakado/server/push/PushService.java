@@ -1,6 +1,6 @@
 /*
  *  Sakado, an app for school
- *  Copyright (C) 2017 Adrien 'Litarvan' Navratil
+ *  Copyright (c) 2017-2018 Adrien 'Litarvan' Navratil
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -65,9 +65,16 @@ public class PushService
             return;
         }
 
+        String key = config.at("fcm.server-key");
+
+        if ("YOUR_SERVER_KEY".equals(key))
+        {
+            return;
+        }
+
         URL url = new URL(FCM_SEND_URL);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestProperty("Authorization", "key=" + config.at("fcm.server-key"));
+        conn.setRequestProperty("Authorization", "key=" + key);
         conn.setRequestProperty("Content-Type", "application/json");
         conn.setRequestMethod("POST");
         conn.setDoOutput(true);

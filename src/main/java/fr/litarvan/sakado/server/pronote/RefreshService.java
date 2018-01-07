@@ -1,6 +1,6 @@
 /*
  *  Sakado, an app for school
- *  Copyright (C) 2017 Adrien 'Litarvan' Navratil
+ *  Copyright (c) 2017-2018 Adrien 'Litarvan' Navratil
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -99,7 +99,7 @@ public class RefreshService
             {
                 push.send(user, PushType.AWAY, title, result.substring(0, result.length() - 4));
             }
-            catch (IOException e)
+            catch (Exception e)
             {
                 log.error("Couldn't send away push notification", e);
             }
