@@ -72,15 +72,7 @@ public class RefreshService
             if (e instanceof RequestException && e.getMessage().contains("Can't find session with token"))
             {
                 log.error("Deleting ghost session '" + user.getName() + "' (" + user.getToken() + ")");
-
-                try
-                {
-                    pronote.logout(user);
-                }
-                catch (IOException | RequestException e1)
-                {
-                    log.error("Couldn't delete ghost session '" + user.getName() + "' (" + user.getToken() + ")", e);
-                }
+                pronote.remove(user);
 
                 return;
             }

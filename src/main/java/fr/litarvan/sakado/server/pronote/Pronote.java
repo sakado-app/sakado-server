@@ -155,6 +155,11 @@ public class Pronote
         this.users.remove(user);
     }
 
+    public void remove(User user)
+    {
+        this.users.remove(user);
+    }
+
     public NetworkClient getClient()
     {
         return client;
