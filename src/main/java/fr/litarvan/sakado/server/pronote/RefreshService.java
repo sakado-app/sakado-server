@@ -19,6 +19,7 @@ package fr.litarvan.sakado.server.pronote;
 
 import fr.litarvan.sakado.server.Classe;
 import fr.litarvan.sakado.server.ClasseManager;
+import fr.litarvan.sakado.server.pronote.network.RequestException;
 import fr.litarvan.sakado.server.push.PushService;
 import fr.litarvan.sakado.server.push.PushType;
 import fr.litarvan.sakado.server.util.CalendarUtils;
@@ -36,6 +37,9 @@ public class RefreshService
 
     @Inject
     private PushService push;
+
+    @Inject
+    private Pronote pronote;
 
     public static final long RATE = 5 * 60 * 1000;
 
@@ -59,7 +63,30 @@ public class RefreshService
 
     protected synchronized void refresh(User user)
     {
-        user.update();
+        try
+        {
+            user.tryToUpdate();
+        }
+        catch (IOException | RequestException e)
+        {
+            if (e instanceof RequestException && e.getMessage().contains("Can't find session with token"))
+            {
+                log.error("Deleting ghost session '" + user.getName() + "' (" + user.getToken() + ")");
+
+                try
+                {
+                    pronote.logout(user);
+                }
+                catch (IOException | RequestException e1)
+                {
+                    log.error("Couldn't delete ghost session '" + user.getName() + "' (" + user.getToken() + ")", e);
+                }
+
+                return;
+            }
+
+            log.error("Unknown error while refreshing data from Pronote, ignoring", e);
+        }
 
         // Check for away teachers
         StringBuilder result = new StringBuilder();

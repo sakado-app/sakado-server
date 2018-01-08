@@ -1,0 +1,5 @@
+{
+  "enabled": false,
+  "address": "http://dynamic-proxy-address/",
+  "token": "dynamicProxyToken"
+}

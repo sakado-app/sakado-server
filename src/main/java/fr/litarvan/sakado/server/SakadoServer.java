@@ -31,6 +31,8 @@ import fr.litarvan.sakado.server.http.error.InRequestException;
 import fr.litarvan.sakado.server.pronote.Pronote;
 import fr.litarvan.sakado.server.pronote.RefreshService;
 import fr.litarvan.sakado.server.pronote.network.RequestException;
+import java.net.URL;
+import java.net.URLConnection;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import spark.Filter;
@@ -44,7 +46,7 @@ import java.net.InetSocketAddress;
 
 public class SakadoServer implements App
 {
-    public static final String VERSION = "1.0.0";
+    public static final String VERSION = "0.0.2";
 
     private static final Logger log = LogManager.getLogger("SakadoServer");
 
@@ -80,12 +82,28 @@ public class SakadoServer implements App
         exceptionHandler.addField(new HTTPReportField("Route params", (request) -> request.params().toString()));
         exceptionHandler.addField(new HTTPReportField("Query params", (request) -> request.queryParams().toString()));
 
-        // Configs
         log.info("Loading configs...");
 
         configs.from("config/app.json").defaultIn(IOSource.at("app.default.json"));
+        configs.from("config/proxy.json").defaultIn(IOSource.at("proxy.default.json"));
         configs.from("config/pronote.json").defaultIn(IOSource.at("pronote.default.json"));
         configs.from("config/fcm.json").defaultIn(IOSource.at("fcm.default.json"));
+
+        if (configs.at("proxy.enabled", boolean.class))
+        {
+            log.info("Setting up dynamic proxy...");
+
+            try
+            {
+                URLConnection conn = new URL(configs.at("proxy.address")).openConnection();
+                conn.setDoOutput(true);
+                conn.getOutputStream().write(configs.at("proxy.token").getBytes());
+            }
+            catch (IOException e)
+            {
+                log.error("Couldn't setup dynamic proxy", e);
+            }
+        }
 
         log.info("Starting Pronote service...");
         try
