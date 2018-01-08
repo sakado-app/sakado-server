@@ -31,6 +31,7 @@ import fr.litarvan.sakado.server.http.error.InRequestException;
 import fr.litarvan.sakado.server.pronote.Pronote;
 import fr.litarvan.sakado.server.pronote.RefreshService;
 import fr.litarvan.sakado.server.pronote.network.RequestException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import org.apache.logging.log4j.LogManager;
@@ -95,9 +96,15 @@ public class SakadoServer implements App
 
             try
             {
-                URLConnection conn = new URL(configs.at("proxy.address")).openConnection();
-                conn.setDoOutput(true);
-                conn.getOutputStream().write(configs.at("proxy.token").getBytes());
+                String address = configs.at("proxy.address");
+
+                if (!address.endsWith("/"))
+                {
+                    address += "/";
+                }
+
+                HttpURLConnection conn = (HttpURLConnection) new URL(address + "set?token=" + configs.at("proxy.token")).openConnection();
+                log.info("Dynamic proxy response : " + conn.getResponseMessage());
             }
             catch (IOException e)
             {
