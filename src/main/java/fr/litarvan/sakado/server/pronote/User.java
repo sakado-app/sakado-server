@@ -20,7 +20,6 @@ package fr.litarvan.sakado.server.pronote;
 import fr.litarvan.sakado.server.pronote.network.RequestException;
 import fr.litarvan.sakado.server.pronote.network.body.NotesResponse;
 import fr.litarvan.sakado.server.pronote.network.body.TokenBody;
-import fr.litarvan.sakado.server.push.PushInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,6 +35,7 @@ public class User
     private String classe;
     private String avatar;
     private String token;
+    private String deviceToken;
 
     private Pronote pronote;
     private Week[] edt;
@@ -43,15 +43,13 @@ public class User
     private Note[] lastNotes;
     private String[] moyennes;
 
-    private PushInfo push;
-
     protected User(Pronote pronote, String pronoteUrl, String username, String token, String deviceToken)
     {
         this.pronote = pronote;
         this.pronoteUrl = pronoteUrl;
         this.username = username;
         this.token = token;
-        this.push = new PushInfo(deviceToken);
+        this.deviceToken = deviceToken;
     }
 
     static User open(Pronote pronote, String pronoteUrl, String username, String devicetoken) throws IOException, RequestException
@@ -152,8 +150,8 @@ public class User
         return moyennes;
     }
 
-    public PushInfo getPushInfo()
+    public String getDeviceToken()
     {
-        return this.push;
+        return deviceToken;
     }
 }

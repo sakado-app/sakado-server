@@ -32,6 +32,10 @@ import javax.inject.Inject;
 
 public class RefreshService
 {
+    public static final long RATE = 5 * 60 * 1000;
+
+    private static final Logger log = LogManager.getLogger("RefreshService");
+
     @Inject
     private ClasseManager classes;
 
@@ -41,9 +45,12 @@ public class RefreshService
     @Inject
     private Pronote pronote;
 
-    public static final long RATE = 5 * 60 * 1000;
+    private List<String> seen;
 
-    private static final Logger log = LogManager.getLogger("RefreshService");
+    public RefreshService()
+    {
+        this.seen = new ArrayList<>();
+    }
 
     public void start()
     {
@@ -80,48 +87,127 @@ public class RefreshService
             log.error("Unknown error while refreshing data from Pronote, ignoring", e);
         }
 
-        // Check for away teachers
-        StringBuilder result = new StringBuilder();
+        this.checkNewAway(user);
+        this.checkNewNote(user);
+    }
+
+    protected void checkNewAway(User user)
+    {
+        List<Cours> away = new ArrayList<>();
         for (Week week : user.getEDT())
         {
             for (Cours cours : week.getContent())
             {
                 if (cours.isAway())
                 {
-                    Calendar day = cours.getDate();
+                    away.add(cours);
 
-                    int start = day.get(Calendar.HOUR_OF_DAY);
-
-                    String message = cours.getProf();
-                    message += " : " + CalendarUtils.parse(day, Calendar.DAY_OF_WEEK, Calendar.DAY_OF_MONTH, Calendar.MONTH);
-                    message += " - " + start + "h-" + (start + cours.getLength()) + "h";
-
-                    result.append(message).append(" // ");
                 }
             }
         }
 
-        if (result.length() > 0)
+        StringBuilder result = new StringBuilder();
+
+        away.removeIf(c -> {
+            String id = getID(c);
+
+            if (seen.contains(id))
+            {
+                return false;
+            }
+
+            Calendar day = c.getDate();
+
+            int start = day.get(Calendar.HOUR_OF_DAY);
+
+            String message = c.getProf();
+            message += " : " + CalendarUtils.parse(day, Calendar.DAY_OF_WEEK, Calendar.DAY_OF_MONTH, Calendar.MONTH);
+            message += " - " + start + "h-" + (start + c.getLength()) + "h";
+
+            result.append(message).append(" // ");
+
+            return true;
+        });
+
+        if (away.size() == 0)
         {
-            String title = "Sakado - ";
+            return;
+        }
 
-            if (result.indexOf(" // ") > 1)
-            {
-                title += "Plusieurs profs. absents";
-            }
-            else
-            {
-                title += "Prof. absent";
-            }
+        String title = "Sakado - ";
 
-            try
+        if (away.size() > 1)
+        {
+            title += "Plusieurs profs. absents";
+        }
+        else
+        {
+            title += "Prof. absent";
+        }
+
+        try
+        {
+            push.send(user, PushType.AWAY, title, result.substring(0, result.length() - 4));
+        }
+        catch (Exception e)
+        {
+            log.error("Couldn't send away push notification", e);
+        }
+    }
+
+    protected void checkNewNote(User user)
+    {
+        Calendar max = Calendar.getInstance();
+        max.add(Calendar.DAY_OF_MONTH, -2);
+
+        List<Note> notes = new ArrayList<>();
+
+        for (Note note : user.getLastNotes())
+        {
+            if (note.getDate().after(max))
             {
-                push.send(user, PushType.AWAY, title, result.substring(0, result.length() - 4));
-            }
-            catch (Exception e)
-            {
-                log.error("Couldn't send away push notification", e);
+                notes.add(note);
             }
         }
+
+        if (notes.size() == 0)
+        {
+            return;
+        }
+
+        notes.forEach(n -> seen.add(getID(n)));
+        notes.removeIf(n -> {
+            String id = getID(n);
+            boolean contains = seen.contains(id);
+
+            if (!contains)
+            {
+                seen.add(id);
+            }
+
+            return contains;
+        });
+
+        String title = notes.size() > 1 ? "Plusieurs nouvelles notes" : "Nouvelle note";
+        String message = notes.size() > 1 ? "Cliquer pour voir" : notes.get(0).getSubject() + " - " + notes.get(0).getNote();
+
+        try
+        {
+            push.send(user, PushType.AWAY, title, message);
+        }
+        catch (Exception e)
+        {
+            log.error("Couldn't send away push notification", e);
+        }
+    }
+
+    protected String getID(Note note)
+    {
+        return note.getNote() + "-" + note.getSubject() + "-" + note.getDate().get(Calendar.DAY_OF_MONTH) + "-" + note.getDate().get(Calendar.MONTH);
+    }
+
+    protected String getID(Cours cours)
+    {
+        return cours.getDay() + "-" + cours.getHour() + "-" + cours.getDate().get(Calendar.MONTH);
     }
 }

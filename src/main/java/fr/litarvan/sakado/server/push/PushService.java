@@ -60,7 +60,7 @@ public class PushService
 
     public void send(User user, String type, String title, String message, String color, String icon) throws IOException
     {
-        if (!user.getPushInfo().isToSend(message))
+        if (user.getDeviceToken() != null)
         {
             return;
         }
@@ -99,7 +99,7 @@ public class PushService
         }
 
         JsonObject request = new JsonObject();
-        request.addProperty("to", user.getPushInfo().getDeviceToken());
+        request.addProperty("to", user.getDeviceToken());
         request.add("data", data);
 
         String requestContent = gson.toJson(request);
@@ -111,7 +111,5 @@ public class PushService
         {
             throw new IllegalStateException("Firebase error : [" + conn.getResponseCode() + "] " + conn.getResponseMessage());
         }
-
-        user.getPushInfo().sent(message);
     }
 }

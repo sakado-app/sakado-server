@@ -105,6 +105,6 @@ public class Cours
 
     public boolean isAway()
     {
-        return "Prof. absent".equalsIgnoreCase(this.getInfo());
+        return "Prof. absent".equalsIgnoreCase(this.getInfo()) || "Cours annulé".equalsIgnoreCase(this.getInfo());
     }
 }

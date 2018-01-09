@@ -19,7 +19,8 @@ package fr.litarvan.sakado.server.push;
 
 public enum PushType
 {
-    AWAY("#bb0000", "sakado");
+    AWAY("#bb0000", "sakado"),
+    NOTE("#4444dd", "sakado");
 
     private String color;
     private String icon;
