@@ -41,6 +41,16 @@ public class Classe
         this.loggedUsers = new ArrayList<>();
     }
 
+    public void add(User user)
+    {
+        if (!this.members.contains(user.getUsername()))
+        {
+            this.members.add(user.getUsername());
+        }
+
+        this.loggedUsers.add(user);
+    }
+
     public String getPronoteUrl()
     {
         return pronoteUrl;

@@ -32,7 +32,7 @@ import javax.inject.Inject;
 
 public class RefreshService
 {
-    public static final long RATE = 5 * 60 * 1000;
+    public static final long RATE = 2 * 60 * 1000;
 
     private static final Logger log = LogManager.getLogger("RefreshService");
 
@@ -106,25 +106,14 @@ public class RefreshService
             }
         }
 
-        StringBuilder result = new StringBuilder();
-
         away.removeIf(c -> {
             String id = getID(c);
 
-            if (seen.contains(id))
+            if (!seen.contains(id))
             {
+                seen.add(id);
                 return false;
             }
-
-            Calendar day = c.getDate();
-
-            int start = day.get(Calendar.HOUR_OF_DAY);
-
-            String message = c.getProf();
-            message += " : " + CalendarUtils.parse(day, Calendar.DAY_OF_WEEK, Calendar.DAY_OF_MONTH, Calendar.MONTH);
-            message += " - " + start + "h-" + (start + c.getLength()) + "h";
-
-            result.append(message).append(" // ");
 
             return true;
         });
@@ -135,19 +124,30 @@ public class RefreshService
         }
 
         String title = "Sakado - ";
+        String message;
 
         if (away.size() > 1)
         {
             title += "Plusieurs profs. absents";
+            message = "Cliquer pour voir";
         }
         else
         {
             title += "Prof. absent";
+
+            Cours cours = away.get(0);
+            Calendar day = cours.getDate();
+
+            int start = day.get(Calendar.HOUR_OF_DAY);
+
+            message = cours.getProf();
+            message += " : " + CalendarUtils.parse(day, Calendar.DAY_OF_WEEK, Calendar.DAY_OF_MONTH, Calendar.MONTH);
+            message += " - " + start + "h-" + (start + cours.getLength()) + "h";
         }
 
         try
         {
-            push.send(user, PushType.AWAY, title, result.substring(0, result.length() - 4));
+            push.send(user, PushType.AWAY, title, message);
         }
         catch (Exception e)
         {
@@ -170,26 +170,36 @@ public class RefreshService
             }
         }
 
+        notes.removeIf(n -> {
+            String id = getID(n);
+
+            if (!seen.contains(id))
+            {
+                seen.add(id);
+                return false;
+            }
+
+            return true;
+        });
+
         if (notes.size() == 0)
         {
             return;
         }
 
-        notes.forEach(n -> seen.add(getID(n)));
-        notes.removeIf(n -> {
-            String id = getID(n);
-            boolean contains = seen.contains(id);
+        String title = "Sakado - ";
+        String message;
 
-            if (!contains)
-            {
-                seen.add(id);
-            }
-
-            return contains;
-        });
-
-        String title = notes.size() > 1 ? "Plusieurs nouvelles notes" : "Nouvelle note";
-        String message = notes.size() > 1 ? "Cliquer pour voir" : notes.get(0).getSubject() + " - " + notes.get(0).getNote();
+        if (notes.size() > 1)
+        {
+            title += "Nouvelles notes";
+            message = "Cliquer pour voir";
+        }
+        else
+        {
+            title += "Nouvelle note";
+            message = notes.get(0).getSubject() + " - " + notes.get(0).getNote();
+        }
 
         try
         {
