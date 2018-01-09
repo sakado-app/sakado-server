@@ -152,12 +152,12 @@ public class Pronote
     public void logout(User user) throws IOException, RequestException
     {
         client.push("close", new TokenBody(user.getToken()));
-        this.users.remove(user);
+        this.remove(user);
     }
 
     public void remove(User user)
     {
-        this.users.remove(user);
+        this.users.removeIf(u -> user.getToken().equals(u.getToken()));
     }
 
     public NetworkClient getClient()
