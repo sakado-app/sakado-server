@@ -18,6 +18,7 @@
 package fr.litarvan.sakado.server.pronote;
 
 import fr.litarvan.sakado.server.pronote.network.RequestException;
+import fr.litarvan.sakado.server.pronote.network.body.NotesResponse;
 import fr.litarvan.sakado.server.pronote.network.body.TokenBody;
 import fr.litarvan.sakado.server.push.PushInfo;
 import org.apache.logging.log4j.LogManager;
@@ -39,6 +40,8 @@ public class User
     private Pronote pronote;
     private Week[] edt;
     private Homework[] homeworks;
+    private Note[] lastNotes;
+    private String[] moyennes;
 
     private PushInfo push;
 
@@ -73,6 +76,10 @@ public class User
     {
         this.edt = pronote.getClient().push("edt", new TokenBody(token), Week[].class);
         this.homeworks = pronote.getClient().push("homeworks", new TokenBody(token), Homework[].class);
+
+        NotesResponse response = pronote.getClient().push("notes", new TokenBody(token), NotesResponse.class);
+        this.lastNotes = response.getLastNotes();
+        this.moyennes = response.getMoyennes();
     }
 
     public boolean isLogged()
@@ -133,6 +140,16 @@ public class User
     public Homework[] getHomeworks()
     {
         return homeworks;
+    }
+
+    public Note[] getLastNotes()
+    {
+        return lastNotes;
+    }
+
+    public String[] getMoyennes()
+    {
+        return moyennes;
     }
 
     public PushInfo getPushInfo()

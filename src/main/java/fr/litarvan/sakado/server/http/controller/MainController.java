@@ -116,6 +116,17 @@ public class MainController extends Controller
         return json(rep, response);
     }
 
+    public Object notes(Request request, Response response) throws APIError
+    {
+        User user = requireLogged(request);
+
+        JsonObject rep = new JsonObject();
+        rep.add("lastNotes", gson.toJsonTree(user.getLastNotes()));
+        rep.add("moyennes", gson.toJsonTree(user.getMoyennes()));
+
+        return json(rep, response);
+    }
+
     public Object links(Request request, Response response) throws APIError
     {
         return json(links.all(), response);
