@@ -43,5 +43,6 @@ public final class Routes
         get("/links", main::links);
         get("/next", main::nextCours);
         get("/notes", main::notes);
+        get("/version", main::version);
     }
 }

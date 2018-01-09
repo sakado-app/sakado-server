@@ -18,6 +18,7 @@
 package fr.litarvan.sakado.server.http.controller;
 
 import com.google.gson.JsonObject;
+import fr.litarvan.sakado.server.SakadoServer;
 import fr.litarvan.sakado.server.http.Controller;
 import fr.litarvan.sakado.server.http.error.APIError;
 import fr.litarvan.sakado.server.pronote.Cours;
@@ -127,8 +128,16 @@ public class MainController extends Controller
         return json(rep, response);
     }
 
-    public Object links(Request request, Response response) throws APIError
+    public Object links(Request request, Response response)
     {
         return json(links.all(), response);
+    }
+
+    public Object version(Request request, Response response)
+    {
+        JsonObject rep = new JsonObject();
+        rep.addProperty("version", SakadoServer.VERSION);
+
+        return json(rep, response);
     }
 }
