@@ -116,7 +116,7 @@ public class Pronote
             log.info("Added '{}' to classe '{}' on {}", user.getName(), user.getClasse(), link);
         }
 
-        classe.getLoggedUsers().add(user);
+        classe.add(user);
 
         user.tryToUpdate();
 
@@ -157,7 +157,8 @@ public class Pronote
 
     public void remove(User user)
     {
-        this.users.removeIf(u -> user.getToken().equals(u.getToken()));
+        this.classeManager.of(user).getLoggedUsers().remove(user);
+        this.users.remove(user);
     }
 
     public NetworkClient getClient()

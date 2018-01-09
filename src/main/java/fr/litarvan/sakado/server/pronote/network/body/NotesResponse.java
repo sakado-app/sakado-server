@@ -15,34 +15,32 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package fr.litarvan.sakado.server.http;
+package fr.litarvan.sakado.server.pronote.network.body;
 
-import fr.litarvan.sakado.server.http.controller.*;
+import fr.litarvan.sakado.server.pronote.Note;
 
-import javax.inject.Inject;
-
-import static spark.Spark.*;
-
-public final class Routes
+public class NotesResponse
 {
-    @Inject
-    private AuthController auth;
+    private Note[] lastNotes;
+    private String[] moyennes;
 
-    @Inject
-    private MainController main;
-
-    public void load()
+    public NotesResponse()
     {
-        path("/auth", () -> {
-            get("/login", auth::login);
-            get("/validate", auth::validate);
-            get("/logout", auth::logout);
-        });
+    }
 
-        get("/away", main::away);
-        get("/links", main::links);
-        get("/next", main::nextCours);
-        get("/notes", main::notes);
-        get("/version", main::version);
+    public NotesResponse(Note[] lastNotes, String[] moyennes)
+    {
+        this.lastNotes = lastNotes;
+        this.moyennes = moyennes;
+    }
+
+    public Note[] getLastNotes()
+    {
+        return lastNotes;
+    }
+
+    public String[] getMoyennes()
+    {
+        return moyennes;
     }
 }

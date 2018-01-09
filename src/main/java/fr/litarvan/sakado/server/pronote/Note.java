@@ -15,34 +15,45 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package fr.litarvan.sakado.server.push;
+package fr.litarvan.sakado.server.pronote;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Calendar;
 
-public class PushInfo
+public class Note
 {
-    private String deviceToken;
-    private List<String> sent;
+    private String subject;
+    private String note;
+    private String date;
 
-    public PushInfo(String deviceToken)
+    public Note()
     {
-        this.deviceToken = deviceToken;
-        this.sent = new ArrayList<>();
     }
 
-    public String getDeviceToken()
+    public Note(String subject, String note, String date)
     {
-        return deviceToken;
+        this.subject = subject;
+        this.note = note;
+        this.date = date;
     }
 
-    public boolean isToSend(String message)
+    public String getSubject()
     {
-        return this.deviceToken != null && !this.sent.contains(message);
+        return subject;
     }
 
-    public void sent(String message)
+    public String getNote()
     {
-        this.sent.add(message);
+        return note;
+    }
+
+    public Calendar getDate()
+    {
+        Calendar calendar = Calendar.getInstance();
+        String[] split = this.date.split("/");
+
+        calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(split[0]));
+        calendar.set(Calendar.MONTH, Integer.parseInt(split[1]));
+
+        return calendar;
     }
 }
