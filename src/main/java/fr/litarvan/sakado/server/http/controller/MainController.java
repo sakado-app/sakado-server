@@ -81,7 +81,7 @@ public class MainController extends Controller
         User user = requireLogged(request);
 
         Calendar current = Calendar.getInstance();
-        current.add(Calendar.MINUTE, 30);
+        current.add(Calendar.MINUTE, -30);
 
         Cours next = null;
 
