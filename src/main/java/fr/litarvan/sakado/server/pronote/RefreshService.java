@@ -32,7 +32,7 @@ import javax.inject.Inject;
 
 public class RefreshService
 {
-    public static final long RATE = 2 * 60 * 1000;
+    public static final long RATE = 5 * 60 * 1000;
 
     private static final Logger log = LogManager.getLogger("RefreshService");
 

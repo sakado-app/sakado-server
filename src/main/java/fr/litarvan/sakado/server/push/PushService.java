@@ -60,7 +60,7 @@ public class PushService
 
     public void send(User user, String type, String title, String message, String color, String icon) throws IOException
     {
-        if (user.getDeviceToken() != null)
+        if (user.getDeviceToken() == null)
         {
             return;
         }
