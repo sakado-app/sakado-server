@@ -101,7 +101,6 @@ public class RefreshService
                 if (cours.isAway())
                 {
                     away.add(cours);
-
                 }
             }
         }
@@ -211,13 +210,13 @@ public class RefreshService
         }
     }
 
-    protected String getID(Note note)
+    protected String getID(User user, Note note)
     {
-        return note.getNote() + "-" + note.getSubject() + "-" + note.getDate().get(Calendar.DAY_OF_MONTH) + "-" + note.getDate().get(Calendar.MONTH);
+        return user.getUsername() + "-" + note.getNote() + "-" + note.getSubject() + "-" + note.getDate().get(Calendar.DAY_OF_MONTH) + "-" + note.getDate().get(Calendar.MONTH);
     }
 
-    protected String getID(Cours cours)
+    protected String getID(User user, Cours cours)
     {
-        return cours.getDay() + "-" + cours.getHour() + "-" + cours.getDate().get(Calendar.MONTH);
+        return user.getUsername() + "-" + cours.getDay() + "-" + cours.getHour() + "-" + cours.getDate().get(Calendar.MONTH);
     }
 }
