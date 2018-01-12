@@ -106,7 +106,7 @@ public class RefreshService
         }
 
         away.removeIf(c -> {
-            String id = getID(c);
+            String id = getID(user, c);
 
             if (!seen.contains(id))
             {
@@ -170,7 +170,7 @@ public class RefreshService
         }
 
         notes.removeIf(n -> {
-            String id = getID(n);
+            String id = getID(user, n);
 
             if (!seen.contains(id))
             {
