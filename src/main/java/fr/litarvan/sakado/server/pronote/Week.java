@@ -17,30 +17,36 @@
  */
 package fr.litarvan.sakado.server.pronote;
 
+import fr.litarvan.sakado.server.util.CalendarUtils;
+
 import java.util.Calendar;
 import java.util.Locale;
 
 public class Week
 {
     private int from;
+    private int to;
     private Cours[] content;
 
     public Week()
     {
     }
 
-    public Week(int from, Cours[] content)
+    public Week(int from, int to, Cours[] content)
     {
         this.from = from;
+        this.to = to;
         this.content = content;
     }
 
     public Calendar getFrom()
     {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.DAY_OF_MONTH, this.from);
+        return CalendarUtils.fromTimestamp(from);
+    }
 
-        return cal;
+    public Calendar getTo()
+    {
+        return CalendarUtils.fromTimestamp(to);
     }
 
     public Cours[] getContent()

@@ -46,4 +46,12 @@ public final class CalendarUtils
 
         return result.substring(0, result.length() - 1);
     }
+
+    public static Calendar fromTimestamp(int timestamp)
+    {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(timestamp);
+
+        return calendar;
+    }
 }

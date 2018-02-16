@@ -17,6 +17,8 @@
  */
 package fr.litarvan.sakado.server.pronote;
 
+import fr.litarvan.sakado.server.util.CalendarUtils;
+
 import java.util.Calendar;
 
 public class Cours
@@ -27,26 +29,24 @@ public class Cours
     private String prof;
     private String salle;
 
-    private int length;
+    private int from;
+    private int to;
 
-    private int weekday;
-    private int day;
-    private int hour;
+    private boolean away;
 
     public Cours()
     {
     }
 
-    public Cours(String info, String name, String prof, String salle, int length, int weekday, int day, int hour)
+    public Cours(String info, String name, String prof, String salle, int from, int to, boolean away)
     {
         this.info = info;
         this.name = name;
         this.prof = prof;
         this.salle = salle;
-        this.length = length;
-        this.weekday = weekday;
-        this.day = day;
-        this.hour = hour;
+        this.from = from;
+        this.to = to;
+        this.away = away;
     }
 
     public String getInfo()
@@ -69,42 +69,18 @@ public class Cours
         return salle;
     }
 
-    public int getLength()
+    public Calendar getFrom()
     {
-        return length;
+        return CalendarUtils.fromTimestamp(from);
     }
 
-    public int getWeekday()
+    public Calendar getTo()
     {
-        return weekday;
-    }
-
-    public int getDay()
-    {
-        return day;
-    }
-
-    public int getHour()
-    {
-        return hour;
-    }
-
-    public Calendar getDate()
-    {
-        Calendar calendar = Calendar.getInstance();
-        if (getDay() + 7 < calendar.get(Calendar.DAY_OF_MONTH))
-        {
-            calendar.add(Calendar.MONTH, 1);
-        }
-
-        calendar.set(Calendar.DAY_OF_MONTH, getDay());
-        calendar.set(Calendar.HOUR_OF_DAY, getHour() + 8);
-
-        return calendar;
+        return CalendarUtils.fromTimestamp(to);
     }
 
     public boolean isAway()
     {
-        return "Prof. absent".equalsIgnoreCase(this.getInfo()) || "Cours annulé".equalsIgnoreCase(this.getInfo());
+        return away;
     }
 }

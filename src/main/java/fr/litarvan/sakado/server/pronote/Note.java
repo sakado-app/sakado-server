@@ -17,23 +17,25 @@
  */
 package fr.litarvan.sakado.server.pronote;
 
+import fr.litarvan.sakado.server.util.CalendarUtils;
+
 import java.util.Calendar;
 
 public class Note
 {
     private String subject;
     private String note;
-    private String date;
+    private int time;
 
     public Note()
     {
     }
 
-    public Note(String subject, String note, String date)
+    public Note(String subject, String note, int time)
     {
         this.subject = subject;
         this.note = note;
-        this.date = date;
+        this.time = time;
     }
 
     public String getSubject()
@@ -46,14 +48,8 @@ public class Note
         return note;
     }
 
-    public Calendar getDate()
+    public Calendar getTime()
     {
-        Calendar calendar = Calendar.getInstance();
-        String[] split = this.date.split("/");
-
-        calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(split[0]));
-        calendar.set(Calendar.MONTH, Integer.parseInt(split[1]));
-
-        return calendar;
+        return CalendarUtils.fromTimestamp(time);
     }
 }

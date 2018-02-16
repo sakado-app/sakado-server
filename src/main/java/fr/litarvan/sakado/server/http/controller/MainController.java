@@ -41,6 +41,13 @@ public class MainController extends Controller
     @Inject
     private PronoteLinks links;
 
+    public Object graphql(Request request, Response response) throws APIError
+    {
+        String query = require(request, "query");
+
+
+    }
+
     public Object away(Request request, Response response) throws APIError
     {
         User user = requireLogged(request);
