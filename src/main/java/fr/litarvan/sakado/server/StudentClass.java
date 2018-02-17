@@ -21,19 +21,19 @@ import fr.litarvan.sakado.server.pronote.User;
 
 import java.util.ArrayList;
 
-public class Classe
+public class StudentClass
 {
     private String pronoteUrl;
     private String name;
     private ArrayList<String> members;
     private transient ArrayList<User> loggedUsers;
 
-    public Classe(String pronoteUrl, String name)
+    public StudentClass(String pronoteUrl, String name)
     {
         this(pronoteUrl, name, new ArrayList<>());
     }
 
-    public Classe(String pronoteUrl, String name, ArrayList<String> members)
+    public StudentClass(String pronoteUrl, String name, ArrayList<String> members)
     {
         this.pronoteUrl = pronoteUrl;
         this.name = name;

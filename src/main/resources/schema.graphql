@@ -1,5 +1,5 @@
 schema {
-  query: Query
+    query: Query
 }
 
 type Query {
@@ -15,31 +15,31 @@ type Link {
 type User {
     username: String!
     name: String!
-    classe: String!
+    studentClass: String!
     avatar: String
 
-    edt: [Week!]!
+    timetable: [Week!]!
     homeworks: [Homework!]!
-    lastNotes: [Note!]!
-    moyennes: Moyennes
+    lastMarks: [Mark!]!
+    averages: Averages
 
-    nextCours: Cours!
-    away: [Cours!]!
+    nextLesson: Lesson!
+    away: [Week!]!
 }
 
 type Week {
-    from: Int!
-    to: Int!
-    content: [Cours!]!
+    from: Long!
+    to: Long!
+    content: [Lesson!]!
 }
 
-type Cours {
+type Lesson {
     name: String!
-    prof: String!
-    salle: String
+    teacher: String!
+    room: String
 
-    from: Int!
-    to: Int!
+    from: Long!
+    to: Long!
 
     away: Boolean!
 }
@@ -47,16 +47,16 @@ type Cours {
 type Homework {
     subject: String!
     content: String!
-    time: Int!
+    time: Long!
 }
 
-type Note {
+type Mark {
     subject: String!
-    note: String!
-    time: Int!
+    mark: String!
+    time: Long!
 }
 
-type Moyennes {
-    eleve: Float!,
-    classe: Float!
+type Averages {
+    student: Float!,
+    studentClass: Float!
 }

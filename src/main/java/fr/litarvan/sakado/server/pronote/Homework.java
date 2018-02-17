@@ -48,7 +48,12 @@ public class Homework
         return content;
     }
 
-    public Calendar getTime()
+    public long getTime()
+    {
+        return time;
+    }
+
+    public Calendar getTimeAsCalendar()
     {
         return CalendarUtils.fromTimestamp(time);
     }

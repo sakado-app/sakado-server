@@ -18,8 +18,8 @@
 package fr.litarvan.sakado.server.pronote;
 
 import fr.litarvan.commons.config.ConfigProvider;
-import fr.litarvan.sakado.server.Classe;
-import fr.litarvan.sakado.server.ClasseManager;
+import fr.litarvan.sakado.server.StudentClass;
+import fr.litarvan.sakado.server.ClassManager;
 import fr.litarvan.sakado.server.pronote.network.NetworkClient;
 import fr.litarvan.sakado.server.pronote.network.RequestException;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -41,7 +41,7 @@ public class Pronote
     private ConfigProvider config;
 
     @Inject
-    private ClasseManager classeManager;
+    private ClassManager classManager;
 
     private NetworkClient client;
     private List<User> users;
@@ -86,26 +86,26 @@ public class Pronote
 
         this.users.add(user);
 
-        log.info("Successfully logged user '{}' : {} ({})", username, user.getName(), user.getClasse());
+        log.info("Successfully logged user '{}' : {} ({})", username, user.getName(), user.getStudentClass());
 
-        Classe classe = classeManager.of(user);
+        StudentClass studentClass = classManager.of(user);
 
-        if (classe == null)
+        if (studentClass == null)
         {
-            classe = classeManager.get(link, user.getClasse());
+            studentClass = classManager.get(link, user.getStudentClass());
 
-            if (classe == null)
+            if (studentClass == null)
             {
-                classe = new Classe(link, user.getClasse());
-                classeManager.add(classe);
+                studentClass = new StudentClass(link, user.getStudentClass());
+                classManager.add(studentClass);
 
-                log.info("Created classe '{}' on {} (for {}) ", user.getClasse(), link, user.getName());
+                log.info("Created class '{}' on {} (for {}) ", user.getStudentClass(), link, user.getName());
             }
 
-            log.info("Added '{}' to classe '{}' on {}", user.getName(), user.getClasse(), link);
+            log.info("Added '{}' to class '{}' on {}", user.getName(), user.getStudentClass(), link);
         }
 
-        classe.add(user);
+        studentClass.add(user);
 
         return user;
     }
@@ -138,7 +138,7 @@ public class Pronote
 
     public void remove(User user)
     {
-        this.classeManager.of(user).getLoggedUsers().remove(user);
+        this.classManager.of(user).getLoggedUsers().remove(user);
         this.users.remove(user);
     }
 

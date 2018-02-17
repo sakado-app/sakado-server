@@ -21,26 +21,26 @@ import fr.litarvan.sakado.server.util.CalendarUtils;
 
 import java.util.Calendar;
 
-public class Cours
+public class Lesson
 {
     private String name;
-    private String prof;
-    private String salle;
+    private String teacher;
+    private String room;
 
     private long from;
     private long to;
 
     private boolean away;
 
-    public Cours()
+    public Lesson()
     {
     }
 
-    public Cours(String name, String prof, String salle, long from, long to, boolean away)
+    public Lesson(String name, String teacher, String room, long from, long to, boolean away)
     {
         this.name = name;
-        this.prof = prof;
-        this.salle = salle;
+        this.teacher = teacher;
+        this.room = room;
         this.from = from;
         this.to = to;
         this.away = away;
@@ -51,22 +51,32 @@ public class Cours
         return name;
     }
 
-    public String getProf()
+    public String getTeacher()
     {
-        return prof;
+        return teacher;
     }
 
-    public String getSalle()
+    public String getRoom()
     {
-        return salle;
+        return room;
     }
 
-    public Calendar getFrom()
+    public long getFrom()
+    {
+        return from;
+    }
+
+    public Calendar getFromAsCalendar()
     {
         return CalendarUtils.fromTimestamp(from);
     }
 
-    public Calendar getTo()
+    public long getTo()
+    {
+        return to;
+    }
+
+    public Calendar getToAsCalendar()
     {
         return CalendarUtils.fromTimestamp(to);
     }

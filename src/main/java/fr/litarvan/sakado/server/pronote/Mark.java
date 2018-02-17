@@ -21,20 +21,20 @@ import fr.litarvan.sakado.server.util.CalendarUtils;
 
 import java.util.Calendar;
 
-public class Note
+public class Mark
 {
     private String subject;
-    private String note;
+    private String mark;
     private long time;
 
-    public Note()
+    public Mark()
     {
     }
 
-    public Note(String subject, String note, long time)
+    public Mark(String subject, String mark, long time)
     {
         this.subject = subject;
-        this.note = note;
+        this.mark = mark;
         this.time = time;
     }
 
@@ -43,12 +43,17 @@ public class Note
         return subject;
     }
 
-    public String getNote()
+    public String getMark()
     {
-        return note;
+        return mark;
     }
 
-    public Calendar getTime()
+    public long getTime()
+    {
+        return time;
+    }
+
+    public Calendar getTimeAsCalendar()
     {
         return CalendarUtils.fromTimestamp(time);
     }

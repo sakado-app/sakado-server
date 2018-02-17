@@ -20,41 +20,50 @@ package fr.litarvan.sakado.server.pronote;
 import fr.litarvan.sakado.server.util.CalendarUtils;
 
 import java.util.Calendar;
-import java.util.Locale;
 
 public class Week
 {
     private long from;
     private long to;
-    private Cours[] content;
+    private Lesson[] content;
 
     public Week()
     {
     }
 
-    public Week(long from, long to, Cours[] content)
+    public Week(long from, long to, Lesson[] content)
     {
         this.from = from;
         this.to = to;
         this.content = content;
     }
 
-    public Calendar getFrom()
+    public long getFrom()
+    {
+        return from;
+    }
+
+    public Calendar getFromAsCalendar()
     {
         return CalendarUtils.fromTimestamp(from);
     }
 
-    public Calendar getTo()
+    public long getTo()
+    {
+        return to;
+    }
+
+    public Calendar getToAsCalendar()
     {
         return CalendarUtils.fromTimestamp(to);
     }
 
-    public Cours[] getContent()
+    public Lesson[] getContent()
     {
         return content;
     }
 
-    public Week cloneWith(Cours[] content)
+    public Week cloneWith(Lesson[] content)
     {
         return new Week(this.from, this.to, content);
     }

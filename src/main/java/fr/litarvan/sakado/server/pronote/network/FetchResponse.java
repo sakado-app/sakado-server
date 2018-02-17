@@ -18,20 +18,20 @@
 package fr.litarvan.sakado.server.pronote.network;
 
 import fr.litarvan.sakado.server.pronote.Homework;
-import fr.litarvan.sakado.server.pronote.Note;
-import fr.litarvan.sakado.server.pronote.User.Moyennes;
+import fr.litarvan.sakado.server.pronote.Mark;
+import fr.litarvan.sakado.server.pronote.User.Averages;
 import fr.litarvan.sakado.server.pronote.Week;
 
 public class FetchResponse
 {
-    private String classe;
+    private String studentClass;
     private String name;
     private String avatar;
 
-    private Week[] edt;
+    private Week[] timetable;
 
-    private Note[] lastNotes;
-    private Moyennes moyennes;
+    private Mark[] lastMarks;
+    private Averages averages;
 
     private Homework[] homeworks;
 
@@ -39,20 +39,20 @@ public class FetchResponse
     {
     }
 
-    public FetchResponse(String classe, String name, String avatar, Week[] edt, Note[] lastNotes, Moyennes moyennes, Homework[] homeworks)
+    public FetchResponse(String studentClass, String name, String avatar, Week[] timetable, Mark[] lastMarks, Averages averages, Homework[] homeworks)
     {
-        this.classe = classe;
+        this.studentClass = studentClass;
         this.name = name;
         this.avatar = avatar;
-        this.edt = edt;
-        this.lastNotes = lastNotes;
-        this.moyennes = moyennes;
+        this.timetable = timetable;
+        this.lastMarks = lastMarks;
+        this.averages = averages;
         this.homeworks = homeworks;
     }
 
-    public String getClasse()
+    public String getStudentClass()
     {
-        return classe;
+        return studentClass;
     }
 
     public String getName()
@@ -65,19 +65,19 @@ public class FetchResponse
         return avatar;
     }
 
-    public Week[] getEdt()
+    public Week[] getTimetable()
     {
-        return edt;
+        return timetable;
     }
 
-    public Note[] getLastNotes()
+    public Mark[] getLastMarks()
     {
-        return lastNotes;
+        return lastMarks;
     }
 
-    public Moyennes getMoyennes()
+    public Averages getAverages()
     {
-        return moyennes;
+        return averages;
     }
 
     public Homework[] getHomeworks()

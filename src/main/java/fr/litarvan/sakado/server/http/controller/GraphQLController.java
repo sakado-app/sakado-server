@@ -26,7 +26,7 @@ import java.util.List;
 import fr.litarvan.sakado.server.SakadoServer;
 import fr.litarvan.sakado.server.http.Controller;
 import fr.litarvan.sakado.server.http.error.APIError;
-import fr.litarvan.sakado.server.pronote.Cours;
+import fr.litarvan.sakado.server.pronote.Lesson;
 import fr.litarvan.sakado.server.pronote.Pronote;
 import fr.litarvan.sakado.server.pronote.PronoteLinks;
 import fr.litarvan.sakado.server.pronote.User;
@@ -72,7 +72,7 @@ public class GraphQLController extends Controller
         RuntimeWiring wiring = RuntimeWiring.newRuntimeWiring()
             .type("Query", builder -> builder.dataFetcher("user", environment -> pronote.getByToken(environment.getArgument("token")))
                                              .dataFetcher("links", environment -> links.all()))
-            .type("User", builder -> builder.dataFetcher("nextCours", environment -> getNextCours(environment.getSource()))
+            .type("User", builder -> builder.dataFetcher("nextLesson", environment -> getNextLesson(environment.getSource()))
                                             .dataFetcher("away", environment -> getAway(environment.getSource()))).build();
 
         SchemaGenerator generator = new SchemaGenerator();
@@ -81,28 +81,28 @@ public class GraphQLController extends Controller
         return GraphQL.newGraphQL(schema).build();
     }
 
-    public Cours getNextCours(User user)
+    public Lesson getNextLesson(User user)
     {
         Calendar current = CalendarUtils.create();
         current.add(Calendar.MINUTE, -30);
 
-        System.out.println("Processing next cours, current : " + CalendarUtils.parse(current, Calendar.HOUR_OF_DAY, Calendar.HOUR, Calendar.MINUTE, Calendar.SECOND));
+        System.out.println("Processing next lesson, current : " + CalendarUtils.parse(current, Calendar.DAY_OF_MONTH, Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND));
 
-        Cours next = null;
+        Lesson next = null;
 
-        for (Cours cours : user.getEDT()[0].getContent())
+        for (Lesson lesson : user.getTimetable()[0].getContent())
         {
-            if (cours.getFrom().after(current))
+            if (lesson.getFromAsCalendar().after(current))
             {
-                next = cours;
-                System.out.println("Next found : " + CalendarUtils.parse(cours.getFrom(), Calendar.HOUR_OF_DAY, Calendar.HOUR, Calendar.MINUTE, Calendar.SECOND));
+                next = lesson;
+                System.out.println("Next found : " + CalendarUtils.parse(lesson.getFromAsCalendar(), Calendar.DAY_OF_MONTH, Calendar.HOUR, Calendar.MINUTE, Calendar.SECOND));
                 break;
             }
         }
 
         if (next == null)
         {
-            next = user.getEDT()[1].getContent()[0];
+            next = user.getTimetable()[1].getContent()[0];
         }
 
         return next;
@@ -110,23 +110,23 @@ public class GraphQLController extends Controller
 
     public Week[] getAway(User user)
     {
-        Week[] edt = user.getEDT();
+        Week[] edt = user.getTimetable();
         Week[] result = new Week[edt.length];
 
         for (int i = 0; i < edt.length; i++)
         {
             Week week = edt[i];
-            List<Cours> away = new ArrayList<>();
+            List<Lesson> away = new ArrayList<>();
 
-            for (Cours cours : week.getContent())
+            for (Lesson lesson : week.getContent())
             {
-                if (cours.isAway())
+                if (lesson.isAway())
                 {
-                    away.add(cours);
+                    away.add(lesson);
                 }
             }
 
-            result[i] = week.cloneWith(away.toArray(new Cours[away.size()]));
+            result[i] = week.cloneWith(away.toArray(new Lesson[away.size()]));
         }
 
         return result;

@@ -17,8 +17,8 @@
  */
 package fr.litarvan.sakado.server.pronote;
 
-import fr.litarvan.sakado.server.Classe;
-import fr.litarvan.sakado.server.ClasseManager;
+import fr.litarvan.sakado.server.StudentClass;
+import fr.litarvan.sakado.server.ClassManager;
 import fr.litarvan.sakado.server.pronote.network.RequestException;
 import fr.litarvan.sakado.server.push.PushService;
 import fr.litarvan.sakado.server.push.PushType;
@@ -32,12 +32,12 @@ import javax.inject.Inject;
 
 public class RefreshService
 {
-    public static final long RATE = /*5 * 60 * */1000;
+    public static final long RATE = 5 * 60 * 1000;
 
     private static final Logger log = LogManager.getLogger("RefreshService");
 
     @Inject
-    private ClasseManager classes;
+    private ClassManager classes;
 
     @Inject
     private PushService push;
@@ -60,9 +60,9 @@ public class RefreshService
             @Override
             public void run()
             {
-                for (Classe classe : classes.getClasses())
+                for (StudentClass studentClass : classes.getClasses())
                 {
-                    classe.getLoggedUsers().forEach(RefreshService.this::refresh);
+                    studentClass.getLoggedUsers().forEach(RefreshService.this::refresh);
                 }
             }
         }, RATE, RATE);
@@ -88,19 +88,19 @@ public class RefreshService
         }
 
         this.checkNewAway(user);
-        this.checkNewNote(user);
+        this.checkNewMark(user);
     }
 
     protected void checkNewAway(User user)
     {
-        List<Cours> away = new ArrayList<>();
-        for (Week week : user.getEDT())
+        List<Lesson> away = new ArrayList<>();
+        for (Week week : user.getTimetable())
         {
-            for (Cours cours : week.getContent())
+            for (Lesson lesson : week.getContent())
             {
-                if (cours.isAway())
+                if (lesson.isAway())
                 {
-                    away.add(cours);
+                    away.add(lesson);
                 }
             }
         }
@@ -134,14 +134,14 @@ public class RefreshService
         {
             title += "Prof. absent";
 
-            Cours cours = away.get(0);
-            Calendar day = cours.getFrom();
+            Lesson lesson = away.get(0);
+            Calendar day = lesson.getFromAsCalendar();
 
             int start = day.get(Calendar.HOUR_OF_DAY);
 
-            message = cours.getProf();
+            message = lesson.getTeacher();
             message += " : " + CalendarUtils.parse(day, Calendar.DAY_OF_WEEK, Calendar.DAY_OF_MONTH, Calendar.MONTH);
-            message += " - " + start + "h-" +  CalendarUtils.parse(cours.getTo(), Calendar.HOUR_OF_DAY) + "h";
+            message += " - " + start + "h-" + CalendarUtils.parse(lesson.getToAsCalendar(), Calendar.HOUR_OF_DAY) + "h";
         }
 
         try
@@ -155,22 +155,22 @@ public class RefreshService
         }
     }
 
-    protected void checkNewNote(User user)
+    protected void checkNewMark(User user)
     {
         Calendar max = CalendarUtils.create();
         max.add(Calendar.DAY_OF_MONTH, -2);
 
-        List<Note> notes = new ArrayList<>();
+        List<Mark> marks = new ArrayList<>();
 
-        for (Note note : user.getLastNotes())
+        for (Mark mark : user.getLastMarks())
         {
-            if (note.getTime().after(max))
+            if (mark.getTimeAsCalendar().after(max))
             {
-                notes.add(note);
+                marks.add(mark);
             }
         }
 
-        notes.removeIf(n -> {
+        marks.removeIf(n -> {
             String id = getID(user, n);
 
             if (!seen.contains(id))
@@ -182,7 +182,7 @@ public class RefreshService
             return true;
         });
 
-        if (notes.size() == 0)
+        if (marks.size() == 0)
         {
             return;
         }
@@ -190,7 +190,7 @@ public class RefreshService
         String title = "Sakado - ";
         String message;
 
-        if (notes.size() > 1)
+        if (marks.size() > 1)
         {
             title += "Nouvelles notes";
             message = "Cliquer pour voir";
@@ -198,12 +198,12 @@ public class RefreshService
         else
         {
             title += "Nouvelle note";
-            message = notes.get(0).getSubject() + " - " + notes.get(0).getNote();
+            message = marks.get(0).getSubject() + " - " + marks.get(0).getMark();
         }
 
         try
         {
-            push.send(user, PushType.AWAY, title, message);
+            push.send(user, PushType.MARK, title, message);
         }
         catch (Exception e)
         {
@@ -211,13 +211,13 @@ public class RefreshService
         }
     }
 
-    protected String getID(User user, Note note)
+    protected String getID(User user, Mark mark)
     {
-        return user.getUsername() + "-" + note.getNote() + "-" + note.getSubject() + "-" + note.getTime().get(Calendar.DAY_OF_MONTH) + "-" + note.getTime().get(Calendar.MONTH);
+        return user.getUsername() + "-" + mark.getMark() + "-" + mark.getSubject() + "-" + mark.getTimeAsCalendar().get(Calendar.DAY_OF_MONTH) + "-" + mark.getTimeAsCalendar().get(Calendar.MONTH);
     }
 
-    protected String getID(User user, Cours cours)
+    protected String getID(User user, Lesson lesson)
     {
-        return user.getUsername() + "-" + cours.getFrom().getTimeInMillis();
+        return user.getUsername() + "-" + lesson.getFromAsCalendar().getTimeInMillis();
     }
 }

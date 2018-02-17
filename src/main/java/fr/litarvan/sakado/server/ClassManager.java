@@ -24,40 +24,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Singleton
-public class ClasseManager
+public class ClassManager
 {
-    private List<Classe> classes;
+    private List<StudentClass> classes;
 
-    public ClasseManager()
+    public ClassManager()
     {
         this.classes = new ArrayList<>();
     }
 
-    public void add(Classe classe)
+    public void add(StudentClass studentClass)
     {
-        this.classes.add(classe);
+        this.classes.add(studentClass);
     }
 
-    public Classe get(String pronoteLink, String name)
+    public StudentClass get(String pronoteLink, String name)
     {
-        for (Classe classe : classes)
+        for (StudentClass studentClass : classes)
         {
-            if (classe.getPronoteUrl().equalsIgnoreCase(pronoteLink) && classe.getName().equalsIgnoreCase(name))
+            if (studentClass.getPronoteUrl().equalsIgnoreCase(pronoteLink) && studentClass.getName().equalsIgnoreCase(name))
             {
-                return classe;
+                return studentClass;
             }
         }
 
         return null;
     }
 
-    public Classe of(User user)
+    public StudentClass of(User user)
     {
-        for (Classe classe : classes)
+        for (StudentClass studentClass : classes)
         {
-            if (classe.getMembers().contains(user.getUsername()) && classe.getPronoteUrl().equalsIgnoreCase(user.getPronoteUrl()))
+            if (studentClass.getMembers().contains(user.getUsername()) && studentClass.getPronoteUrl().equalsIgnoreCase(user.getPronoteUrl()))
             {
-                return classe;
+                return studentClass;
             }
         }
 
@@ -69,8 +69,8 @@ public class ClasseManager
         return of(user) != null;
     }
 
-    public Classe[] getClasses()
+    public StudentClass[] getClasses()
     {
-        return classes.toArray(new Classe[classes.size()]);
+        return classes.toArray(new StudentClass[classes.size()]);
     }
 }

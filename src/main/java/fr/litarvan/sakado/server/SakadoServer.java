@@ -33,7 +33,7 @@ import fr.litarvan.sakado.server.pronote.RefreshService;
 import fr.litarvan.sakado.server.pronote.network.RequestException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import spark.Filter;
@@ -70,7 +70,7 @@ public class SakadoServer implements App
     private RefreshService refresh;
 
     @Inject
-    private ClasseManager classeManager;
+    private ClassManager classManager;
 
     @Override
     public void start()

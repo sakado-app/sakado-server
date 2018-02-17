@@ -34,15 +34,15 @@ public class User
     private String deviceToken;
 
     private String name;
-    private String classe;
+    private String studentClass;
     private String avatar;
 
     private Pronote pronote;
 
-    private Week[] edt;
+    private Week[] timetable;
     private Homework[] homeworks;
-    private Note[] lastNotes;
-    private Moyennes moyennes;
+    private Mark[] lastMarks;
+    private Averages averages;
 
     public User(Pronote pronote, String token, String pronoteUrl, String username, String password, String deviceToken)
     {
@@ -59,13 +59,13 @@ public class User
         FetchResponse response = pronote.getClient().push("fetch", new FetchRequest(pronoteUrl, username, password), FetchResponse.class);
 
         this.name = response.getName();
-        this.classe = response.getClasse();
+        this.studentClass = response.getStudentClass();
         this.avatar = response.getAvatar();
 
-        this.edt = response.getEdt();
+        this.timetable = response.getTimetable();
         this.homeworks = response.getHomeworks();
-        this.lastNotes = response.getLastNotes();
-        this.moyennes = response.getMoyennes();
+        this.lastMarks = response.getLastMarks();
+        this.averages = response.getAverages();
     }
 
     public String getToken()
@@ -93,14 +93,14 @@ public class User
         this.name = name;
     }
 
-    public String getClasse()
+    public String getStudentClass()
     {
-        return classe;
+        return studentClass;
     }
 
-    void setClasse(String classe)
+    void setStudentClass(String studentClass)
     {
-        this.classe = classe;
+        this.studentClass = studentClass;
     }
 
     public String getAvatar()
@@ -113,9 +113,9 @@ public class User
         this.avatar = avatar;
     }
 
-    public Week[] getEDT()
+    public Week[] getTimetable()
     {
-        return edt;
+        return timetable;
     }
 
     public Homework[] getHomeworks()
@@ -123,14 +123,14 @@ public class User
         return homeworks;
     }
 
-    public Note[] getLastNotes()
+    public Mark[] getLastMarks()
     {
-        return lastNotes;
+        return lastMarks;
     }
 
-    public Moyennes getMoyennes()
+    public Averages getAverages()
     {
-        return moyennes;
+        return averages;
     }
 
     public String getDeviceToken()
@@ -138,29 +138,29 @@ public class User
         return deviceToken;
     }
 
-    public static class Moyennes
+    public static class Averages
     {
-        private String eleve;
-        private String classe;
+        private String student;
+        private String studentClass;
 
-        public Moyennes()
+        public Averages()
         {
         }
 
-        public Moyennes(String eleve, String classe)
+        public Averages(String student, String studentClass)
         {
-            this.eleve = eleve;
-            this.classe = classe;
+            this.student = student;
+            this.studentClass = studentClass;
         }
 
-        public String getEleve()
+        public String getStudent()
         {
-            return eleve;
+            return student;
         }
 
-        public String getClasse()
+        public String getStudentClass()
         {
-            return classe;
+            return studentClass;
         }
     }
 }
