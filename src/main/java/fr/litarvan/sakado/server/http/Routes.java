@@ -29,9 +29,6 @@ public final class Routes
     private AuthController auth;
 
     @Inject
-    private MainController main;
-
-    @Inject
     private GraphQLController graphql;
 
     public void load()
@@ -43,11 +40,5 @@ public final class Routes
             get("/validate", auth::validate);
             get("/logout", auth::logout);
         });
-
-        get("/away", main::away);
-        get("/links", main::links);
-        get("/next", main::nextCours);
-        get("/notes", main::notes);
-        get("/version", main::version);
     }
 }

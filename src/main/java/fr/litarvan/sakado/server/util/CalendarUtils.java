@@ -58,7 +58,7 @@ public final class CalendarUtils
         return result.substring(0, result.length() - 1);
     }
 
-    public static Calendar fromTimestamp(int timestamp)
+    public static Calendar fromTimestamp(long timestamp)
     {
         Calendar calendar = CalendarUtils.create();
         calendar.setTimeInMillis(timestamp);

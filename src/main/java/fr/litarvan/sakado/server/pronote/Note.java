@@ -25,13 +25,13 @@ public class Note
 {
     private String subject;
     private String note;
-    private int time;
+    private long time;
 
     public Note()
     {
     }
 
-    public Note(String subject, String note, int time)
+    public Note(String subject, String note, long time)
     {
         this.subject = subject;
         this.note = note;

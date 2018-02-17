@@ -74,10 +74,6 @@ public class AuthController extends Controller
         rep.addProperty("success", "true");
         rep.addProperty("token", user.getToken());
 
-        rep.addProperty("name", user.getName());
-        rep.addProperty("classe", user.getClasse());
-        rep.addProperty("avatar", user.getAvatar());
-
         return rep;
     }
 }

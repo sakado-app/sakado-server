@@ -24,15 +24,15 @@ import java.util.Locale;
 
 public class Week
 {
-    private int from;
-    private int to;
+    private long from;
+    private long to;
     private Cours[] content;
 
     public Week()
     {
     }
 
-    public Week(int from, int to, Cours[] content)
+    public Week(long from, long to, Cours[] content)
     {
         this.from = from;
         this.to = to;
@@ -52,5 +52,10 @@ public class Week
     public Cours[] getContent()
     {
         return content;
+    }
+
+    public Week cloneWith(Cours[] content)
+    {
+        return new Week(this.from, this.to, content);
     }
 }

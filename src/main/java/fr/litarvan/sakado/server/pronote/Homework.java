@@ -25,13 +25,13 @@ public class Homework
 {
     private String subject;
     private String content;
-    private int time;
+    private long time;
 
     public Homework()
     {
     }
 
-    public Homework(String subject, String content, int time)
+    public Homework(String subject, String content, long time)
     {
         this.subject = subject;
         this.content = content;

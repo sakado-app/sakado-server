@@ -4,6 +4,12 @@ schema {
 
 type Query {
     user(token: String!): User
+    links: [Link!]!
+}
+
+type Link {
+    name: String!
+    link: String!
 }
 
 type User {
@@ -16,6 +22,9 @@ type User {
     homeworks: [Homework!]!
     lastNotes: [Note!]!
     moyennes: Moyennes
+
+    nextCours: Cours!
+    away: [Cours!]!
 }
 
 type Week {

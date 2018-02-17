@@ -27,8 +27,8 @@ public class Cours
     private String prof;
     private String salle;
 
-    private int from;
-    private int to;
+    private long from;
+    private long to;
 
     private boolean away;
 
@@ -36,7 +36,7 @@ public class Cours
     {
     }
 
-    public Cours(String name, String prof, String salle, int from, int to, boolean away)
+    public Cours(String name, String prof, String salle, long from, long to, boolean away)
     {
         this.name = name;
         this.prof = prof;
