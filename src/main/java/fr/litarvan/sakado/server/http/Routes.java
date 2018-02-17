@@ -31,9 +31,13 @@ public final class Routes
     @Inject
     private GraphQLController graphql;
 
+    @Inject
+    private VersionController version;
+
     public void load()
     {
         get("/graphql", graphql::graphql);
+        get("/version", version::version);
 
         path("/auth", () -> {
             get("/login", auth::login);
