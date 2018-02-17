@@ -21,9 +21,15 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public final class CalendarUtils
 {
+    public static Calendar create()
+    {
+        return Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"));
+    }
+
     public static String parse(Calendar calendar, int... fields)
     {
         StringBuilder result = new StringBuilder();
@@ -35,6 +41,11 @@ public final class CalendarUtils
             if (res == null)
             {
                 res = String.valueOf(calendar.get(field));
+
+                if (res.length() == 1)
+                {
+                    res = "0" + res;
+                }
             }
             else
             {
@@ -49,7 +60,7 @@ public final class CalendarUtils
 
     public static Calendar fromTimestamp(int timestamp)
     {
-        Calendar calendar = Calendar.getInstance();
+        Calendar calendar = CalendarUtils.create();
         calendar.setTimeInMillis(timestamp);
 
         return calendar;

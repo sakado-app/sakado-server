@@ -31,8 +31,13 @@ public final class Routes
     @Inject
     private MainController main;
 
+    @Inject
+    private GraphQLController graphql;
+
     public void load()
     {
+        get("/graphql", graphql::graphql);
+
         path("/auth", () -> {
             get("/login", auth::login);
             get("/validate", auth::validate);

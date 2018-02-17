@@ -27,11 +27,25 @@ public class Homework
     private String content;
     private int time;
 
-    Homework(String subject, String content, int time)
+    public Homework()
+    {
+    }
+
+    public Homework(String subject, String content, int time)
     {
         this.subject = subject;
         this.content = content;
         this.time = time;
+    }
+
+    public String getSubject()
+    {
+        return subject;
+    }
+
+    public String getContent()
+    {
+        return content;
     }
 
     public Calendar getTime()

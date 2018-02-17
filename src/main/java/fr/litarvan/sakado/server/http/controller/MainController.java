@@ -28,7 +28,6 @@ import fr.litarvan.sakado.server.pronote.Week;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 import fr.litarvan.sakado.server.util.CalendarUtils;
 import spark.Request;
@@ -40,13 +39,6 @@ public class MainController extends Controller
 {
     @Inject
     private PronoteLinks links;
-
-    public Object graphql(Request request, Response response) throws APIError
-    {
-        String query = require(request, "query");
-
-
-    }
 
     public Object away(Request request, Response response) throws APIError
     {
@@ -88,16 +80,19 @@ public class MainController extends Controller
     {
         User user = requireLogged(request);
 
-        Calendar current = Calendar.getInstance();
+        Calendar current = CalendarUtils.create();
         current.add(Calendar.MINUTE, -30);
+
+        System.out.println("Processing next cours, current : " + CalendarUtils.parse(current, Calendar.HOUR_OF_DAY, Calendar.HOUR, Calendar.MINUTE, Calendar.SECOND));
 
         Cours next = null;
 
         for (Cours cours : user.getEDT()[0].getContent())
         {
-            if (cours.getDate().after(current))
+            if (cours.getFrom().after(current))
             {
                 next = cours;
+                System.out.println("Next found : " + CalendarUtils.parse(cours.getFrom(), Calendar.HOUR_OF_DAY, Calendar.HOUR, Calendar.MINUTE, Calendar.SECOND));
                 break;
             }
         }
@@ -115,10 +110,10 @@ public class MainController extends Controller
         rep.addProperty("prof", next.getProf());
         rep.addProperty("salle", next.getSalle());
 
-        String date = CalendarUtils.parse(next.getDate(), Calendar.DAY_OF_WEEK, Calendar.DAY_OF_MONTH, Calendar.MONTH) + " - ";
-        int start = next.getDate().get(Calendar.HOUR_OF_DAY);
+        String date = CalendarUtils.parse(next.getFrom(), Calendar.DAY_OF_WEEK, Calendar.DAY_OF_MONTH, Calendar.MONTH) + " - ";
+        int start = next.getFrom().get(Calendar.HOUR_OF_DAY);
 
-        date += start + "h-" + (start + next.getLength()) + "h";
+        date += start + "h-" + CalendarUtils.parse(next.getTo(), Calendar.HOUR_OF_DAY) + "h";
         rep.addProperty("date",  date);
 
         return json(rep, response);

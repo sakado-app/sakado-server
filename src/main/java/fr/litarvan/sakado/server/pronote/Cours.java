@@ -23,8 +23,6 @@ import java.util.Calendar;
 
 public class Cours
 {
-    private String info;
-
     private String name;
     private String prof;
     private String salle;
@@ -38,20 +36,14 @@ public class Cours
     {
     }
 
-    public Cours(String info, String name, String prof, String salle, int from, int to, boolean away)
+    public Cours(String name, String prof, String salle, int from, int to, boolean away)
     {
-        this.info = info;
         this.name = name;
         this.prof = prof;
         this.salle = salle;
         this.from = from;
         this.to = to;
         this.away = away;
-    }
-
-    public String getInfo()
-    {
-        return info;
     }
 
     public String getName()

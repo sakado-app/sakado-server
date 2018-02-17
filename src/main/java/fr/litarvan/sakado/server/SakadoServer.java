@@ -47,7 +47,7 @@ import java.net.InetSocketAddress;
 
 public class SakadoServer implements App
 {
-    public static final String VERSION = "0.1.0";
+    public static final String VERSION = "0.2.0";
 
     private static final Logger log = LogManager.getLogger("SakadoServer");
 

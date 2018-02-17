@@ -18,71 +18,59 @@
 package fr.litarvan.sakado.server.pronote;
 
 import fr.litarvan.sakado.server.pronote.network.RequestException;
-import fr.litarvan.sakado.server.pronote.network.body.NotesResponse;
-import fr.litarvan.sakado.server.pronote.network.body.TokenBody;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import fr.litarvan.sakado.server.pronote.network.FetchResponse;
+import fr.litarvan.sakado.server.pronote.network.FetchRequest;
 
 import java.io.IOException;
 
 public class User
 {
-    private static final Logger log = LogManager.getLogger("Pronote");
+    private String token;
 
     private String pronoteUrl;
     private String username;
+    private String password;
+
+    private String deviceToken;
+
     private String name;
     private String classe;
     private String avatar;
-    private String token;
-    private String deviceToken;
 
     private Pronote pronote;
+
     private Week[] edt;
     private Homework[] homeworks;
     private Note[] lastNotes;
-    private String[] moyennes;
+    private Moyennes moyennes;
 
-    protected User(Pronote pronote, String pronoteUrl, String username, String token, String deviceToken)
+    public User(Pronote pronote, String token, String pronoteUrl, String username, String password, String deviceToken)
     {
         this.pronote = pronote;
+        this.token = token;
         this.pronoteUrl = pronoteUrl;
         this.username = username;
-        this.token = token;
+        this.password = password;
         this.deviceToken = deviceToken;
     }
 
-    static User open(Pronote pronote, String pronoteUrl, String username, String devicetoken) throws IOException, RequestException
+    public void update() throws IOException, RequestException
     {
-        TokenBody response = pronote.getClient().push("open", TokenBody.class);
-        return new User(pronote, pronoteUrl, username, response.getToken(), devicetoken);
-    }
+        FetchResponse response = pronote.getClient().push("fetch", new FetchRequest(pronoteUrl, username, password), FetchResponse.class);
 
-    public void update()
-    {
-        try
-        {
-            tryToUpdate();
-        }
-        catch (IOException | RequestException e)
-        {
-            log.error("Couldn't query user data from Pronote, ignoring", e);
-        }
-    }
+        this.name = response.getName();
+        this.classe = response.getClasse();
+        this.avatar = response.getAvatar();
 
-    public void tryToUpdate() throws IOException, RequestException
-    {
-        this.edt = pronote.getClient().push("edt", new TokenBody(token), Week[].class);
-        this.homeworks = pronote.getClient().push("homeworks", new TokenBody(token), Homework[].class);
-
-        NotesResponse response = pronote.getClient().push("notes", new TokenBody(token), NotesResponse.class);
+        this.edt = response.getEdt();
+        this.homeworks = response.getHomeworks();
         this.lastNotes = response.getLastNotes();
         this.moyennes = response.getMoyennes();
     }
 
-    public boolean isLogged()
+    public String getToken()
     {
-        return edt != null;
+        return token;
     }
 
     public String getPronoteUrl()
@@ -125,11 +113,6 @@ public class User
         this.avatar = avatar;
     }
 
-    public String getToken()
-    {
-        return token;
-    }
-
     public Week[] getEDT()
     {
         return edt;
@@ -145,7 +128,7 @@ public class User
         return lastNotes;
     }
 
-    public String[] getMoyennes()
+    public Moyennes getMoyennes()
     {
         return moyennes;
     }
@@ -153,5 +136,31 @@ public class User
     public String getDeviceToken()
     {
         return deviceToken;
+    }
+
+    public static class Moyennes
+    {
+        private String eleve;
+        private String classe;
+
+        public Moyennes()
+        {
+        }
+
+        public Moyennes(String eleve, String classe)
+        {
+            this.eleve = eleve;
+            this.classe = classe;
+        }
+
+        public String getEleve()
+        {
+            return eleve;
+        }
+
+        public String getClasse()
+        {
+            return classe;
+        }
     }
 }

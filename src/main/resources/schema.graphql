@@ -1,0 +1,53 @@
+schema {
+  query: Query
+}
+
+type Query {
+    user(token: String!): User
+}
+
+type User {
+    username: String!
+    name: String!
+    classe: String!
+    avatar: String
+
+    edt: [Week!]!
+    homeworks: [Homework!]!
+    lastNotes: [Note!]!
+    moyennes: Moyennes
+}
+
+type Week {
+    from: Int!
+    to: Int!
+    content: [Cours!]!
+}
+
+type Cours {
+    name: String!
+    prof: String!
+    salle: String
+
+    from: Int!
+    to: Int!
+
+    away: Boolean!
+}
+
+type Homework {
+    subject: String!
+    content: String!
+    time: Int!
+}
+
+type Note {
+    subject: String!
+    note: String!
+    time: Int!
+}
+
+type Moyennes {
+    eleve: Float!,
+    classe: Float!
+}

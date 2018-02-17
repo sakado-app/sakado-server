@@ -72,7 +72,7 @@ public class RefreshService
     {
         try
         {
-            user.tryToUpdate();
+            user.update();
         }
         catch (IOException | RequestException e)
         {
@@ -135,17 +135,18 @@ public class RefreshService
             title += "Prof. absent";
 
             Cours cours = away.get(0);
-            Calendar day = cours.getDate();
+            Calendar day = cours.getFrom();
 
             int start = day.get(Calendar.HOUR_OF_DAY);
 
             message = cours.getProf();
             message += " : " + CalendarUtils.parse(day, Calendar.DAY_OF_WEEK, Calendar.DAY_OF_MONTH, Calendar.MONTH);
-            message += " - " + start + "h-" + (start + cours.getLength()) + "h";
+            message += " - " + start + "h-" +  CalendarUtils.parse(cours.getTo(), Calendar.HOUR_OF_DAY) + "h";
         }
 
         try
         {
+            log.info("Sending push notification '" + title + "' : '" + message + "' to '" + user.getUsername() + "'");
             push.send(user, PushType.AWAY, title, message);
         }
         catch (Exception e)
@@ -156,14 +157,14 @@ public class RefreshService
 
     protected void checkNewNote(User user)
     {
-        Calendar max = Calendar.getInstance();
+        Calendar max = CalendarUtils.create();
         max.add(Calendar.DAY_OF_MONTH, -2);
 
         List<Note> notes = new ArrayList<>();
 
         for (Note note : user.getLastNotes())
         {
-            if (note.getDate().after(max))
+            if (note.getTime().after(max))
             {
                 notes.add(note);
             }
@@ -212,11 +213,11 @@ public class RefreshService
 
     protected String getID(User user, Note note)
     {
-        return user.getUsername() + "-" + note.getNote() + "-" + note.getSubject() + "-" + note.getDate().get(Calendar.DAY_OF_MONTH) + "-" + note.getDate().get(Calendar.MONTH);
+        return user.getUsername() + "-" + note.getNote() + "-" + note.getSubject() + "-" + note.getTime().get(Calendar.DAY_OF_MONTH) + "-" + note.getTime().get(Calendar.MONTH);
     }
 
     protected String getID(User user, Cours cours)
     {
-        return user.getUsername() + "-" + cours.getDay() + "-" + cours.getHour() + "-" + cours.getDate().get(Calendar.MONTH);
+        return user.getUsername() + "-" + cours.getFrom().getTimeInMillis();
     }
 }

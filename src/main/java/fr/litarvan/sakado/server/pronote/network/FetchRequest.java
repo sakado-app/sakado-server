@@ -15,18 +15,16 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package fr.litarvan.sakado.server.pronote.network.body;
+package fr.litarvan.sakado.server.pronote.network;
 
-public class LoginRequest extends TokenBody
+public class FetchRequest
 {
     private String link;
     private String username;
     private String password;
 
-    public LoginRequest(String token, String link, String username, String password)
+    public FetchRequest(String link, String username, String password)
     {
-        super(token);
-
         this.link = link;
         this.username = username;
         this.password = password;

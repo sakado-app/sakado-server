@@ -64,7 +64,7 @@ public class AuthController extends Controller
 
     public Object logout(Request request, Response response) throws IOException, RequestException, APIError
     {
-        this.pronote.logout(requireLogged(request));
+        this.pronote.remove(requireLogged(request));
         return success(response);
     }
 

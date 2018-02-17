@@ -22,9 +22,7 @@ import fr.litarvan.sakado.server.Classe;
 import fr.litarvan.sakado.server.ClasseManager;
 import fr.litarvan.sakado.server.pronote.network.NetworkClient;
 import fr.litarvan.sakado.server.pronote.network.RequestException;
-import fr.litarvan.sakado.server.pronote.network.body.LoginRequest;
-import fr.litarvan.sakado.server.pronote.network.body.LoginResponse;
-import fr.litarvan.sakado.server.pronote.network.body.TokenBody;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -76,26 +74,17 @@ public class Pronote
         }
 
         log.info("Logging in '{}' (from {})", username, link);
-        User user = get(username);
+        User user = new User(this, RandomStringUtils.randomAlphanumeric(128), link, username, password, deviceToken);
+        user.update();
 
-        if (user == null || user.isLogged())
+        User current = get(username);
+
+        if (current != null)
         {
-            if (user != null)
-            {
-                this.logout(user);
-            }
-
-            user = User.open(this, link, username, deviceToken);
+            this.remove(current);
         }
 
         this.users.add(user);
-
-        String token = user.getToken();
-        LoginResponse response = client.push("login", new LoginRequest(token, link, username, password), LoginResponse.class);
-
-        user.setName(response.getName());
-        user.setClasse(response.getClasse());
-        user.setAvatar(response.getAvatar());
 
         log.info("Successfully logged user '{}' : {} ({})", username, user.getName(), user.getClasse());
 
@@ -117,8 +106,6 @@ public class Pronote
         }
 
         classe.add(user);
-
-        user.tryToUpdate();
 
         return user;
     }
@@ -147,12 +134,6 @@ public class Pronote
         }
 
         return null;
-    }
-
-    public void logout(User user) throws IOException, RequestException
-    {
-        client.push("close", new TokenBody(user.getToken()));
-        this.remove(user);
     }
 
     public void remove(User user)
