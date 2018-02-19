@@ -69,9 +69,6 @@ public class SakadoServer implements App
     @Inject
     private RefreshService refresh;
 
-    @Inject
-    private ClassManager classManager;
-
     @Override
     public void start()
     {

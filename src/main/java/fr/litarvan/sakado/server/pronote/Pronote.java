@@ -96,7 +96,7 @@ public class Pronote
 
             if (studentClass == null)
             {
-                studentClass = new StudentClass(link, user.getStudentClass());
+                studentClass = new StudentClass(link, user.getStudentClass(), user.getUsername());
                 classManager.add(studentClass);
 
                 log.info("Created class '{}' on {} (for {}) ", user.getStudentClass(), link, user.getName());

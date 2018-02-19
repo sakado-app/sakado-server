@@ -17,7 +17,6 @@
  */
 package fr.litarvan.sakado.server;
 
-import fr.litarvan.sakado.server.pronote.Homework;
 import fr.litarvan.sakado.server.pronote.User;
 
 import java.util.ArrayList;
@@ -29,21 +28,27 @@ public class StudentClass
     private ArrayList<String> members;
     private transient ArrayList<User> loggedUsers;
 
-    private ArrayList<String> longHomeworks;
+    private String admin;
 
-    public StudentClass(String pronoteUrl, String name)
+    private ArrayList<String> longHomeworks;
+    private ArrayList<String> representatives;
+
+    public StudentClass(String pronoteUrl, String name, String admin)
     {
-        this(pronoteUrl, name, new ArrayList<>());
+        this(pronoteUrl, name, admin, new ArrayList<>());
     }
 
-    public StudentClass(String pronoteUrl, String name, ArrayList<String> members)
+    public StudentClass(String pronoteUrl, String name, String admin, ArrayList<String> members)
     {
         this.pronoteUrl = pronoteUrl;
         this.name = name;
         this.members = members;
         this.loggedUsers = new ArrayList<>();
 
+        this.admin = admin;
+
         this.longHomeworks = new ArrayList<>();
+        this.representatives = new ArrayList<>();
     }
 
     public void add(User user)
@@ -54,6 +59,11 @@ public class StudentClass
         }
 
         this.loggedUsers.add(user);
+    }
+
+    public void addRepresentative(User user)
+    {
+        this.representatives.add(user.getUsername());
     }
 
     public void setLongHomework(String homework, boolean isLong)
@@ -88,8 +98,18 @@ public class StudentClass
         return loggedUsers;
     }
 
+    public String getAdmin()
+    {
+        return admin;
+    }
+
     public ArrayList<String> getLongHomeworks()
     {
         return longHomeworks;
+    }
+
+    public ArrayList<String> getRepresentatives()
+    {
+        return representatives;
     }
 }
