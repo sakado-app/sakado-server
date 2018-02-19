@@ -67,4 +67,9 @@ public class Week
     {
         return new Week(this.from, this.to, content);
     }
+
+    public String getId()
+    {
+        return "W" + this.getFrom() + "" + this.getTo();
+    }
 }

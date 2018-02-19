@@ -85,4 +85,9 @@ public class Lesson
     {
         return away;
     }
+
+    public String getId()
+    {
+        return "L" + this.getFrom();
+    }
 }

@@ -57,4 +57,9 @@ public class Homework
     {
         return CalendarUtils.fromTimestamp(time);
     }
+
+    public String getId()
+    {
+        return "H" + time + getSubject().substring(0, 2) + getContent().substring(0, 5);
+    }
 }

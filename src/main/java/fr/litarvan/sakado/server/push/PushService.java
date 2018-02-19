@@ -21,6 +21,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import fr.litarvan.commons.config.ConfigProvider;
 import fr.litarvan.sakado.server.pronote.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -31,6 +33,8 @@ import java.net.URL;
 public class PushService
 {
     public static final String FCM_SEND_URL = "https://fcm.googleapis.com/fcm/send";
+
+    private static final Logger log = LogManager.getLogger("PushService");
 
     @Inject
     private ConfigProvider config;
@@ -60,6 +64,8 @@ public class PushService
 
     public void send(User user, String type, String title, String message, String color, String icon) throws IOException
     {
+        log.info("Sending '" + type + "' push notification '" + title + "' : '" + message + "' to '" + user.getUsername() + "'");
+
         if (user.getDeviceToken() == null)
         {
             return;

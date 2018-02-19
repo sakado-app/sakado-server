@@ -1,10 +1,15 @@
 schema {
-    query: Query
+    query: Query,
+    mutation: Mutation
 }
 
 type Query {
-    user(token: String!): User
+    user: User
     links: [Link!]!
+}
+
+type Mutation {
+    user: MutableUser
 }
 
 type Link {
@@ -25,15 +30,24 @@ type User {
 
     nextLesson: Lesson!
     away: [Week!]!
+    isLong(homework: String!): Boolean!
+}
+
+type MutableUser {
+    homework(id: String): MutableHomework
 }
 
 type Week {
+    id: String!
+
     from: Long!
     to: Long!
     content: [Lesson!]!
 }
 
 type Lesson {
+    id: String!
+
     name: String!
     teacher: String!
     room: String
@@ -45,12 +59,22 @@ type Lesson {
 }
 
 type Homework {
+    id: String!
+
     subject: String!
     content: String!
     time: Long!
+    long: Boolean!
+}
+
+type MutableHomework {
+    id: String!
+    long(long: Boolean!): Boolean!
 }
 
 type Mark {
+    id: String!
+
     subject: String!
     mark: String!
     time: Long!

@@ -17,6 +17,7 @@
  */
 package fr.litarvan.sakado.server;
 
+import fr.litarvan.sakado.server.pronote.Homework;
 import fr.litarvan.sakado.server.pronote.User;
 
 import java.util.ArrayList;
@@ -27,6 +28,8 @@ public class StudentClass
     private String name;
     private ArrayList<String> members;
     private transient ArrayList<User> loggedUsers;
+
+    private ArrayList<String> longHomeworks;
 
     public StudentClass(String pronoteUrl, String name)
     {
@@ -39,6 +42,8 @@ public class StudentClass
         this.name = name;
         this.members = members;
         this.loggedUsers = new ArrayList<>();
+
+        this.longHomeworks = new ArrayList<>();
     }
 
     public void add(User user)
@@ -49,6 +54,18 @@ public class StudentClass
         }
 
         this.loggedUsers.add(user);
+    }
+
+    public void setLongHomework(String homework, boolean isLong)
+    {
+        if (isLong)
+        {
+            this.longHomeworks.add(homework);
+        }
+        else
+        {
+            this.longHomeworks.remove(homework);
+        }
     }
 
     public String getPronoteUrl()
@@ -69,5 +86,10 @@ public class StudentClass
     public ArrayList<User> getLoggedUsers()
     {
         return loggedUsers;
+    }
+
+    public ArrayList<String> getLongHomeworks()
+    {
+        return longHomeworks;
     }
 }

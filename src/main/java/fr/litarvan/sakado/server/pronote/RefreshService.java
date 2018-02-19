@@ -146,7 +146,6 @@ public class RefreshService
 
         try
         {
-            log.info("Sending push notification '" + title + "' : '" + message + "' to '" + user.getUsername() + "'");
             push.send(user, PushType.AWAY, title, message);
         }
         catch (Exception e)

@@ -23,38 +23,54 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import fr.litarvan.sakado.server.ClassManager;
 import fr.litarvan.sakado.server.SakadoServer;
 import fr.litarvan.sakado.server.http.Controller;
 import fr.litarvan.sakado.server.http.error.APIError;
-import fr.litarvan.sakado.server.pronote.Lesson;
-import fr.litarvan.sakado.server.pronote.Pronote;
-import fr.litarvan.sakado.server.pronote.PronoteLinks;
-import fr.litarvan.sakado.server.pronote.User;
-import fr.litarvan.sakado.server.pronote.Week;
+import fr.litarvan.sakado.server.pronote.*;
 import fr.litarvan.sakado.server.util.CalendarUtils;
+import graphql.ExecutionInput;
 import graphql.ExecutionResult;
 import graphql.GraphQL;
+import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
 import javax.inject.Inject;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import spark.Request;
 import spark.Response;
 
 public class GraphQLController extends Controller
 {
+    private static final Logger log = LogManager.getLogger("GraphQL");
+
     @Inject
     private Pronote pronote;
 
     @Inject
     private PronoteLinks links;
 
+    @Inject
+    private ClassManager classManager;
+
+    private GraphQL schema;
+
     public Object graphql(Request request, Response response) throws APIError, URISyntaxException
     {
+        User user = pronote.getByToken(request.headers("Token"));
+
+        if (this.schema == null)
+        {
+            this.schema = get();
+        }
+
         String query = require(request, "query");
-        ExecutionResult result = get().execute(query);
+        ExecutionResult result = this.schema.execute(ExecutionInput.newExecutionInput().query(query).context(user).build());
 
         if (result.getErrors().size() > 0)
         {
@@ -70,10 +86,15 @@ public class GraphQLController extends Controller
         TypeDefinitionRegistry registry = parser.parse(new File(SakadoServer.class.getResource("/schema.graphql").toURI()));
 
         RuntimeWiring wiring = RuntimeWiring.newRuntimeWiring()
-            .type("Query", builder -> builder.dataFetcher("user", environment -> pronote.getByToken(environment.getArgument("token")))
+            .type("Query", builder -> builder.dataFetcher("user", DataFetchingEnvironment::getContext)
                                              .dataFetcher("links", environment -> links.all()))
+            .type("Mutation", builder -> builder.dataFetcher("user", DataFetchingEnvironment::getContext))
             .type("User", builder -> builder.dataFetcher("nextLesson", environment -> getNextLesson(environment.getSource()))
-                                            .dataFetcher("away", environment -> getAway(environment.getSource()))).build();
+                                            .dataFetcher("away", environment -> getAway(environment.getSource())))
+            .type("MutableUser", builder -> builder.dataFetcher("homework", environment -> getHomework(environment.getContext(), environment.getArgument("id"))))
+            .type("Homework", builder -> builder.dataFetcher("long", environment -> isLong(environment.getContext(), environment.getSource())))
+            .type("MutableHomework", builder -> builder.dataFetcher("long", environment -> setLong(environment.getContext(), environment.getSource(), environment.getArgument("long"))))
+            .build();
 
         SchemaGenerator generator = new SchemaGenerator();
         GraphQLSchema schema = generator.makeExecutableSchema(registry, wiring);
@@ -86,7 +107,7 @@ public class GraphQLController extends Controller
         Calendar current = CalendarUtils.create();
         current.add(Calendar.MINUTE, -30);
 
-        System.out.println("Processing next lesson, current : " + CalendarUtils.parse(current, Calendar.DAY_OF_MONTH, Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND));
+        log.info("Processing next lesson, current : " + CalendarUtils.parse(current, Calendar.DAY_OF_MONTH, Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND));
 
         Lesson next = null;
 
@@ -95,7 +116,8 @@ public class GraphQLController extends Controller
             if (lesson.getFromAsCalendar().after(current))
             {
                 next = lesson;
-                System.out.println("Next found : " + CalendarUtils.parse(lesson.getFromAsCalendar(), Calendar.DAY_OF_MONTH, Calendar.HOUR, Calendar.MINUTE, Calendar.SECOND));
+                log.info("Next found : " + CalendarUtils.parse(lesson.getFromAsCalendar(), Calendar.DAY_OF_MONTH, Calendar.HOUR, Calendar.MINUTE, Calendar.SECOND));
+
                 break;
             }
         }
@@ -130,5 +152,29 @@ public class GraphQLController extends Controller
         }
 
         return result;
+    }
+
+    public boolean isLong(User user, Homework homework)
+    {
+        return classManager.of(user).getLongHomeworks().contains(homework.getId());
+    }
+
+    public boolean setLong(User user, Homework homework, boolean isLong)
+    {
+        classManager.of(user).setLongHomework(homework.getId(), isLong);
+        return isLong;
+    }
+
+    public Homework getHomework(User user, String id)
+    {
+        for (Homework homework : user.getHomeworks())
+        {
+            if (homework.getId().equals(id))
+            {
+                return homework;
+            }
+        }
+
+        return null;
     }
 }

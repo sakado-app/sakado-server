@@ -57,4 +57,9 @@ public class Mark
     {
         return CalendarUtils.fromTimestamp(time);
     }
+
+    public String getId()
+    {
+        return "M" + getTime() + getSubject().substring(0, 2) + getMark();
+    }
 }

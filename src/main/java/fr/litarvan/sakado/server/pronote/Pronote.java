@@ -125,6 +125,11 @@ public class Pronote
 
     public User getByToken(String token)
     {
+        if (token == null)
+        {
+            return null;
+        }
+
         for (User user : users)
         {
             if (user.getToken().equals(token))
