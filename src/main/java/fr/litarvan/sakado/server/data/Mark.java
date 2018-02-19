@@ -15,33 +15,51 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package fr.litarvan.sakado.server.pronote.network;
+package fr.litarvan.sakado.server.data;
 
-public class FetchRequest
+import fr.litarvan.sakado.server.util.CalendarUtils;
+
+import java.util.Calendar;
+
+public class Mark
 {
-    private String link;
-    private String username;
-    private String password;
+    private String subject;
+    private String mark;
+    private long time;
 
-    public FetchRequest(String link, String username, String password)
+    public Mark()
     {
-        this.link = link;
-        this.username = username;
-        this.password = password;
     }
 
-    public String getLink()
+    public Mark(String subject, String mark, long time)
     {
-        return link;
+        this.subject = subject;
+        this.mark = mark;
+        this.time = time;
     }
 
-    public String getUsername()
+    public String getSubject()
     {
-        return username;
+        return subject;
     }
 
-    public String getPassword()
+    public String getMark()
     {
-        return password;
+        return mark;
+    }
+
+    public long getTime()
+    {
+        return time;
+    }
+
+    public Calendar getTimeAsCalendar()
+    {
+        return CalendarUtils.fromTimestamp(time);
+    }
+
+    public String getId()
+    {
+        return "M" + getTime() + getSubject().substring(0, 2) + getMark();
     }
 }

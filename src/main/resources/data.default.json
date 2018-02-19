@@ -1,0 +1,22 @@
+{
+  "servers": [
+    {
+      "name": "pronote",
+      "host": "127.0.0.1",
+      "port": 13556
+    }
+  ],
+
+  "establishments": [
+    {
+      "name": "Lycee Joffre (Montpellier)",
+      "method": {
+        "server": "pronote",
+        "params": {
+          "pronote": "http://notes.lyc-joffre-montpellier.ac-montpellier.fr/",
+          "variant": "aten"
+        }
+      }
+    }
+  ]
+}

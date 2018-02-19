@@ -15,17 +15,14 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package fr.litarvan.sakado.server.pronote.network;
+package fr.litarvan.sakado.server.data;
 
-public class RequestException extends Exception
+import fr.litarvan.sakado.server.data.network.RequestException;
+
+public class LoginException extends RequestException
 {
-    public RequestException(String message)
+    public LoginException(String message)
     {
         super(message);
-    }
-
-    public RequestException(Throwable cause)
-    {
-        super(cause);
     }
 }

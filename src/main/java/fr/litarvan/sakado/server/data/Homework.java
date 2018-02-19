@@ -15,61 +15,51 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package fr.litarvan.sakado.server.pronote;
+package fr.litarvan.sakado.server.data;
 
 import fr.litarvan.sakado.server.util.CalendarUtils;
 
 import java.util.Calendar;
 
-public class Week
+public class Homework
 {
-    private long from;
-    private long to;
-    private Lesson[] content;
+    private String subject;
+    private String content;
+    private long time;
 
-    public Week()
+    public Homework()
     {
     }
 
-    public Week(long from, long to, Lesson[] content)
+    public Homework(String subject, String content, long time)
     {
-        this.from = from;
-        this.to = to;
+        this.subject = subject;
         this.content = content;
+        this.time = time;
     }
 
-    public long getFrom()
+    public String getSubject()
     {
-        return from;
+        return subject;
     }
 
-    public Calendar getFromAsCalendar()
-    {
-        return CalendarUtils.fromTimestamp(from);
-    }
-
-    public long getTo()
-    {
-        return to;
-    }
-
-    public Calendar getToAsCalendar()
-    {
-        return CalendarUtils.fromTimestamp(to);
-    }
-
-    public Lesson[] getContent()
+    public String getContent()
     {
         return content;
     }
 
-    public Week cloneWith(Lesson[] content)
+    public long getTime()
     {
-        return new Week(this.from, this.to, content);
+        return time;
+    }
+
+    public Calendar getTimeAsCalendar()
+    {
+        return CalendarUtils.fromTimestamp(time);
     }
 
     public String getId()
     {
-        return "W" + this.getFrom() + "" + this.getTo();
+        return "H" + time + getSubject().substring(0, 2) + getContent().substring(0, 5);
     }
 }

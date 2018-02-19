@@ -23,11 +23,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import fr.litarvan.sakado.server.ClassManager;
 import fr.litarvan.sakado.server.SakadoServer;
 import fr.litarvan.sakado.server.http.Controller;
 import fr.litarvan.sakado.server.http.error.APIError;
-import fr.litarvan.sakado.server.pronote.*;
+import fr.litarvan.sakado.server.data.*;
 import fr.litarvan.sakado.server.util.CalendarUtils;
 import graphql.ExecutionInput;
 import graphql.ExecutionResult;
@@ -50,19 +49,16 @@ public class GraphQLController extends Controller
     private static final Logger log = LogManager.getLogger("GraphQL");
 
     @Inject
-    private Pronote pronote;
+    private UserManager userManager;
 
     @Inject
-    private PronoteLinks links;
-
-    @Inject
-    private ClassManager classManager;
+    private SakadoData data;
 
     private GraphQL schema;
 
     public Object graphql(Request request, Response response) throws APIError, URISyntaxException
     {
-        User user = pronote.getByToken(request.headers("Token"));
+        User user = userManager.getByToken(request.headers("Token"));
 
         if (this.schema == null)
         {
@@ -87,7 +83,7 @@ public class GraphQLController extends Controller
 
         RuntimeWiring wiring = RuntimeWiring.newRuntimeWiring()
             .type("Query", builder -> builder.dataFetcher("user", DataFetchingEnvironment::getContext)
-                                             .dataFetcher("links", environment -> links.all()))
+                                             .dataFetcher("establishments", environment -> getEstablishments()))
             .type("Mutation", builder -> builder.dataFetcher("user", DataFetchingEnvironment::getContext))
             .type("User", builder -> builder.dataFetcher("admin", environment -> isAdmin(environment.getSource()))
                                             .dataFetcher("representative", environment -> isRepresentative(environment.getSource()))
@@ -104,14 +100,26 @@ public class GraphQLController extends Controller
         return GraphQL.newGraphQL(schema).build();
     }
 
+    public String[] getEstablishments()
+    {
+        String[] establishment = new String[data.getEstablishments().length];
+
+        for (int i = 0; i < data.getEstablishments().length; i++)
+        {
+            establishment[i] = data.getEstablishments()[i].getName();
+        }
+
+        return establishment;
+    }
+
     public boolean isAdmin(User user)
     {
-        return classManager.of(user).getAdmin().equalsIgnoreCase(user.getUsername());
+        return user.studentClass().getAdmin().equalsIgnoreCase(user.getUsername());
     }
 
     public boolean isRepresentative(User user)
     {
-        return classManager.of(user).getRepresentatives().contains(user.getUsername());
+        return user.studentClass().getRepresentatives().contains(user.getUsername());
     }
 
     public Lesson getNextLesson(User user)
@@ -168,12 +176,12 @@ public class GraphQLController extends Controller
 
     public boolean isLong(User user, Homework homework)
     {
-        return classManager.of(user).getLongHomeworks().contains(homework.getId());
+        return user.studentClass().getLongHomeworks().contains(homework.getId());
     }
 
     public boolean setLong(User user, Homework homework, boolean isLong)
     {
-        classManager.of(user).setLongHomework(homework.getId(), isLong);
+        user.studentClass().setLongHomework(homework.getId(), isLong);
         return isLong;
     }
 

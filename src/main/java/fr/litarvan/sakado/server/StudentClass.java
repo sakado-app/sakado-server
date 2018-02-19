@@ -17,13 +17,14 @@
  */
 package fr.litarvan.sakado.server;
 
-import fr.litarvan.sakado.server.pronote.User;
+import fr.litarvan.sakado.server.data.Establishment;
+import fr.litarvan.sakado.server.data.User;
 
 import java.util.ArrayList;
 
 public class StudentClass
 {
-    private String pronoteUrl;
+    private Establishment establishment;
     private String name;
     private ArrayList<String> members;
     private transient ArrayList<User> loggedUsers;
@@ -33,14 +34,14 @@ public class StudentClass
     private ArrayList<String> longHomeworks;
     private ArrayList<String> representatives;
 
-    public StudentClass(String pronoteUrl, String name, String admin)
+    public StudentClass(Establishment establishment, String name, String admin)
     {
-        this(pronoteUrl, name, admin, new ArrayList<>());
+        this(establishment, name, admin, new ArrayList<>());
     }
 
-    public StudentClass(String pronoteUrl, String name, String admin, ArrayList<String> members)
+    public StudentClass(Establishment establishment, String name, String admin, ArrayList<String> members)
     {
-        this.pronoteUrl = pronoteUrl;
+        this.establishment = establishment;
         this.name = name;
         this.members = members;
         this.loggedUsers = new ArrayList<>();
@@ -78,9 +79,9 @@ public class StudentClass
         }
     }
 
-    public String getPronoteUrl()
+    public Establishment getEstablishment()
     {
-        return pronoteUrl;
+        return establishment;
     }
 
     public String getName()

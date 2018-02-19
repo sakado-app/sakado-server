@@ -19,8 +19,8 @@ package fr.litarvan.sakado.server.http;
 
 import com.google.gson.Gson;
 import fr.litarvan.sakado.server.http.error.APIError;
-import fr.litarvan.sakado.server.pronote.Pronote;
-import fr.litarvan.sakado.server.pronote.User;
+import fr.litarvan.sakado.server.data.UserManager;
+import fr.litarvan.sakado.server.data.User;
 import spark.Request;
 import spark.Response;
 
@@ -35,7 +35,7 @@ public class Controller
     protected Gson gson;
 
     @Inject
-    private Pronote pronote;
+    private UserManager userManager;
 
     protected String json(Object data, Response response)
     {
@@ -63,7 +63,7 @@ public class Controller
 
     protected User requireLogged(Request request) throws APIError
     {
-        User user = pronote.getByToken(request.headers("Token"));
+        User user = userManager.getByToken(request.headers("Token"));
 
         if (user == null)
         {

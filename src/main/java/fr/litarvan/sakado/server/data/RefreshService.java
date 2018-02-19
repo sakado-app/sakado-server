@@ -15,11 +15,10 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package fr.litarvan.sakado.server.pronote;
+package fr.litarvan.sakado.server.data;
 
 import fr.litarvan.sakado.server.StudentClass;
-import fr.litarvan.sakado.server.ClassManager;
-import fr.litarvan.sakado.server.pronote.network.RequestException;
+import fr.litarvan.sakado.server.data.network.RequestException;
 import fr.litarvan.sakado.server.push.PushService;
 import fr.litarvan.sakado.server.push.PushType;
 import fr.litarvan.sakado.server.util.CalendarUtils;
@@ -37,13 +36,13 @@ public class RefreshService
     private static final Logger log = LogManager.getLogger("RefreshService");
 
     @Inject
-    private ClassManager classes;
+    private SakadoData data;
 
     @Inject
     private PushService push;
 
     @Inject
-    private Pronote pronote;
+    private UserManager userManager;
 
     private List<String> seen;
 
@@ -60,9 +59,12 @@ public class RefreshService
             @Override
             public void run()
             {
-                for (StudentClass studentClass : classes.getClasses())
+                for (Establishment establishment : data.getEstablishments())
                 {
-                    studentClass.getLoggedUsers().forEach(RefreshService.this::refresh);
+                    for (StudentClass studentClass : establishment.getClasses())
+                    {
+                        studentClass.getLoggedUsers().forEach(RefreshService.this::refresh);
+                    }
                 }
             }
         }, RATE, RATE);
@@ -79,12 +81,12 @@ public class RefreshService
             if (e instanceof RequestException && e.getMessage().contains("Can't find session with token"))
             {
                 log.error("Deleting ghost session '" + user.getName() + "' (" + user.getToken() + ")");
-                pronote.remove(user);
+                userManager.remove(user);
 
                 return;
             }
 
-            log.error("Unknown error while refreshing data from Pronote, ignoring", e);
+            log.error("Unknown error while refreshing data from UserManager, ignoring", e);
         }
 
         this.checkNewAway(user);

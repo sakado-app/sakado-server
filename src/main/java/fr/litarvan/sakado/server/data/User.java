@@ -15,11 +15,12 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package fr.litarvan.sakado.server.pronote;
+package fr.litarvan.sakado.server.data;
 
-import fr.litarvan.sakado.server.pronote.network.RequestException;
-import fr.litarvan.sakado.server.pronote.network.FetchResponse;
-import fr.litarvan.sakado.server.pronote.network.FetchRequest;
+import fr.litarvan.sakado.server.StudentClass;
+import fr.litarvan.sakado.server.data.network.RequestException;
+import fr.litarvan.sakado.server.data.network.FetchResponse;
+import fr.litarvan.sakado.server.data.network.FetchRequest;
 
 import java.io.IOException;
 
@@ -27,7 +28,8 @@ public class User
 {
     private String token;
 
-    private String pronoteUrl;
+    private Establishment establishment;
+
     private String username;
     private String password;
 
@@ -37,18 +39,18 @@ public class User
     private String studentClass;
     private String avatar;
 
-    private Pronote pronote;
+    private DataServer server;
 
     private Week[] timetable;
     private Homework[] homeworks;
     private Mark[] lastMarks;
     private Averages averages;
 
-    public User(Pronote pronote, String token, String pronoteUrl, String username, String password, String deviceToken)
+    public User(DataServer server, String token, Establishment establishment, String username, String password, String deviceToken)
     {
-        this.pronote = pronote;
+        this.server = server;
         this.token = token;
-        this.pronoteUrl = pronoteUrl;
+        this.establishment = establishment;
         this.username = username;
         this.password = password;
         this.deviceToken = deviceToken;
@@ -56,7 +58,7 @@ public class User
 
     public void update() throws IOException, RequestException
     {
-        FetchResponse response = pronote.getClient().push("fetch", new FetchRequest(pronoteUrl, username, password), FetchResponse.class);
+        FetchResponse response = server.getClient().push("fetch", new FetchRequest(username, password, establishment.getMethod().getParams()), FetchResponse.class);
 
         this.name = response.getName();
         this.studentClass = response.getStudentClass();
@@ -68,14 +70,19 @@ public class User
         this.averages = response.getAverages();
     }
 
+    public StudentClass studentClass()
+    {
+        return getEstablishment().classOf(this);
+    }
+
     public String getToken()
     {
         return token;
     }
 
-    public String getPronoteUrl()
+    public Establishment getEstablishment()
     {
-        return pronoteUrl;
+        return establishment;
     }
 
     public String getUsername()

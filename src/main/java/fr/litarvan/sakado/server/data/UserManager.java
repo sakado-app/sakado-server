@@ -15,13 +15,11 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package fr.litarvan.sakado.server.pronote;
+package fr.litarvan.sakado.server.data;
 
 import fr.litarvan.commons.config.ConfigProvider;
 import fr.litarvan.sakado.server.StudentClass;
-import fr.litarvan.sakado.server.ClassManager;
-import fr.litarvan.sakado.server.pronote.network.NetworkClient;
-import fr.litarvan.sakado.server.pronote.network.RequestException;
+import fr.litarvan.sakado.server.data.network.RequestException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,48 +31,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Singleton
-public class Pronote
+public class UserManager
 {
-    private static final Logger log = LogManager.getLogger("Pronote");
+    private static final Logger log = LogManager.getLogger("UserManager");
 
     @Inject
     private ConfigProvider config;
 
     @Inject
-    private ClassManager classManager;
+    private SakadoData data;
 
-    private NetworkClient client;
     private List<User> users;
 
-    public Pronote()
+    public UserManager()
     {
         this.users = new ArrayList<>();
     }
 
-    public void init() throws IOException
+    public User login(String establishmentName, String username, String password, String deviceToken) throws IOException, RequestException
     {
-        client = new NetworkClient(config.at("pronote.server-host"), config.at("pronote.server-port", int.class));
-    }
+        Establishment establishment = data.getEstablishment(establishmentName);
 
-    public User login(String link, String username, String password, String deviceToken) throws IOException, RequestException
-    {
-        if (!link.startsWith("http://") && !link.startsWith("https://"))
+        if (establishment == null)
         {
-            link = "http://" + link;
+            throw new IllegalArgumentException("Unknown etablishment '" + establishmentName + "'");
         }
 
-        if (link.endsWith("eleve.html"))
-        {
-            link = link.substring(0, link.length() - 10);
-        }
-
-        if (!link.endsWith("/"))
-        {
-            link += "/";
-        }
-
-        log.info("Logging in '{}' (from {})", username, link);
-        User user = new User(this, RandomStringUtils.randomAlphanumeric(128), link, username, password, deviceToken);
+        log.info("Logging in '{}' (from {})", username, establishment.getName());
+        User user = new User(data.getServer(establishment.getMethod().getServer()), RandomStringUtils.randomAlphanumeric(128), establishment, username, password, deviceToken);
         user.update();
 
         User current = get(username);
@@ -88,21 +72,21 @@ public class Pronote
 
         log.info("Successfully logged user '{}' : {} ({})", username, user.getName(), user.getStudentClass());
 
-        StudentClass studentClass = classManager.of(user);
+        StudentClass studentClass = user.studentClass();
 
         if (studentClass == null)
         {
-            studentClass = classManager.get(link, user.getStudentClass());
+            studentClass = establishment.getClassByName(user.getStudentClass());
 
             if (studentClass == null)
             {
-                studentClass = new StudentClass(link, user.getStudentClass(), user.getUsername());
-                classManager.add(studentClass);
+                studentClass = new StudentClass(establishment, user.getStudentClass(), user.getUsername());
+                establishment.getClasses().add(studentClass);
 
-                log.info("Created class '{}' on {} (for {}) ", user.getStudentClass(), link, user.getName());
+                log.info("Created class '{}' on {} (for {}) ", user.getStudentClass(), establishment.getName(), user.getName());
             }
 
-            log.info("Added '{}' to class '{}' on {}", user.getName(), user.getStudentClass(), link);
+            log.info("Added '{}' to class '{}' on {}", user.getName(), user.getStudentClass(), establishment.getName());
         }
 
         studentClass.add(user);
@@ -143,12 +127,7 @@ public class Pronote
 
     public void remove(User user)
     {
-        this.classManager.of(user).getLoggedUsers().remove(user);
+        user.studentClass().getLoggedUsers().remove(user);
         this.users.remove(user);
-    }
-
-    public NetworkClient getClient()
-    {
-        return client;
     }
 }

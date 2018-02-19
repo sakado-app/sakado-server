@@ -15,12 +15,12 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package fr.litarvan.sakado.server.pronote.network;
+package fr.litarvan.sakado.server.data.network;
 
-import fr.litarvan.sakado.server.pronote.Homework;
-import fr.litarvan.sakado.server.pronote.Mark;
-import fr.litarvan.sakado.server.pronote.User.Averages;
-import fr.litarvan.sakado.server.pronote.Week;
+import fr.litarvan.sakado.server.data.Homework;
+import fr.litarvan.sakado.server.data.Mark;
+import fr.litarvan.sakado.server.data.User.Averages;
+import fr.litarvan.sakado.server.data.Week;
 
 public class FetchResponse
 {

@@ -20,7 +20,7 @@ package fr.litarvan.sakado.server.push;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import fr.litarvan.commons.config.ConfigProvider;
-import fr.litarvan.sakado.server.pronote.User;
+import fr.litarvan.sakado.server.data.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

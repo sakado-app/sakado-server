@@ -23,14 +23,14 @@ import fr.litarvan.commons.App;
 import fr.litarvan.commons.config.ConfigProvider;
 import fr.litarvan.commons.crash.ExceptionHandler;
 import fr.litarvan.commons.io.IOSource;
+import fr.litarvan.sakado.server.data.SakadoData;
 import fr.litarvan.sakado.server.http.Controller;
 import fr.litarvan.sakado.server.http.Routes;
 import fr.litarvan.sakado.server.http.error.APIError;
 import fr.litarvan.sakado.server.http.error.HTTPReportField;
 import fr.litarvan.sakado.server.http.error.InRequestException;
-import fr.litarvan.sakado.server.pronote.Pronote;
-import fr.litarvan.sakado.server.pronote.RefreshService;
-import fr.litarvan.sakado.server.pronote.network.RequestException;
+import fr.litarvan.sakado.server.data.RefreshService;
+import fr.litarvan.sakado.server.data.network.RequestException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -61,7 +61,7 @@ public class SakadoServer implements App
     private ConfigProvider configs;
 
     @Inject
-    private Pronote pronote;
+    private SakadoData data;
 
     @Inject
     private Routes routes;
@@ -84,7 +84,7 @@ public class SakadoServer implements App
 
         configs.from("config/app.json").defaultIn(IOSource.at("app.default.json"));
         configs.from("config/proxy.json").defaultIn(IOSource.at("proxy.default.json"));
-        configs.from("config/pronote.json").defaultIn(IOSource.at("pronote.default.json"));
+        configs.from("config/data.json").defaultIn(IOSource.at("data.default.json"));
         configs.from("config/fcm.json").defaultIn(IOSource.at("fcm.default.json"));
 
         if (configs.at("proxy.enabled", boolean.class))
@@ -109,14 +109,14 @@ public class SakadoServer implements App
             }
         }
 
-        log.info("Starting Pronote service...");
+        log.info("Starting data service...");
         try
         {
-            pronote.init();
+            data.init();
         }
         catch (IOException e)
         {
-            log.fatal("Couldn't init Pronote service, shutting down...", e);
+            log.fatal("Couldn't init UserManager service, shutting down...", e);
             System.exit(1);
         }
 

@@ -15,51 +15,35 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package fr.litarvan.sakado.server.pronote;
+package fr.litarvan.sakado.server.data.network;
 
-import fr.litarvan.sakado.server.util.CalendarUtils;
+import java.util.Map;
 
-import java.util.Calendar;
-
-public class Homework
+public class FetchRequest
 {
-    private String subject;
-    private String content;
-    private long time;
+    private String username;
+    private String password;
+    private Map<String, String> params;
 
-    public Homework()
+    public FetchRequest(String username, String password, Map<String, String> params)
     {
+        this.username = username;
+        this.password = password;
+        this.params = params;
     }
 
-    public Homework(String subject, String content, long time)
+    public String getUsername()
     {
-        this.subject = subject;
-        this.content = content;
-        this.time = time;
+        return username;
     }
 
-    public String getSubject()
+    public String getPassword()
     {
-        return subject;
+        return password;
     }
 
-    public String getContent()
+    public Map<String, String> getParams()
     {
-        return content;
-    }
-
-    public long getTime()
-    {
-        return time;
-    }
-
-    public Calendar getTimeAsCalendar()
-    {
-        return CalendarUtils.fromTimestamp(time);
-    }
-
-    public String getId()
-    {
-        return "H" + time + getSubject().substring(0, 2) + getContent().substring(0, 5);
+        return params;
     }
 }

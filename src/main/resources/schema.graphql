@@ -5,16 +5,11 @@ schema {
 
 type Query {
     user: User
-    links: [Link!]!
+    establishments: [String!]!
 }
 
 type Mutation {
     user: MutableUser
-}
-
-type Link {
-    name: String!
-    link: String!
 }
 
 type User {

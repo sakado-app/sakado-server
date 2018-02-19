@@ -18,12 +18,12 @@
 package fr.litarvan.sakado.server.http.controller;
 
 import com.google.gson.JsonObject;
+import fr.litarvan.sakado.server.data.UserManager;
 import fr.litarvan.sakado.server.http.Controller;
 import fr.litarvan.sakado.server.http.error.APIError;
-import fr.litarvan.sakado.server.pronote.LoginException;
-import fr.litarvan.sakado.server.pronote.Pronote;
-import fr.litarvan.sakado.server.pronote.User;
-import fr.litarvan.sakado.server.pronote.network.RequestException;
+import fr.litarvan.sakado.server.data.LoginException;
+import fr.litarvan.sakado.server.data.User;
+import fr.litarvan.sakado.server.data.network.RequestException;
 import spark.Request;
 import spark.Response;
 
@@ -33,7 +33,7 @@ import java.io.IOException;
 public class AuthController extends Controller
 {
     @Inject
-    private Pronote pronote;
+    private UserManager userManager;
 
     public Object login(Request request, Response response) throws IOException, RequestException, APIError
     {
@@ -47,7 +47,7 @@ public class AuthController extends Controller
 
         try
         {
-            user = pronote.login(link, username, password, deviceToken);
+            user = userManager.login(link, username, password, deviceToken);
         }
         catch (LoginException e)
         {
@@ -64,7 +64,7 @@ public class AuthController extends Controller
 
     public Object logout(Request request, Response response) throws IOException, RequestException, APIError
     {
-        this.pronote.remove(requireLogged(request));
+        this.userManager.remove(requireLogged(request));
         return success(response);
     }
 
