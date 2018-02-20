@@ -21,8 +21,10 @@ type User {
     admin: Boolean!
     representative: Boolean!
 
+    homeworksEnabled: Boolean!
+
     timetable: [Week!]!
-    homeworks: [Homework!]!
+    homeworks: [Homework!]
     lastMarks: [Mark!]!
     averages: Averages
 

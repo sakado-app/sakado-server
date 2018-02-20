@@ -88,7 +88,8 @@ public class GraphQLController extends Controller
             .type("User", builder -> builder.dataFetcher("admin", environment -> isAdmin(environment.getSource()))
                                             .dataFetcher("representative", environment -> isRepresentative(environment.getSource()))
                                             .dataFetcher("nextLesson", environment -> getNextLesson(environment.getSource()))
-                                            .dataFetcher("away", environment -> getAway(environment.getSource())))
+                                            .dataFetcher("away", environment -> getAway(environment.getSource()))
+                                            .dataFetcher("homeworksEnabled", environment -> areHomeworksEnabled(environment.getSource())))
             .type("MutableUser", builder -> builder.dataFetcher("homework", environment -> getHomework(environment.getContext(), environment.getArgument("id"))))
             .type("Homework", builder -> builder.dataFetcher("long", environment -> isLong(environment.getContext(), environment.getSource())))
             .type("MutableHomework", builder -> builder.dataFetcher("long", environment -> setLong(environment.getContext(), environment.getSource(), environment.getArgument("long"))))
@@ -196,5 +197,10 @@ public class GraphQLController extends Controller
         }
 
         return null;
+    }
+
+    public boolean areHomeworksEnabled(User user)
+    {
+        return user.getHomeworks() != null;
     }
 }
