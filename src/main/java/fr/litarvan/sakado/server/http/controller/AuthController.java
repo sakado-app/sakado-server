@@ -41,13 +41,13 @@ public class AuthController extends Controller
         String password = require(request, "password");
         String deviceToken = require(request, "deviceToken");
 
-        String link = require(request, "link");
+        String establishment = require(request, "establishment");
 
         User user;
 
         try
         {
-            user = userManager.login(link, username, password, deviceToken);
+            user = userManager.login(establishment, username, password, deviceToken);
         }
         catch (LoginException e)
         {

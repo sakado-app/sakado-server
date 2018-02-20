@@ -3,22 +3,23 @@ package fr.litarvan.sakado.server.data;
 import fr.litarvan.commons.config.ConfigProvider;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.IOException;
 
+@Singleton
 public class SakadoData
 {
     private DataServer[] servers;
     private Establishment[] establishments;
 
     @Inject
-    public SakadoData(ConfigProvider config)
-    {
-        this.servers = config.at("data.servers", DataServer[].class);
-        this.establishments = config.at("data.establishments", Establishment[].class);
-    }
+    private ConfigProvider config;
 
     public void init() throws IOException
     {
+        this.servers = config.at("data.servers", DataServer[].class);
+        this.establishments = config.at("data.establishments", Establishment[].class);
+
         for (DataServer server : servers)
         {
             server.init();
