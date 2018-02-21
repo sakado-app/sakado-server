@@ -89,9 +89,20 @@ public class RefreshService
             log.error("Unknown error while refreshing data from UserManager, ignoring", e);
         }
 
-        this.checkNewAway(user);
-        this.checkNewMark(user);
-        this.checkLongHomeworks(user);
+        try
+        {
+            this.checkNewAway(user);
+            this.checkNewMark(user);
+
+            if (user.getHomeworks() != null)
+            {
+                this.checkLongHomeworks(user);
+            }
+        }
+        catch (Exception e)
+        {
+            log.error("Error during refresh process", e);
+        }
     }
 
     protected void checkNewAway(User user)
