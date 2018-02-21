@@ -91,6 +91,7 @@ public class RefreshService
 
         this.checkNewAway(user);
         this.checkNewMark(user);
+        this.checkLongHomeworks(user);
     }
 
     protected void checkNewAway(User user)
@@ -108,7 +109,7 @@ public class RefreshService
         }
 
         away.removeIf(c -> {
-            String id = getID(user, c);
+            String id = user.getUsername() + "-" + c.getId();
 
             if (!seen.contains(id))
             {
@@ -171,8 +172,8 @@ public class RefreshService
             }
         }
 
-        marks.removeIf(n -> {
-            String id = getID(user, n);
+        marks.removeIf(m -> {
+            String id = user.getUsername() + "-" + m.getId();
 
             if (!seen.contains(id))
             {
@@ -205,6 +206,68 @@ public class RefreshService
         try
         {
             push.send(user, PushType.MARK, title, message);
+        }
+        catch (Exception e)
+        {
+            log.error("Couldn't send away push notification", e);
+        }
+    }
+
+    protected void checkLongHomeworks(User user)
+    {
+        List<Homework> longHomeworks = new ArrayList<>();
+        Calendar current = CalendarUtils.create();
+
+        for (Homework homework : user.getHomeworks())
+        {
+            if (!user.studentClass().getLongHomeworks().contains(homework.getId()))
+            {
+                continue;
+            }
+
+            Calendar date = homework.getTimeAsCalendar();
+            date.add(Calendar.HOUR_OF_DAY, -6); // 18h, the last day before
+
+            if (current.after(date))
+            {
+                longHomeworks.add(homework);
+            }
+        }
+
+        longHomeworks.removeIf(h -> {
+            String id = user.getUsername() + "-" + h.getId();
+
+            if (!seen.contains(id))
+            {
+                seen.add(id);
+                return false;
+            }
+
+            return true;
+        });
+
+        if (longHomeworks.size() == 0)
+        {
+            return;
+        }
+
+        String title = "Sakado - ";
+        String message;
+
+        if (longHomeworks.size() > 1)
+        {
+            title += longHomeworks.size() + " longs devoirs pour demain";
+            message = "Cliquer pour voir";
+        }
+        else
+        {
+            title += "Long devoir pour demain";
+            message = longHomeworks.get(0).getSubject() + " - " + longHomeworks.get(0).getContent();
+        }
+
+        try
+        {
+            push.send(user, PushType.HOMEWORK, title, message);
         }
         catch (Exception e)
         {
