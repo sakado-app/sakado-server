@@ -18,6 +18,7 @@
 package fr.litarvan.sakado.server.http.controller;
 
 import java.io.File;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -80,7 +81,7 @@ public class GraphQLController extends Controller
     public GraphQL get(Request request) throws URISyntaxException
     {
         SchemaParser parser = new SchemaParser();
-        TypeDefinitionRegistry registry = parser.parse(new File(SakadoServer.class.getResource("/schema.graphql").toURI()));
+        TypeDefinitionRegistry registry = parser.parse(new InputStreamReader(SakadoServer.class.getResourceAsStream("/schema.graphql")));
 
         RuntimeWiring wiring = RuntimeWiring.newRuntimeWiring()
             .type("Query", builder -> builder.dataFetcher("user", DataFetchingEnvironment::getContext)
