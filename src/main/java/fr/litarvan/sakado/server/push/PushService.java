@@ -88,6 +88,7 @@ public class PushService
         JsonObject data = new JsonObject();
         data.addProperty("title", title);
         data.addProperty("message", message);
+        data.addProperty("priority", "high");
 
         if (color != null)
         {

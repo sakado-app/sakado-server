@@ -24,6 +24,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import fr.litarvan.sakado.server.SakadoServer;
+import fr.litarvan.sakado.server.StudentClass;
 import fr.litarvan.sakado.server.http.Controller;
 import fr.litarvan.sakado.server.http.error.APIError;
 import fr.litarvan.sakado.server.data.*;
@@ -62,7 +63,7 @@ public class GraphQLController extends Controller
 
         if (this.schema == null)
         {
-            this.schema = get();
+            this.schema = get(request);
         }
 
         String query = require(request, "query");
@@ -76,7 +77,7 @@ public class GraphQLController extends Controller
         return json(result.getData(), response);
     }
 
-    public GraphQL get() throws URISyntaxException
+    public GraphQL get(Request request) throws URISyntaxException
     {
         SchemaParser parser = new SchemaParser();
         TypeDefinitionRegistry registry = parser.parse(new File(SakadoServer.class.getResource("/schema.graphql").toURI()));
@@ -89,8 +90,12 @@ public class GraphQLController extends Controller
                                             .dataFetcher("representative", environment -> isRepresentative(environment.getSource()))
                                             .dataFetcher("nextLesson", environment -> getNextLesson(environment.getSource()))
                                             .dataFetcher("away", environment -> getAway(environment.getSource()))
-                                            .dataFetcher("homeworksEnabled", environment -> areHomeworksEnabled(environment.getSource())))
-            .type("MutableUser", builder -> builder.dataFetcher("homework", environment -> getHomework(environment.getContext(), environment.getArgument("id"))))
+                                            .dataFetcher("homeworksEnabled", environment -> areHomeworksEnabled(environment.getSource()))
+                                            .dataFetcher("class", environment -> getStudentClass(environment.getSource())))
+            .type("MutableUser", builder -> builder.dataFetcher("homework", environment -> getHomework(environment.getContext(), environment.getArgument("id")))
+                                            .dataFetcher("class", environment -> getStudentClass(environment.getContext())))
+            .type("MutableStudentClass", builder -> builder.dataFetcher("addRepresentative", environment -> addRepresentative(environment.getContext(), environment.getArgument("username")))
+                                            .dataFetcher("removeRepresentative", environment -> removeRepresentative(environment.getContext(), environment.getArgument("username"))))
             .type("Homework", builder -> builder.dataFetcher("long", environment -> isLong(environment.getContext(), environment.getSource())))
             .type("MutableHomework", builder -> builder.dataFetcher("long", environment -> setLong(environment.getContext(), environment.getSource(), environment.getArgument("long"))))
             .build();
@@ -184,6 +189,39 @@ public class GraphQLController extends Controller
     {
         user.studentClass().setLongHomework(homework.getId(), isLong);
         return isLong;
+    }
+
+    public StudentClass getStudentClass(User user)
+    {
+        return user.studentClass();
+    }
+
+    public String addRepresentative(User user, String username)
+    {
+        StudentClass theClass = user.studentClass();
+
+        if (!theClass.getAdmin().equalsIgnoreCase(user.getUsername()))
+        {
+            throw new RuntimeException("You can't do this without being admin");
+        }
+
+        theClass.getRepresentatives().add(username);
+
+        return username;
+    }
+
+    public String removeRepresentative(User user, String username)
+    {
+        StudentClass theClass = user.studentClass();
+
+        if (!theClass.getAdmin().equalsIgnoreCase(user.getUsername()))
+        {
+            throw new RuntimeException("You can't do this without being admin");
+        }
+
+        theClass.getRepresentatives().remove(username);
+
+        return username;
     }
 
     public Homework getHomework(User user, String id)

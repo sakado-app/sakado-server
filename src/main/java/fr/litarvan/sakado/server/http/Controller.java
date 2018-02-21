@@ -18,6 +18,7 @@
 package fr.litarvan.sakado.server.http;
 
 import com.google.gson.Gson;
+import fr.litarvan.sakado.server.StudentClass;
 import fr.litarvan.sakado.server.http.error.APIError;
 import fr.litarvan.sakado.server.data.UserManager;
 import fr.litarvan.sakado.server.data.User;
@@ -68,6 +69,31 @@ public class Controller
         if (user == null)
         {
             throw new APIError(APIError.UNAUTHORIZED, "You can't do that without being logged");
+        }
+
+        return user;
+    }
+
+    protected User requireRepresentative(Request request) throws APIError
+    {
+        User user = requireLogged(request);
+        StudentClass theClass = user.studentClass();
+
+        if (!theClass.getRepresentatives().contains(user.getUsername()) && !user.studentClass().getAdmin().equalsIgnoreCase(user.getUsername()))
+        {
+            throw new APIError(APIError.UNAUTHORIZED, "You must be representative to do that");
+        }
+
+        return user;
+    }
+
+    protected User requireAdmin(Request request) throws APIError
+    {
+        User user = requireLogged(request);
+
+        if (!user.studentClass().getAdmin().equalsIgnoreCase(user.getUsername()))
+        {
+            throw new APIError(APIError.UNAUTHORIZED, "You must be admin to do that");
         }
 
         return user;

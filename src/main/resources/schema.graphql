@@ -18,6 +18,8 @@ type User {
     studentClass: String!
     avatar: String
 
+    class: StudentClass!
+
     admin: Boolean!
     representative: Boolean!
 
@@ -36,6 +38,16 @@ type User {
 type MutableUser {
     homework(id: String): MutableHomework
     representative(user: String): Boolean!
+    class: MutableStudentClass!
+}
+
+type StudentClass {
+    representatives: [String!]!
+}
+
+type MutableStudentClass {
+    addRepresentative(username: String!): String!
+    removeRepresentative(username: String!): String!
 }
 
 type Week {
