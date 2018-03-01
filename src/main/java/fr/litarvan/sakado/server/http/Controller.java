@@ -18,7 +18,7 @@
 package fr.litarvan.sakado.server.http;
 
 import com.google.gson.Gson;
-import fr.litarvan.sakado.server.StudentClass;
+import fr.litarvan.sakado.server.data.StudentClass;
 import fr.litarvan.sakado.server.http.error.APIError;
 import fr.litarvan.sakado.server.data.UserManager;
 import fr.litarvan.sakado.server.data.User;

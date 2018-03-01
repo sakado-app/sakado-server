@@ -15,14 +15,12 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package fr.litarvan.sakado.server;
-
-import fr.litarvan.sakado.server.data.Establishment;
-import fr.litarvan.sakado.server.data.User;
+package fr.litarvan.sakado.server.data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
-public class StudentClass
+public class StudentClass implements Identifiable
 {
     private Establishment establishment;
     private String name;
@@ -62,9 +60,9 @@ public class StudentClass
         this.loggedUsers.add(user);
     }
 
-    public void addRepresentative(User user)
+    public void addRepresentatives(String... usernames)
     {
-        this.representatives.add(user.getUsername());
+        this.representatives.addAll(Arrays.asList(usernames));
     }
 
     public void setLongHomework(String homework, boolean isLong)
@@ -112,5 +110,11 @@ public class StudentClass
     public ArrayList<String> getRepresentatives()
     {
         return representatives;
+    }
+
+    @Override
+    public String getId()
+    {
+        return getEstablishment().getName() + "-" + getName();
     }
 }

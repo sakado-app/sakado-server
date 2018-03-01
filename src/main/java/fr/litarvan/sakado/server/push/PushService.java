@@ -86,7 +86,7 @@ public class PushService
         conn.setDoOutput(true);
 
         JsonObject data = new JsonObject();
-        data.addProperty("title", title);
+        data.addProperty("title", "Sakado - " + title);
         data.addProperty("message", message);
         data.addProperty("priority", "high");
 

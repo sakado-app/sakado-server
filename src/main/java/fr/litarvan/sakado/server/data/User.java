@@ -17,7 +17,6 @@
  */
 package fr.litarvan.sakado.server.data;
 
-import fr.litarvan.sakado.server.StudentClass;
 import fr.litarvan.sakado.server.data.network.RequestException;
 import fr.litarvan.sakado.server.data.network.FetchResponse;
 import fr.litarvan.sakado.server.data.network.FetchRequest;

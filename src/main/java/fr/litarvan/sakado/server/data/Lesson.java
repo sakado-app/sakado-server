@@ -21,7 +21,7 @@ import fr.litarvan.sakado.server.util.CalendarUtils;
 
 import java.util.Calendar;
 
-public class Lesson
+public class Lesson implements Identifiable
 {
     private String name;
     private String teacher;
@@ -86,6 +86,7 @@ public class Lesson
         return away;
     }
 
+    @Override
     public String getId()
     {
         return "L" + this.getFrom();

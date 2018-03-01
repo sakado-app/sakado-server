@@ -21,7 +21,7 @@ import fr.litarvan.sakado.server.util.CalendarUtils;
 
 import java.util.Calendar;
 
-public class Homework
+public class Homework implements Identifiable
 {
     private String subject;
     private String content;
@@ -58,6 +58,7 @@ public class Homework
         return CalendarUtils.fromTimestamp(time);
     }
 
+    @Override
     public String getId()
     {
         return "H" + time + getSubject().substring(0, 2) + getContent().substring(0, 5);

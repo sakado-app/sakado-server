@@ -1,7 +1,5 @@
 package fr.litarvan.sakado.server.data;
 
-import fr.litarvan.sakado.server.StudentClass;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

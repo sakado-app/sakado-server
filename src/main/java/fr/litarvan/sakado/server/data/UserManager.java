@@ -18,7 +18,6 @@
 package fr.litarvan.sakado.server.data;
 
 import fr.litarvan.commons.config.ConfigProvider;
-import fr.litarvan.sakado.server.StudentClass;
 import fr.litarvan.sakado.server.data.network.RequestException;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -80,7 +79,7 @@ public class UserManager
 
             if (studentClass == null)
             {
-                studentClass = new StudentClass(establishment, user.getStudentClass(), user.getUsername());
+                studentClass = createClass(establishment, user.getStudentClass(), user.getUsername());
                 establishment.getClasses().add(studentClass);
 
                 log.info("Created class '{}' on {} (for {}) ", user.getStudentClass(), establishment.getName(), user.getName());
@@ -92,6 +91,14 @@ public class UserManager
         studentClass.add(user);
 
         return user;
+    }
+
+    protected StudentClass createClass(Establishment establishment, String name, String adminUsername)
+    {
+        StudentClass studentClass = new StudentClass(establishment, name, adminUsername);
+        studentClass.addRepresentatives(config.at("save.classes." + studentClass.getId() + ".representatives", String[].class));
+
+        return studentClass;
     }
 
     public User get(String username)

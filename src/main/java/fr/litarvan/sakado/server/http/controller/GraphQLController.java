@@ -17,7 +17,6 @@
  */
 package fr.litarvan.sakado.server.http.controller;
 
-import java.io.File;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import fr.litarvan.sakado.server.SakadoServer;
-import fr.litarvan.sakado.server.StudentClass;
+import fr.litarvan.sakado.server.data.StudentClass;
 import fr.litarvan.sakado.server.http.Controller;
 import fr.litarvan.sakado.server.http.error.APIError;
 import fr.litarvan.sakado.server.data.*;

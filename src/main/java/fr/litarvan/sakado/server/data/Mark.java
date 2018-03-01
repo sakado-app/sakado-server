@@ -21,7 +21,7 @@ import fr.litarvan.sakado.server.util.CalendarUtils;
 
 import java.util.Calendar;
 
-public class Mark
+public class Mark implements Identifiable
 {
     private String subject;
     private String mark;
@@ -58,6 +58,7 @@ public class Mark
         return CalendarUtils.fromTimestamp(time);
     }
 
+    @Override
     public String getId()
     {
         return "M" + getTime() + getSubject().substring(0, 2) + getMark();

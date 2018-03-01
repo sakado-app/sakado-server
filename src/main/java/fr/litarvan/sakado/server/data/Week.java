@@ -21,7 +21,7 @@ import fr.litarvan.sakado.server.util.CalendarUtils;
 
 import java.util.Calendar;
 
-public class Week
+public class Week implements Identifiable
 {
     private long from;
     private long to;
@@ -68,6 +68,7 @@ public class Week
         return new Week(this.from, this.to, content);
     }
 
+    @Override
     public String getId()
     {
         return "W" + this.getFrom() + "" + this.getTo();

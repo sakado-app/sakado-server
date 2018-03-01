@@ -29,11 +29,11 @@ import fr.litarvan.sakado.server.http.Routes;
 import fr.litarvan.sakado.server.http.error.APIError;
 import fr.litarvan.sakado.server.http.error.HTTPReportField;
 import fr.litarvan.sakado.server.http.error.InRequestException;
-import fr.litarvan.sakado.server.data.RefreshService;
 import fr.litarvan.sakado.server.data.network.RequestException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import fr.litarvan.sakado.server.refresh.RefreshService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import spark.Filter;
@@ -86,6 +86,7 @@ public class SakadoServer implements App
         configs.from("config/proxy.json").defaultIn(IOSource.at("proxy.default.json"));
         configs.from("config/data.json").defaultIn(IOSource.at("data.default.json"));
         configs.from("config/fcm.json").defaultIn(IOSource.at("fcm.default.json"));
+        configs.from("config/save.json").defaultIn(IOSource.at("save.default.json"));
 
         if (configs.at("proxy.enabled", boolean.class))
         {
