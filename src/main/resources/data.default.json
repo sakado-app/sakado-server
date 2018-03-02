@@ -1,4 +1,5 @@
 {
+  "refresh-rate": 900000,
   "servers": [
     {
       "name": "pronote",

@@ -42,7 +42,7 @@ public class RefreshService
 
     public void start()
     {
-        int rate = config.at("app.refresh-rate", int.class);
+        int rate = config.at("data.refresh-rate", int.class);
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask()
         {

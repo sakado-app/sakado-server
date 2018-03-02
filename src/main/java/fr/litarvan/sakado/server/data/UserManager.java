@@ -96,7 +96,12 @@ public class UserManager
     protected StudentClass createClass(Establishment establishment, String name, String adminUsername)
     {
         StudentClass studentClass = new StudentClass(establishment, name, adminUsername);
-        studentClass.addRepresentatives(config.at("save.classes." + studentClass.getId() + ".representatives", String[].class));
+        String[] saved = config.at("save.classes." + studentClass.getId() + ".representatives", String[].class);
+
+        if (saved != null)
+        {
+            studentClass.addRepresentatives(saved);
+        }
 
         return studentClass;
     }
