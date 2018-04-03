@@ -24,18 +24,24 @@ import java.util.Calendar;
 public class Mark implements Identifiable
 {
     private String subject;
-    private String mark;
+    private String title;
+    private int value;
+    private int max;
     private long time;
+    private int period;
 
     public Mark()
     {
     }
 
-    public Mark(String subject, String mark, long time)
+    public Mark(String subject, String title, int value, int max, long time, int period)
     {
         this.subject = subject;
-        this.mark = mark;
+        this.title = title;
+        this.value = value;
+        this.max = max;
         this.time = time;
+        this.period = period;
     }
 
     public String getSubject()
@@ -43,9 +49,24 @@ public class Mark implements Identifiable
         return subject;
     }
 
-    public String getMark()
+    public String getTitle()
     {
-        return mark;
+        return title;
+    }
+
+    public int getValue()
+    {
+        return value;
+    }
+
+    public int getMax()
+    {
+        return max;
+    }
+
+    public int getPeriod()
+    {
+        return period;
     }
 
     public long getTime()
@@ -61,6 +82,6 @@ public class Mark implements Identifiable
     @Override
     public String getId()
     {
-        return "M" + getTime() + getSubject().substring(0, 2) + getMark();
+        return "M" + getTime() + getSubject().substring(0, 2) + getValue();
     }
 }

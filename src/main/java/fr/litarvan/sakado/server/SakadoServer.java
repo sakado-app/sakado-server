@@ -110,17 +110,8 @@ public class SakadoServer implements App
             }
         }
 
-        log.info("Starting data service...");
-        try
-        {
-            data.init();
-        }
-        catch (IOException e)
-        {
-            log.fatal("Couldn't init UserManager service, shutting down...", e);
-            System.exit(1);
-        }
-
+        log.info("Starting data services...");
+        data.init();
         refresh.start();
 
         log.info("Configuring HTTP server...");

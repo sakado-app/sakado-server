@@ -18,18 +18,17 @@ repositories {
 }
 
 dependencies {
-    compile 'com.sparkjava:spark-core:2.7.1'
-    compile 'com.google.inject:guice:4.1.0'
-    compile 'com.github.briandilley.jsonrpc4j:jsonrpc4j:1.5.2'
+    compile 'com.sparkjava:spark-core:2.7.2'
+    compile 'com.google.inject:guice:4.2.0'
 
-    compile 'com.graphql-java:graphql-java:6.0'
+    compile 'com.graphql-java:graphql-java:8.0'
 
-    compile 'com.google.guava:guava:23.4-jre'
+    compile 'com.google.guava:guava:24.1-jre'
     compile 'commons-io:commons-io:2.6'
     compile 'net.sf.trove4j:trove4j:3.0.3'
 
-    compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.9.1'
-    compile 'org.apache.logging.log4j:log4j-core:2.9.1'
+    compile 'org.apache.logging.log4j:log4j-slf4j-impl:2.11.0'
+    compile 'org.apache.logging.log4j:log4j-core:2.11.0'
 
     compile 'fr.litarvan.commons:litarvan-commons:1.0.0'
 }

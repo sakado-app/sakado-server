@@ -1,36 +1,65 @@
 package fr.litarvan.sakado.server.data;
 
-import fr.litarvan.sakado.server.data.network.NetworkClient;
+import com.google.gson.Gson;
+import fr.litarvan.sakado.server.data.network.FetchRequest;
+import fr.litarvan.sakado.server.data.network.FetchResponse;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class DataServer
 {
-    private String name;
-    private String host;
-    private int port;
+    private static final Gson gson = new Gson();
 
-    private transient NetworkClient client;
+    private String name;
+    private String url;
 
     public DataServer()
     {
     }
 
-    public DataServer(String name, String host, int port)
+    public DataServer(String name, String url)
     {
         this.name = name;
-        this.host = host;
-        this.port = port;
+        this.url = url;
     }
 
-    public void init() throws IOException
+    public FetchResponse fetch(FetchRequest request) throws IOException
     {
-        this.client = new NetworkClient(host, port);
-    }
+        URL url = new URL(this.url);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-    public NetworkClient getClient()
-    {
-        return this.client;
+        connection.setDoInput(true);
+        connection.setDoOutput(true);
+
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json");
+
+        try (DataOutputStream out = new DataOutputStream(connection.getOutputStream()))
+        {
+            out.write(gson.toJson(request).getBytes(StandardCharsets.UTF_8));
+        }
+
+        StringBuilder content = new StringBuilder();
+
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream())))
+        {
+            String line;
+
+            while ((line = in.readLine()) != null)
+            {
+                content.append(line).append(System.lineSeparator());
+            }
+        }
+
+        connection.disconnect();
+
+        return gson.fromJson(content.toString(), FetchResponse.class);
     }
 
     public String getName()
@@ -38,13 +67,8 @@ public class DataServer
         return name;
     }
 
-    public String getHost()
+    public String getUrl()
     {
-        return host;
-    }
-
-    public int getPort()
-    {
-        return port;
+        return url;
     }
 }

@@ -25,17 +25,19 @@ public class Homework implements Identifiable
 {
     private String subject;
     private String content;
-    private long time;
+    private long since;
+    private long until;
 
     public Homework()
     {
     }
 
-    public Homework(String subject, String content, long time)
+    public Homework(String subject, String content, long since, long until)
     {
         this.subject = subject;
         this.content = content;
-        this.time = time;
+        this.since = since;
+        this.until = until;
     }
 
     public String getSubject()
@@ -48,19 +50,29 @@ public class Homework implements Identifiable
         return content;
     }
 
-    public long getTime()
+    public long getSince()
     {
-        return time;
+        return since;
     }
 
-    public Calendar getTimeAsCalendar()
+    public Calendar getSinceAsCalendar()
     {
-        return CalendarUtils.fromTimestamp(time);
+        return CalendarUtils.fromTimestamp(since);
+    }
+
+    public long getUntil()
+    {
+        return until;
+    }
+
+    public Calendar getUntilAsCalendar()
+    {
+        return CalendarUtils.fromTimestamp(until);
     }
 
     @Override
     public String getId()
     {
-        return "H" + time + getSubject().substring(0, 2) + getContent().substring(0, 5);
+        return "H" + since + "" + until + getSubject().substring(0, 2) + getContent().substring(0, 5);
     }
 }

@@ -13,10 +13,8 @@
       "name": "Lycee Joffre (Montpellier)",
       "method": {
         "server": "pronote",
-        "params": {
-          "pronote": "http://notes.lyc-joffre-montpellier.ac-montpellier.fr/",
-          "variant": "aten"
-        }
+        "url": "http://notes.lyc-joffre-montpellier.ac-montpellier.fr/",
+        "cas": "ac-montpellier"
       }
     }
   ]

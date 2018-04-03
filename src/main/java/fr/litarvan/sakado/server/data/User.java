@@ -22,6 +22,7 @@ import fr.litarvan.sakado.server.data.network.FetchResponse;
 import fr.litarvan.sakado.server.data.network.FetchRequest;
 
 import java.io.IOException;
+import java.util.Map;
 
 public class User
 {
@@ -42,6 +43,7 @@ public class User
 
     private Week[] timetable;
     private Homework[] homeworks;
+    private Map<String, Mark[]> marks;
     private Mark[] lastMarks;
     private Averages averages;
 
@@ -55,9 +57,9 @@ public class User
         this.deviceToken = deviceToken;
     }
 
-    public void update() throws IOException, RequestException
+    public void update() throws IOException
     {
-        FetchResponse response = server.getClient().push("fetch", new FetchRequest(username, password, establishment.getMethod().getParams()), FetchResponse.class);
+        FetchResponse response = server.fetch(new FetchRequest(username, password, establishment.getMethod().getUrl(), establishment.getMethod().getCas()));
 
         this.name = response.getName();
         this.studentClass = response.getStudentClass();
@@ -65,6 +67,7 @@ public class User
 
         this.timetable = response.getTimetable();
         this.homeworks = response.getHomeworks();
+        this.marks = response.getMarks();
         this.lastMarks = response.getLastMarks();
         this.averages = response.getAverages();
     }
@@ -129,6 +132,11 @@ public class User
         return homeworks;
     }
 
+    public Map<String, Mark[]> getMarks()
+    {
+        return marks;
+    }
+
     public Mark[] getLastMarks()
     {
         return lastMarks;
@@ -148,15 +156,19 @@ public class User
     {
         private String student;
         private String studentClass;
+        private Map<String, Integer> subjects;
+        private int period;
 
         public Averages()
         {
         }
 
-        public Averages(String student, String studentClass)
+        public Averages(String student, String studentClass, Map<String, Integer> subjects, int period)
         {
             this.student = student;
             this.studentClass = studentClass;
+            this.subjects = subjects;
+            this.period = period;
         }
 
         public String getStudent()
@@ -167,6 +179,16 @@ public class User
         public String getStudentClass()
         {
             return studentClass;
+        }
+
+        public Map<String, Integer> getSubjects()
+        {
+            return subjects;
+        }
+
+        public int getPeriod()
+        {
+            return period;
         }
     }
 }

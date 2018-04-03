@@ -17,6 +17,8 @@
  */
 package fr.litarvan.sakado.server.data.network;
 
+import java.util.Map;
+
 import fr.litarvan.sakado.server.data.Homework;
 import fr.litarvan.sakado.server.data.Mark;
 import fr.litarvan.sakado.server.data.User.Averages;
@@ -30,6 +32,7 @@ public class FetchResponse
 
     private Week[] timetable;
 
+    private Map<String, Mark[]> marks;
     private Mark[] lastMarks;
     private Averages averages;
 
@@ -39,12 +42,13 @@ public class FetchResponse
     {
     }
 
-    public FetchResponse(String studentClass, String name, String avatar, Week[] timetable, Mark[] lastMarks, Averages averages, Homework[] homeworks)
+    public FetchResponse(String studentClass, String name, String avatar, Week[] timetable, Map<String, Mark[]> marks, Mark[] lastMarks, Averages averages, Homework[] homeworks)
     {
         this.studentClass = studentClass;
         this.name = name;
         this.avatar = avatar;
         this.timetable = timetable;
+        this.marks = marks;
         this.lastMarks = lastMarks;
         this.averages = averages;
         this.homeworks = homeworks;
@@ -68,6 +72,11 @@ public class FetchResponse
     public Week[] getTimetable()
     {
         return timetable;
+    }
+
+    public Map<String, Mark[]> getMarks()
+    {
+        return marks;
     }
 
     public Mark[] getLastMarks()

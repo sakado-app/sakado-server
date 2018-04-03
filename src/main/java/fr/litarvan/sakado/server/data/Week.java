@@ -23,39 +23,27 @@ import java.util.Calendar;
 
 public class Week implements Identifiable
 {
-    private long from;
-    private long to;
+    private long time;
     private Lesson[] content;
 
     public Week()
     {
     }
 
-    public Week(long from, long to, Lesson[] content)
+    public Week(long time, Lesson[] content)
     {
-        this.from = from;
-        this.to = to;
+        this.time = time;
         this.content = content;
     }
 
-    public long getFrom()
+    public long getTime()
     {
-        return from;
+        return time;
     }
 
-    public Calendar getFromAsCalendar()
+    public Calendar getTimeAsCalendar()
     {
-        return CalendarUtils.fromTimestamp(from);
-    }
-
-    public long getTo()
-    {
-        return to;
-    }
-
-    public Calendar getToAsCalendar()
-    {
-        return CalendarUtils.fromTimestamp(to);
+        return CalendarUtils.fromTimestamp(time);
     }
 
     public Lesson[] getContent()
@@ -65,12 +53,12 @@ public class Week implements Identifiable
 
     public Week cloneWith(Lesson[] content)
     {
-        return new Week(this.from, this.to, content);
+        return new Week(this.time, content);
     }
 
     @Override
     public String getId()
     {
-        return "W" + this.getFrom() + "" + this.getTo();
+        return "W" + this.getTime();
     }
 }

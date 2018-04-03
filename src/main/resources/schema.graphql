@@ -61,7 +61,7 @@ type Week {
 type Lesson {
     id: String!
 
-    name: String!
+    subject: String!
     teacher: String!
     room: String
 

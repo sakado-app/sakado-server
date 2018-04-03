@@ -17,19 +17,19 @@
  */
 package fr.litarvan.sakado.server.data.network;
 
-import java.util.Map;
-
 public class FetchRequest
 {
     private String username;
     private String password;
-    private Map<String, String> params;
+    private String url;
+    private String cas;
 
-    public FetchRequest(String username, String password, Map<String, String> params)
+    public FetchRequest(String username, String password, String url, String cas)
     {
         this.username = username;
         this.password = password;
-        this.params = params;
+        this.url = url;
+        this.cas = cas;
     }
 
     public String getUsername()
@@ -42,8 +42,13 @@ public class FetchRequest
         return password;
     }
 
-    public Map<String, String> getParams()
+    public String getUrl()
     {
-        return params;
+        return url;
+    }
+
+    public String getCas()
+    {
+        return cas;
     }
 }

@@ -23,32 +23,32 @@ import java.util.Calendar;
 
 public class Lesson implements Identifiable
 {
-    private String name;
+    private String subject;
     private String teacher;
     private String room;
 
     private long from;
     private long to;
 
-    private boolean away;
+    private String status;
 
     public Lesson()
     {
     }
 
-    public Lesson(String name, String teacher, String room, long from, long to, boolean away)
+    public Lesson(String subject, String teacher, String room, long from, long to, String status)
     {
-        this.name = name;
+        this.subject = subject;
         this.teacher = teacher;
         this.room = room;
         this.from = from;
         this.to = to;
-        this.away = away;
+        this.status = status;
     }
 
-    public String getName()
+    public String getSubject()
     {
-        return name;
+        return subject;
     }
 
     public String getTeacher()
@@ -81,9 +81,9 @@ public class Lesson implements Identifiable
         return CalendarUtils.fromTimestamp(to);
     }
 
-    public boolean isAway()
+    public String getStatus()
     {
-        return away;
+        return status;
     }
 
     @Override

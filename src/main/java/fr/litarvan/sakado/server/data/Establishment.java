@@ -68,16 +68,18 @@ public class Establishment
     public static class FetchMethod
     {
         private String server;
-        private Map<String, String> params;
+        private String url;
+        private String cas;
 
         public FetchMethod()
         {
         }
 
-        public FetchMethod(String server, Map<String, String> params)
+        public FetchMethod(String server, String url, String cas)
         {
             this.server = server;
-            this.params = params;
+            this.url = url;
+            this.cas = cas;
         }
 
         public String getServer()
@@ -85,9 +87,14 @@ public class Establishment
             return server;
         }
 
-        public Map<String, String> getParams()
+        public String getUrl()
         {
-            return params;
+            return url;
+        }
+
+        public String getCas()
+        {
+            return cas;
         }
     }
 }
