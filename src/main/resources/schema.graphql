@@ -27,6 +27,7 @@ type User {
 
     timetable: [Week!]!
     homeworks: [Homework!]
+    marks: [SubjectMarks!]!
     lastMarks: [Mark!]!
     averages: Averages
 
@@ -53,8 +54,7 @@ type MutableStudentClass {
 type Week {
     id: String!
 
-    from: Long!
-    to: Long!
+    time: Long!
     content: [Lesson!]!
 }
 
@@ -64,6 +64,7 @@ type Lesson {
     subject: String!
     teacher: String!
     room: String
+    status: String
 
     from: Long!
     to: Long!
@@ -76,7 +77,8 @@ type Homework {
 
     subject: String!
     content: String!
-    time: Long!
+    since: Long!
+    until: Long!
     long: Boolean!
 }
 
@@ -89,11 +91,26 @@ type Mark {
     id: String!
 
     subject: String!
-    mark: String!
+    title: String
+    value: Float!
+    max: Float!
     time: Long!
+    period: Int!
+}
+
+type SubjectMarks {
+    subject: String!
+    marks: [Mark!]!
 }
 
 type Averages {
-    student: Float!,
+    student: Float!
     studentClass: Float!
+    subjects: [Average!]!
+    period: Int!
+}
+
+type Average {
+    subject: String!
+    value: Float!
 }

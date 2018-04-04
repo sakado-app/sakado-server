@@ -168,7 +168,7 @@ public class GraphQLController extends Controller
 
             for (Lesson lesson : week.getContent())
             {
-                if (lesson.isAway())
+                if (lesson.isCancelled())
                 {
                     away.add(lesson);
                 }

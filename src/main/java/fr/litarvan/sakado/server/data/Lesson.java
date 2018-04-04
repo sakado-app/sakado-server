@@ -86,6 +86,11 @@ public class Lesson implements Identifiable
         return status;
     }
 
+    public boolean isCancelled()
+    {
+        return getStatus() != null && (getStatus().equalsIgnoreCase("Prof. absent") || getStatus().equalsIgnoreCase("Cours annulé"));
+    }
+
     @Override
     public String getId()
     {

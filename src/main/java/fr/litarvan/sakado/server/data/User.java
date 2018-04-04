@@ -17,12 +17,10 @@
  */
 package fr.litarvan.sakado.server.data;
 
-import fr.litarvan.sakado.server.data.network.RequestException;
 import fr.litarvan.sakado.server.data.network.FetchResponse;
 import fr.litarvan.sakado.server.data.network.FetchRequest;
 
 import java.io.IOException;
-import java.util.Map;
 
 public class User
 {
@@ -43,7 +41,7 @@ public class User
 
     private Week[] timetable;
     private Homework[] homeworks;
-    private Map<String, Mark[]> marks;
+    private SubjectMarks[] marks;
     private Mark[] lastMarks;
     private Averages averages;
 
@@ -132,7 +130,7 @@ public class User
         return homeworks;
     }
 
-    public Map<String, Mark[]> getMarks()
+    public SubjectMarks[] getMarks()
     {
         return marks;
     }
@@ -152,43 +150,4 @@ public class User
         return deviceToken;
     }
 
-    public static class Averages
-    {
-        private String student;
-        private String studentClass;
-        private Map<String, Integer> subjects;
-        private int period;
-
-        public Averages()
-        {
-        }
-
-        public Averages(String student, String studentClass, Map<String, Integer> subjects, int period)
-        {
-            this.student = student;
-            this.studentClass = studentClass;
-            this.subjects = subjects;
-            this.period = period;
-        }
-
-        public String getStudent()
-        {
-            return student;
-        }
-
-        public String getStudentClass()
-        {
-            return studentClass;
-        }
-
-        public Map<String, Integer> getSubjects()
-        {
-            return subjects;
-        }
-
-        public int getPeriod()
-        {
-            return period;
-        }
-    }
 }

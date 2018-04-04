@@ -33,7 +33,7 @@ public class LongHomeworkTask extends RefreshTask
                 continue;
             }
 
-            Calendar date = homework.getTimeAsCalendar();
+            Calendar date = homework.getUntilAsCalendar();
             date.add(Calendar.HOUR_OF_DAY, -6); // 18h, the last day before
 
             if (current.after(date))

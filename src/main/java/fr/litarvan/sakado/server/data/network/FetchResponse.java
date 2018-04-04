@@ -17,11 +17,10 @@
  */
 package fr.litarvan.sakado.server.data.network;
 
-import java.util.Map;
-
 import fr.litarvan.sakado.server.data.Homework;
 import fr.litarvan.sakado.server.data.Mark;
-import fr.litarvan.sakado.server.data.User.Averages;
+import fr.litarvan.sakado.server.data.SubjectMarks;
+import fr.litarvan.sakado.server.data.Averages;
 import fr.litarvan.sakado.server.data.Week;
 
 public class FetchResponse
@@ -32,7 +31,7 @@ public class FetchResponse
 
     private Week[] timetable;
 
-    private Map<String, Mark[]> marks;
+    private SubjectMarks[] marks;
     private Mark[] lastMarks;
     private Averages averages;
 
@@ -42,7 +41,7 @@ public class FetchResponse
     {
     }
 
-    public FetchResponse(String studentClass, String name, String avatar, Week[] timetable, Map<String, Mark[]> marks, Mark[] lastMarks, Averages averages, Homework[] homeworks)
+    public FetchResponse(String studentClass, String name, String avatar, Week[] timetable, SubjectMarks[] marks, Mark[] lastMarks, Averages averages, Homework[] homeworks)
     {
         this.studentClass = studentClass;
         this.name = name;
@@ -74,7 +73,7 @@ public class FetchResponse
         return timetable;
     }
 
-    public Map<String, Mark[]> getMarks()
+    public SubjectMarks[] getMarks()
     {
         return marks;
     }

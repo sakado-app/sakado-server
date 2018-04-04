@@ -54,7 +54,7 @@ public class NewMarkTask extends RefreshTask
         else
         {
             title = "Nouvelle note";
-            message = marks.get(0).getSubject() + " - " + marks.get(0).getMark();
+            message = marks.get(0).getSubject() + " - " + marks.get(0).getValue() + "/" + marks.get(0).getMax();
         }
 
         try

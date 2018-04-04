@@ -29,7 +29,7 @@ public class AwayTeacherTask extends RefreshTask
         {
             for (Lesson lesson : week.getContent())
             {
-                if (lesson.isAway())
+                if (lesson.isCancelled())
                 {
                     away.add(lesson);
                 }

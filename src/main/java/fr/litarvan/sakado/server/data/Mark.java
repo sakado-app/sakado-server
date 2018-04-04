@@ -25,8 +25,8 @@ public class Mark implements Identifiable
 {
     private String subject;
     private String title;
-    private int value;
-    private int max;
+    private float value;
+    private float max;
     private long time;
     private int period;
 
@@ -54,12 +54,12 @@ public class Mark implements Identifiable
         return title;
     }
 
-    public int getValue()
+    public float getValue()
     {
         return value;
     }
 
-    public int getMax()
+    public float getMax()
     {
         return max;
     }

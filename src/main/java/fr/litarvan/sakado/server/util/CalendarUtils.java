@@ -21,13 +21,12 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.TimeZone;
 
 public final class CalendarUtils
 {
     public static Calendar create()
     {
-        return Calendar.getInstance(TimeZone.getTimeZone("Europe/Paris"));
+        return Calendar.getInstance();
     }
 
     public static String parse(Calendar calendar, int... fields)
