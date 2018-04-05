@@ -48,7 +48,7 @@ public class DataServer
 
         StringBuilder content = new StringBuilder();
 
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream())))
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8)))
         {
             String line;
 
