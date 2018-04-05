@@ -25,6 +25,8 @@ import fr.litarvan.sakado.server.data.Week;
 
 public class FetchResponse
 {
+    private String error;
+
     private String studentClass;
     private String name;
     private String avatar;
@@ -41,8 +43,9 @@ public class FetchResponse
     {
     }
 
-    public FetchResponse(String studentClass, String name, String avatar, Week[] timetable, SubjectMarks[] marks, Mark[] lastMarks, Averages averages, Homework[] homeworks)
+    public FetchResponse(String error, String studentClass, String name, String avatar, Week[] timetable, SubjectMarks[] marks, Mark[] lastMarks, Averages averages, Homework[] homeworks)
     {
+        this.error = error;
         this.studentClass = studentClass;
         this.name = name;
         this.avatar = avatar;
@@ -51,6 +54,11 @@ public class FetchResponse
         this.lastMarks = lastMarks;
         this.averages = averages;
         this.homeworks = homeworks;
+    }
+
+    public String getError()
+    {
+        return error;
     }
 
     public String getStudentClass()

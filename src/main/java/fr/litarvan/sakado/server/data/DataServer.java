@@ -3,6 +3,7 @@ package fr.litarvan.sakado.server.data;
 import com.google.gson.Gson;
 import fr.litarvan.sakado.server.data.network.FetchRequest;
 import fr.litarvan.sakado.server.data.network.FetchResponse;
+import fr.litarvan.sakado.server.data.network.RequestException;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -29,7 +30,7 @@ public class DataServer
         this.url = url;
     }
 
-    public FetchResponse fetch(FetchRequest request) throws IOException
+    public FetchResponse fetch(FetchRequest request) throws IOException, RequestException
     {
         URL url = new URL(this.url);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -59,7 +60,13 @@ public class DataServer
 
         connection.disconnect();
 
-        return gson.fromJson(content.toString(), FetchResponse.class);
+        FetchResponse response = gson.fromJson(content.toString(), FetchResponse.class);
+        if (response.getError() != null)
+        {
+            throw new RequestException(new Exception(response.getError()));
+        }
+
+        return response;
     }
 
     public String getName()

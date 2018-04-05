@@ -19,6 +19,7 @@ package fr.litarvan.sakado.server.data;
 
 import fr.litarvan.sakado.server.data.network.FetchResponse;
 import fr.litarvan.sakado.server.data.network.FetchRequest;
+import fr.litarvan.sakado.server.data.network.RequestException;
 
 import java.io.IOException;
 
@@ -55,7 +56,7 @@ public class User
         this.deviceToken = deviceToken;
     }
 
-    public void update() throws IOException
+    public void update() throws IOException, RequestException
     {
         FetchResponse response = server.fetch(new FetchRequest(username, password, establishment.getMethod().getUrl(), establishment.getMethod().getCas()));
 
