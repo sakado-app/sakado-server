@@ -31,6 +31,7 @@ public class StudentClass implements Identifiable
 
     private ArrayList<String> longHomeworks;
     private ArrayList<String> representatives;
+    private ArrayList<Reminder> reminders;
 
     public StudentClass(Establishment establishment, String name, String admin)
     {
@@ -48,6 +49,7 @@ public class StudentClass implements Identifiable
 
         this.longHomeworks = new ArrayList<>();
         this.representatives = new ArrayList<>();
+        this.reminders = new ArrayList<>();
     }
 
     public void add(User user)
@@ -58,11 +60,6 @@ public class StudentClass implements Identifiable
         }
 
         this.loggedUsers.add(user);
-    }
-
-    public void addRepresentatives(String... usernames)
-    {
-        this.representatives.addAll(Arrays.asList(usernames));
     }
 
     public void setLongHomework(String homework, boolean isLong)
@@ -110,6 +107,11 @@ public class StudentClass implements Identifiable
     public ArrayList<String> getRepresentatives()
     {
         return representatives;
+    }
+
+    public ArrayList<Reminder> getReminders()
+    {
+        return reminders;
     }
 
     @Override

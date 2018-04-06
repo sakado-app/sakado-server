@@ -33,6 +33,7 @@ type User {
 
     nextLesson: Lesson!
     away: [Week!]!
+    reminders: [Reminder!]!
     isLong(homework: String!): Boolean!
 }
 
@@ -40,15 +41,22 @@ type MutableUser {
     homework(id: String): MutableHomework
     representative(user: String): Boolean!
     class: MutableStudentClass!
+
+    addReminder(title: String!, content: String!, time: Long!): Reminder!
+    removeReminder(title: String!): Reminder!
 }
 
 type StudentClass {
     representatives: [String!]!
+    reminders: [Reminder!]!
 }
 
 type MutableStudentClass {
     addRepresentative(username: String!): String!
     removeRepresentative(username: String!): String!
+
+    addReminder(title: String!, content: String!, time: Long!): Reminder!
+    removeReminder(title: String!): Reminder!
 }
 
 type Week {
@@ -113,4 +121,10 @@ type Averages {
 type Average {
     subject: String!
     value: Float!
+}
+
+type Reminder {
+    title: String!
+    content: String!
+    time: Long!
 }

@@ -18,5 +18,7 @@ public class SaveTask extends RefreshTask
         StudentClass studentClass = user.studentClass();
 
         config.set("classes." + studentClass.getId() + ".representatives", studentClass.getRepresentatives());
+        config.set("classes." + studentClass.getId() + ".reminders", studentClass.getReminders());
+        config.set("classes." + studentClass.getId() + ".users." + user.getUsername() + ".reminders", user.getReminders());
     }
 }

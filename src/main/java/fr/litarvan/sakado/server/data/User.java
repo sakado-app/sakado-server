@@ -22,6 +22,7 @@ import fr.litarvan.sakado.server.data.network.FetchRequest;
 import fr.litarvan.sakado.server.data.network.RequestException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class User
 {
@@ -46,6 +47,8 @@ public class User
     private Mark[] lastMarks;
     private Averages averages;
 
+    private ArrayList<Reminder> reminders;
+
     public User(DataServer server, String token, Establishment establishment, String username, String password, String deviceToken)
     {
         this.server = server;
@@ -54,6 +57,8 @@ public class User
         this.username = username;
         this.password = password;
         this.deviceToken = deviceToken;
+
+        this.reminders = new ArrayList<>();
     }
 
     public void update() throws IOException, RequestException
@@ -151,4 +156,8 @@ public class User
         return deviceToken;
     }
 
+    public ArrayList<Reminder> getReminders()
+    {
+        return reminders;
+    }
 }

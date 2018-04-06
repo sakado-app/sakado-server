@@ -77,7 +77,7 @@ public class GraphQLController extends Controller
         return json(result.getData(), response);
     }
 
-    public GraphQL get(Request request) throws URISyntaxException
+    public GraphQL get(Request request)
     {
         SchemaParser parser = new SchemaParser();
         TypeDefinitionRegistry registry = parser.parse(new InputStreamReader(SakadoServer.class.getResourceAsStream("/schema.graphql")));
@@ -93,9 +93,13 @@ public class GraphQLController extends Controller
                                             .dataFetcher("homeworksEnabled", environment -> areHomeworksEnabled(environment.getSource()))
                                             .dataFetcher("class", environment -> getStudentClass(environment.getSource())))
             .type("MutableUser", builder -> builder.dataFetcher("homework", environment -> getHomework(environment.getContext(), environment.getArgument("id")))
-                                            .dataFetcher("class", environment -> getStudentClass(environment.getContext())))
+                                            .dataFetcher("class", environment -> getStudentClass(environment.getContext()))
+                                            .dataFetcher("addReminder", environment -> addReminder((User) environment.getContext(), environment.getArgument("title"), environment.getArgument("content"), environment.getArgument("time")))
+                                            .dataFetcher("removeReminder", environment -> removeReminder((User) environment.getContext(), environment.getArgument("title"))))
             .type("MutableStudentClass", builder -> builder.dataFetcher("addRepresentative", environment -> addRepresentative(environment.getContext(), environment.getArgument("username")))
-                                            .dataFetcher("removeRepresentative", environment -> removeRepresentative(environment.getContext(), environment.getArgument("username"))))
+                                            .dataFetcher("removeRepresentative", environment -> removeRepresentative(environment.getContext(), environment.getArgument("username")))
+                                                           .dataFetcher("addReminder", environment -> addReminder((StudentClass) environment.getContext(), environment.getArgument("title"), environment.getArgument("content"), environment.getArgument("time")))
+                                                           .dataFetcher("removeReminder", environment -> removeReminder((StudentClass) environment.getContext(), environment.getArgument("title"))))
             .type("Homework", builder -> builder.dataFetcher("long", environment -> isLong(environment.getContext(), environment.getSource())))
             .type("MutableHomework", builder -> builder.dataFetcher("long", environment -> setLong(environment.getContext(), environment.getSource(), environment.getArgument("long"))))
             .build();
@@ -240,5 +244,49 @@ public class GraphQLController extends Controller
     public boolean areHomeworksEnabled(User user)
     {
         return user.getHomeworks() != null;
+    }
+
+    public Reminder addReminder(User user, String title, String content, long time)
+    {
+        Reminder reminder = new Reminder(title, content, time);
+        user.getReminders().add(reminder);
+
+        return reminder;
+    }
+
+    public Reminder removeReminder(User user, String title)
+    {
+        for (Reminder reminder : user.getReminders())
+        {
+            if (reminder.getTitle().equals(title))
+            {
+                user.getReminders().remove(reminder);
+                return reminder;
+            }
+        }
+
+        return null;
+    }
+
+    public Reminder addReminder(StudentClass studentClass, String title, String content, long time)
+    {
+        Reminder reminder = new Reminder(title, content, time);
+        studentClass.getReminders().add(reminder);
+
+        return reminder;
+    }
+
+    public Reminder removeReminder(StudentClass studentClass, String title)
+    {
+        for (Reminder reminder : studentClass.getReminders())
+        {
+            if (reminder.getTitle().equals(title))
+            {
+                studentClass.getReminders().remove(reminder);
+                return reminder;
+            }
+        }
+
+        return null;
     }
 }

@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Singleton
@@ -90,17 +91,31 @@ public class UserManager
 
         studentClass.add(user);
 
+        Reminder[] savedReminders = config.at("save.classes." + studentClass.getId() + ".users." + user.getUsername() + ".reminders", Reminder[].class);
+
+        if (savedReminders != null)
+        {
+            user.getReminders().addAll(Arrays.asList(savedReminders));
+        }
+
         return user;
     }
 
     protected StudentClass createClass(Establishment establishment, String name, String adminUsername)
     {
         StudentClass studentClass = new StudentClass(establishment, name, adminUsername);
-        String[] saved = config.at("save.classes." + studentClass.getId() + ".representatives", String[].class);
+        String[] savedRepresentatives = config.at("save.classes." + studentClass.getId() + ".representatives", String[].class);
 
-        if (saved != null)
+        if (savedRepresentatives != null)
         {
-            studentClass.addRepresentatives(saved);
+            studentClass.getRepresentatives().addAll(Arrays.asList(savedRepresentatives));
+        }
+
+        Reminder[] savedReminders = config.at("save.classes." + studentClass.getId() + ".reminders", Reminder[].class);
+
+        if (savedReminders != null)
+        {
+            studentClass.getReminders().addAll(Arrays.asList(savedReminders));
         }
 
         return studentClass;
