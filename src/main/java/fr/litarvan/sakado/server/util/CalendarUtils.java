@@ -43,7 +43,6 @@ public final class CalendarUtils
 
     public static boolean isSameDay(Calendar a, Calendar b)
     {
-        System.out.println("a: " + a.get(DAY_OF_MONTH) + ", b: " + b.get(DAY_OF_MONTH));
         return a.get(DAY_OF_MONTH) == b.get(DAY_OF_MONTH) && a.get(MONTH) == b.get(MONTH) && a.get(YEAR) == b.get(YEAR);
     }
 

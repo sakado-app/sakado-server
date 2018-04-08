@@ -30,7 +30,7 @@ public class Mark implements Identifiable
     private float average;
     private float higher;
     private float lower;
-    private int coefficient;
+    private float coefficient;
     private int period;
     private long time;
 
@@ -38,7 +38,7 @@ public class Mark implements Identifiable
     {
     }
 
-    public Mark(String subject, String title, float value, float max, float average, float higher, float lower, int coefficient, int period, long time)
+    public Mark(String subject, String title, float value, float max, float average, float higher, float lower, float coefficient, int period, long time)
     {
         this.subject = subject;
         this.title = title;
@@ -87,7 +87,7 @@ public class Mark implements Identifiable
         return lower;
     }
 
-    public int getCoefficient()
+    public float getCoefficient()
     {
         return coefficient;
     }

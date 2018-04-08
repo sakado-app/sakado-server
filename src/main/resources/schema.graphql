@@ -110,7 +110,7 @@ type Mark {
     average: Float
     higher: Float
     lower: Float
-    coefficient: Int
+    coefficient: Float
     period: Int!
 }
 
