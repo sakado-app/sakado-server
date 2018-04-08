@@ -33,10 +33,10 @@ public final class CalendarUtils
 
     public static boolean isTomorrow(Calendar calendar)
     {
-        System.out.println("His until date is " + calendar + " (day : " + calendar.get(DAY_OF_MONTH) + ")");
         Calendar current = create();
         current.add(DAY_OF_MONTH, 1);
         current.add(HOUR_OF_DAY, -3); // For late people
+        calendar.add(HOUR_OF_DAY, 2); // Time zone fixes...
 
         return isSameDay(current, calendar);
     }
