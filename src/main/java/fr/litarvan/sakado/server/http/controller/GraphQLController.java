@@ -187,6 +187,7 @@ public class GraphQLController extends Controller
         List<Homework> homeworks = new ArrayList<>();
         for (Homework homework : user.getHomeworks())
         {
+            System.out.println("Checking homework : " + homework.getSubject() + " : " + homework.getContent());
             if (CalendarUtils.isTomorrow(homework.getUntilAsCalendar()))
             {
                 homeworks.add(homework);

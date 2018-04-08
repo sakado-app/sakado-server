@@ -33,15 +33,17 @@ public final class CalendarUtils
 
     public static boolean isTomorrow(Calendar calendar)
     {
+        System.out.println("His until date is " + calendar + " (day : " + calendar.get(DAY_OF_MONTH) + ")");
         Calendar current = create();
-        current.add(Calendar.DAY_OF_MONTH, 1);
-        current.add(Calendar.HOUR_OF_DAY, -3); // For late people
+        current.add(DAY_OF_MONTH, 1);
+        current.add(HOUR_OF_DAY, -3); // For late people
 
         return isSameDay(current, calendar);
     }
 
     public static boolean isSameDay(Calendar a, Calendar b)
     {
+        System.out.println("a: " + a.get(DAY_OF_MONTH) + ", b: " + b.get(DAY_OF_MONTH));
         return a.get(DAY_OF_MONTH) == b.get(DAY_OF_MONTH) && a.get(MONTH) == b.get(MONTH) && a.get(YEAR) == b.get(YEAR);
     }
 
