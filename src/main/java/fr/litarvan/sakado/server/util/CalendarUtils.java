@@ -22,11 +22,27 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Calendar;
 import java.util.Locale;
 
+import static java.util.Calendar.*;
+
 public final class CalendarUtils
 {
     public static Calendar create()
     {
-        return Calendar.getInstance();
+        return getInstance();
+    }
+
+    public static boolean isTomorrow(Calendar calendar)
+    {
+        Calendar current = create();
+        current.add(Calendar.DAY_OF_MONTH, 1);
+        current.add(Calendar.HOUR_OF_DAY, -3); // For late people
+
+        return isSameDay(current, calendar);
+    }
+
+    public static boolean isSameDay(Calendar a, Calendar b)
+    {
+        return a.get(DAY_OF_MONTH) == b.get(DAY_OF_MONTH) && a.get(MONTH) == b.get(MONTH) && a.get(YEAR) == b.get(YEAR);
     }
 
     public static String parse(Calendar calendar, int... fields)
@@ -35,7 +51,7 @@ public final class CalendarUtils
 
         for (int field : fields)
         {
-            String res = calendar.getDisplayName(field, Calendar.LONG, Locale.FRANCE);
+            String res = calendar.getDisplayName(field, LONG, Locale.FRANCE);
 
             if (res == null)
             {

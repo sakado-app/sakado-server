@@ -23,6 +23,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import fr.litarvan.sakado.server.SakadoServer;
 import fr.litarvan.sakado.server.data.StudentClass;
@@ -67,7 +68,7 @@ public class GraphQLController extends Controller
     {
         User user = userManager.getByToken(request.headers("Token"));
 
-        if (this.schema == null)
+        if (this.schema == null || "true".equals(System.getProperty("sakado.debug"))) // Live schema edit support
         {
             this.schema = get(request);
         }
@@ -95,6 +96,7 @@ public class GraphQLController extends Controller
             .type("User", builder -> builder.dataFetcher("admin", environment -> isAdmin(environment.getSource()))
                                             .dataFetcher("representative", environment -> isRepresentative(environment.getSource()))
                                             .dataFetcher("nextLesson", environment -> getNextLesson(environment.getSource()))
+                                            .dataFetcher("tomorrow", environment -> getTomorrow(environment.getSource()))
                                             .dataFetcher("away", environment -> getAway(environment.getSource()))
                                             .dataFetcher("homeworksEnabled", environment -> areHomeworksEnabled(environment.getSource()))
                                             .dataFetcher("class", environment -> getStudentClass(environment.getSource())))
@@ -139,28 +141,58 @@ public class GraphQLController extends Controller
         return user.studentClass().getRepresentatives().contains(user.getUsername());
     }
 
-    public Lesson getNextLesson(User user)
+    public Lesson[] getNextLesson(User user)
     {
         Calendar current = CalendarUtils.create();
         current.add(Calendar.MINUTE, -30);
 
-        Lesson next = null;
+        Lesson[] next = null;
 
-        for (Lesson lesson : user.getTimetable()[0].getContent())
+        Lesson[] content = user.getTimetable()[0].getContent();
+        for (int i = 0; i < content.length; i++)
         {
-            if (lesson.getFromAsCalendar().after(current))
+            Lesson lesson = content[i];
+            if (lesson.getFromAsCalendar().after(current) && !lesson.isAway() && !lesson.isCancelled())
             {
-                next = lesson;
+                next = new Lesson[]{i != 0 ? content[i - 1] : null, lesson, i + 1 < content.length ? content[i + 1] : null};
                 break;
             }
         }
 
         if (next == null)
         {
-            next = user.getTimetable()[1].getContent()[0];
+            next = new Lesson[] {null, user.getTimetable()[1].getContent()[0], user.getTimetable()[1].getContent()[1] };
         }
 
         return next;
+    }
+
+    public Tomorrow getTomorrow(User user)
+    {
+        Calendar today = CalendarUtils.create();
+
+        List<Lesson> timetable = new ArrayList<>();
+        for (Lesson lesson : user.getTimetable()[today.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY ? 1 : 0].getContent())
+        {
+            if (CalendarUtils.isTomorrow(lesson.getFromAsCalendar()))
+            {
+                timetable.add(lesson);
+            }
+        }
+
+        List<Reminder> reminders = new ArrayList<>();
+        reminders.addAll(user.getReminders().stream().filter(reminder -> CalendarUtils.isTomorrow(reminder.getTimeAsCalendar())).collect(Collectors.toList()));
+        reminders.addAll(user.studentClass().getReminders().stream().filter(reminder -> CalendarUtils.isTomorrow(reminder.getTimeAsCalendar())).collect(Collectors.toList()));
+
+        List<Homework> homeworks = new ArrayList<>();
+        for (Homework homework : user.getHomeworks())
+        {
+            if (CalendarUtils.isTomorrow(homework.getUntilAsCalendar()))
+            {
+                homeworks.add(homework);
+            }
+        }
+        return new Tomorrow(timetable.toArray(new Lesson[]{}), reminders.toArray(new Reminder[]{}), homeworks.toArray(new Homework[]{}));
     }
 
     public Week[] getAway(User user)

@@ -1,5 +1,9 @@
 package fr.litarvan.sakado.server.data;
 
+import java.util.Calendar;
+
+import fr.litarvan.sakado.server.util.CalendarUtils;
+
 public class Reminder implements Identifiable
 {
     private String title;
@@ -37,6 +41,11 @@ public class Reminder implements Identifiable
     public long getTime()
     {
         return time;
+    }
+
+    public Calendar getTimeAsCalendar()
+    {
+        return CalendarUtils.fromTimestamp(getTime());
     }
 
     @Override

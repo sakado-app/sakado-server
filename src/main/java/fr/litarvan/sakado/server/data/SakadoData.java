@@ -2,6 +2,7 @@ package fr.litarvan.sakado.server.data;
 
 import fr.litarvan.commons.config.ConfigProvider;
 
+import fr.litarvan.sakado.server.data.network.DataServer;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

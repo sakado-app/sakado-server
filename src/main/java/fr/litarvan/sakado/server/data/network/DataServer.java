@@ -1,9 +1,6 @@
-package fr.litarvan.sakado.server.data;
+package fr.litarvan.sakado.server.data.network;
 
 import com.google.gson.Gson;
-import fr.litarvan.sakado.server.data.network.FetchRequest;
-import fr.litarvan.sakado.server.data.network.FetchResponse;
-import fr.litarvan.sakado.server.data.network.RequestException;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;

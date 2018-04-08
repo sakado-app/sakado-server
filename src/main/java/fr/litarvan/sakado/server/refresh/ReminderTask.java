@@ -28,12 +28,7 @@ public class ReminderTask extends RefreshTask
         reminders.addAll(user.getReminders());
         reminders.addAll(user.studentClass().getReminders());
 
-        reminders.removeIf(reminder -> {
-            Calendar date = CalendarUtils.fromTimestamp(reminder.getTime());
-            Calendar current = CalendarUtils.create();
-
-            return current.get(Calendar.DAY_OF_MONTH) != date.get(Calendar.DAY_OF_MONTH) - 1 || current.get(Calendar.MONTH) != date.get(Calendar.MONTH) || current.get(Calendar.HOUR_OF_DAY) < 19;
-        });
+        reminders.removeIf(reminder -> !CalendarUtils.isTomorrow(CalendarUtils.fromTimestamp(reminder.getTime())));
 
         removeSeen(user, reminders);
 

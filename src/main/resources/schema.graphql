@@ -31,7 +31,8 @@ type User {
     lastMarks: [Mark!]!
     averages: Averages
 
-    nextLesson: Lesson!
+    nextLesson: [Lesson]!
+    tomorrow: Tomorrow!
     away: [Week!]!
     reminders: [Reminder!]!
     isLong(homework: String!): Boolean!
@@ -135,4 +136,10 @@ type Reminder {
     content: String!
     author: String!
     time: Long!
+}
+
+type Tomorrow {
+    timetable: [Lesson!]!
+    reminders: [Reminder!]!
+    homeworks: [Homework!]!
 }
