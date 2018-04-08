@@ -40,15 +40,11 @@ import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import spark.Request;
 import spark.Response;
 
 public class GraphQLController extends Controller
 {
-    private static final Logger log = LogManager.getLogger("GraphQL");
-
     @Inject
     private UserManager userManager;
 
@@ -57,7 +53,7 @@ public class GraphQLController extends Controller
 
     private GraphQL schema;
 
-    public Object graphql(Request request, Response response) throws APIError, URISyntaxException
+    public Object graphql(Request request, Response response) throws APIError
     {
         User user = userManager.getByToken(request.headers("Token"));
 
@@ -137,8 +133,6 @@ public class GraphQLController extends Controller
         Calendar current = CalendarUtils.create();
         current.add(Calendar.MINUTE, -30);
 
-        log.info("Processing next lesson, current : " + CalendarUtils.parse(current, Calendar.DAY_OF_MONTH, Calendar.HOUR_OF_DAY, Calendar.MINUTE, Calendar.SECOND));
-
         Lesson next = null;
 
         for (Lesson lesson : user.getTimetable()[0].getContent())
@@ -146,8 +140,6 @@ public class GraphQLController extends Controller
             if (lesson.getFromAsCalendar().after(current))
             {
                 next = lesson;
-                log.info("Next found : " + CalendarUtils.parse(lesson.getFromAsCalendar(), Calendar.DAY_OF_MONTH, Calendar.HOUR, Calendar.MINUTE, Calendar.SECOND));
-
                 break;
             }
         }
@@ -172,7 +164,7 @@ public class GraphQLController extends Controller
 
             for (Lesson lesson : week.getContent())
             {
-                if (lesson.isCancelled())
+                if (lesson.isAway() || lesson.isCancelled())
                 {
                     away.add(lesson);
                 }

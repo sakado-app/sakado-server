@@ -68,6 +68,7 @@ public class UserManager
             this.remove(current);
         }
 
+        user.setLastLogin(System.currentTimeMillis());
         this.users.add(user);
 
         log.info("Successfully logged user '{}' : {} ({})", username, user.getName(), user.getStudentClass());
@@ -92,6 +93,8 @@ public class UserManager
         studentClass.add(user);
 
         Reminder[] savedReminders = config.at("save.classes." + studentClass.getId() + ".users." + user.getUsername() + ".reminders", Reminder[].class);
+        // TODO: DEBUG
+        savedReminders = new Reminder[] {new Reminder("Le rappel stylé !", "Cool non ?", 1523210050)};
 
         if (savedReminders != null)
         {
@@ -112,6 +115,11 @@ public class UserManager
         }
 
         Reminder[] savedReminders = config.at("save.classes." + studentClass.getId() + ".reminders", Reminder[].class);
+        // TODO: REMOVE THIS (debug)
+        savedReminders = new Reminder[] {
+            new Reminder("Petit rappel", "Un beau rappel, mais petit", 1523218850),
+            new Reminder("Gros rappel super classe", "Un très long rappel, qui explique beaucoup de chose, qui sont evidemment très importantes, car il faut les faire.", 1523239850)
+        };
 
         if (savedReminders != null)
         {

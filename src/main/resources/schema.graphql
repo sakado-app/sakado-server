@@ -78,6 +78,7 @@ type Lesson {
     to: Long!
 
     away: Boolean!
+    cancelled: Boolean!
 }
 
 type Homework {
@@ -103,6 +104,10 @@ type Mark {
     value: Float!
     max: Float!
     time: Long!
+    average: Float
+    higher: Float
+    lower: Float
+    coefficient: Int
     period: Int!
 }
 

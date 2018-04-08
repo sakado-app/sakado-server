@@ -49,6 +49,8 @@ public class User
 
     private ArrayList<Reminder> reminders;
 
+    private long lastLogin;
+
     public User(DataServer server, String token, Establishment establishment, String username, String password, String deviceToken)
     {
         this.server = server;
@@ -159,5 +161,15 @@ public class User
     public ArrayList<Reminder> getReminders()
     {
         return reminders;
+    }
+
+    public long getLastLogin()
+    {
+        return lastLogin;
+    }
+
+    public void setLastLogin(long lastLogin)
+    {
+        this.lastLogin = lastLogin;
     }
 }
