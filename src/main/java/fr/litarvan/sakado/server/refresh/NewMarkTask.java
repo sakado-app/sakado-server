@@ -53,8 +53,10 @@ public class NewMarkTask extends RefreshTask
         }
         else
         {
+            Mark mark = marks.get(0);
+
             title = "Nouvelle note";
-            message = marks.get(0).getSubject() + " - " + marks.get(0).getValue() + "/" + marks.get(0).getMax();
+            message = mark.getSubject() + " - " + mark.getValue() + "/" + mark.getMax() + (mark.getTitle() != null ? "(" + mark.getTitle() + ")" : "");
         }
 
         try
@@ -63,7 +65,7 @@ public class NewMarkTask extends RefreshTask
         }
         catch (Exception e)
         {
-            log.error("Couldn't send away push notification", e);
+            log.error("Couldn't send mark push notification", e);
         }
     }
 }

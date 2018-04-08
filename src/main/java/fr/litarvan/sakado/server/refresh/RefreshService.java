@@ -23,6 +23,9 @@ public class RefreshService
         AwayTeacherTask.class,
         LongHomeworkTask.class,
         NewMarkTask.class,
+        DeleteExpiredRemindersTask.class,
+        DisconnectExpiredUsersTask.class,
+        ReminderTask.class,
 
         SaveTask.class
     };

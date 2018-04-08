@@ -21,7 +21,9 @@ public enum PushType
 {
     AWAY("#bb0000", "sakado"),
     MARK("#1E6ADD", "sakado"),
-    HOMEWORK("#41A12E", "sakado");
+    REMINDER("#DD7200", "sakado"),
+    HOMEWORK("#41A12E", "sakado"),
+    NOTIFY("#E7DA18", "sakado");
 
     private String color;
     private String icon;

@@ -57,6 +57,8 @@ type MutableStudentClass {
 
     addReminder(title: String!, content: String!, time: Long!): Reminder!
     removeReminder(title: String!): Reminder!
+
+    notify(content: String!): String!
 }
 
 type Week {
@@ -131,5 +133,6 @@ type Average {
 type Reminder {
     title: String!
     content: String!
+    author: String!
     time: Long!
 }

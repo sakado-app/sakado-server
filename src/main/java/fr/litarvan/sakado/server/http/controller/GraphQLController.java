@@ -17,6 +17,7 @@
  */
 package fr.litarvan.sakado.server.http.controller;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -28,6 +29,8 @@ import fr.litarvan.sakado.server.data.StudentClass;
 import fr.litarvan.sakado.server.http.Controller;
 import fr.litarvan.sakado.server.http.error.APIError;
 import fr.litarvan.sakado.server.data.*;
+import fr.litarvan.sakado.server.push.PushService;
+import fr.litarvan.sakado.server.push.PushType;
 import fr.litarvan.sakado.server.util.CalendarUtils;
 import graphql.ExecutionInput;
 import graphql.ExecutionResult;
@@ -40,16 +43,23 @@ import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import spark.Request;
 import spark.Response;
 
 public class GraphQLController extends Controller
 {
+    private static final Logger log = LogManager.getLogger("GraphQL");
+
     @Inject
     private UserManager userManager;
 
     @Inject
     private SakadoData data;
+
+    @Inject
+    private PushService push;
 
     private GraphQL schema;
 
@@ -90,12 +100,13 @@ public class GraphQLController extends Controller
                                             .dataFetcher("class", environment -> getStudentClass(environment.getSource())))
             .type("MutableUser", builder -> builder.dataFetcher("homework", environment -> getHomework(environment.getContext(), environment.getArgument("id")))
                                             .dataFetcher("class", environment -> getStudentClass(environment.getContext()))
-                                            .dataFetcher("addReminder", environment -> addReminder((User) environment.getContext(), environment.getArgument("title"), environment.getArgument("content"), environment.getArgument("time")))
-                                            .dataFetcher("removeReminder", environment -> removeReminder((User) environment.getContext(), environment.getArgument("title"))))
+                                            .dataFetcher("addReminder", environment -> addReminder(environment.getContext(), environment.getArgument("title"), environment.getArgument("content"), environment.getArgument("time"), false))
+                                            .dataFetcher("removeReminder", environment -> removeReminder(environment.getContext(), environment.getArgument("title"), false)))
             .type("MutableStudentClass", builder -> builder.dataFetcher("addRepresentative", environment -> addRepresentative(environment.getContext(), environment.getArgument("username")))
                                             .dataFetcher("removeRepresentative", environment -> removeRepresentative(environment.getContext(), environment.getArgument("username")))
-                                                           .dataFetcher("addReminder", environment -> addReminder((StudentClass) environment.getContext(), environment.getArgument("title"), environment.getArgument("content"), environment.getArgument("time")))
-                                                           .dataFetcher("removeReminder", environment -> removeReminder((StudentClass) environment.getContext(), environment.getArgument("title"))))
+                                            .dataFetcher("addReminder", environment -> addReminder(environment.getContext(), environment.getArgument("title"), environment.getArgument("content"), environment.getArgument("time"), true))
+                                            .dataFetcher("removeReminder", environment -> removeReminder(environment.getContext(), environment.getArgument("title"), true))
+                                            .dataFetcher("notify", environment -> notify(environment.getSource(), environment.getArgument("content"))))
             .type("Homework", builder -> builder.dataFetcher("long", environment -> isLong(environment.getContext(), environment.getSource())))
             .type("MutableHomework", builder -> builder.dataFetcher("long", environment -> setLong(environment.getContext(), environment.getSource(), environment.getArgument("long"))))
             .build();
@@ -238,21 +249,27 @@ public class GraphQLController extends Controller
         return user.getHomeworks() != null;
     }
 
-    public Reminder addReminder(User user, String title, String content, long time)
+    public Reminder addReminder(User user, String title, String content, long time, boolean studentClass)
     {
-        Reminder reminder = new Reminder(title, content, time);
-        user.getReminders().add(reminder);
+        Reminder reminder = new Reminder(title, content, user.getName(), time);
+        (studentClass ? user.studentClass().getReminders() : user.getReminders()).add(reminder);
 
         return reminder;
     }
 
-    public Reminder removeReminder(User user, String title)
+    public Reminder removeReminder(User user, String title, boolean studentClass)
     {
-        for (Reminder reminder : user.getReminders())
+        List<Reminder> reminders = studentClass ? user.studentClass().getReminders() : user.getReminders();
+        for (Reminder reminder : reminders)
         {
             if (reminder.getTitle().equals(title))
             {
-                user.getReminders().remove(reminder);
+                if (studentClass && !isAdmin(user) && !isRepresentative(user) && !reminder.getAuthor().equals(user.getUsername()))
+                {
+                    throw new RuntimeException("You can't do that without being either admin or the reminder author");
+                }
+
+                reminders.remove(reminder);
                 return reminder;
             }
         }
@@ -260,25 +277,20 @@ public class GraphQLController extends Controller
         return null;
     }
 
-    public Reminder addReminder(StudentClass studentClass, String title, String content, long time)
+    public String notify(StudentClass studentClass, String content)
     {
-        Reminder reminder = new Reminder(title, content, time);
-        studentClass.getReminders().add(reminder);
-
-        return reminder;
-    }
-
-    public Reminder removeReminder(StudentClass studentClass, String title)
-    {
-        for (Reminder reminder : studentClass.getReminders())
+        for (User user : studentClass.getLoggedUsers())
         {
-            if (reminder.getTitle().equals(title))
+            try
             {
-                studentClass.getReminders().remove(reminder);
-                return reminder;
+                push.send(user, PushType.NOTIFY, "Information", content);
+            }
+            catch (IOException e)
+            {
+                log.error("Couldn't send global notification to user '" + user.getUsername() + "'", e);
             }
         }
 
-        return null;
+        return content;
     }
 }
