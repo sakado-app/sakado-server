@@ -43,6 +43,7 @@ public final class CalendarUtils
 
     public static boolean isSameDay(Calendar a, Calendar b)
     {
+        b.add(HOUR_OF_DAY, 2); // Time zone fixes...
         return a.get(DAY_OF_MONTH) == b.get(DAY_OF_MONTH) && a.get(MONTH) == b.get(MONTH) && a.get(YEAR) == b.get(YEAR);
     }
 
