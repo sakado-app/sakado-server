@@ -24,6 +24,7 @@ import fr.litarvan.sakado.server.data.network.RequestException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class User
 {
@@ -72,11 +73,34 @@ public class User
         this.studentClass = response.getStudentClass();
         this.avatar = response.getAvatar();
 
-        this.timetable = response.getTimetable();
         this.homeworks = response.getHomeworks();
         this.marks = response.getMarks();
         this.lastMarks = response.getLastMarks();
         this.averages = response.getAverages();
+
+        Week[] weeks = new Week[2];
+        for (int i = 0; i < weeks.length; i++)
+        {
+            List<Lesson> lessons = new ArrayList<>();
+
+            main:
+            for (Lesson lesson : response.getTimetable()[i].getContent())
+            {
+                for (Lesson l : lessons)
+                {
+                    if (l.getFrom() == lesson.getFrom() || l.getTo() == lesson.getTo())
+                    {
+                        continue main;
+                    }
+                }
+
+                lessons.add(lesson);
+            }
+
+            weeks[i] = response.getTimetable()[i].cloneWith(lessons.toArray(new Lesson[0]));
+        }
+
+        this.timetable = weeks;
     }
 
     public StudentClass studentClass()

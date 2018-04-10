@@ -49,6 +49,8 @@ import org.apache.logging.log4j.Logger;
 import spark.Request;
 import spark.Response;
 
+import static java.util.Calendar.*;
+
 public class GraphQLController extends Controller
 {
     private static final Logger log = LogManager.getLogger("GraphQL");
@@ -169,30 +171,41 @@ public class GraphQLController extends Controller
 
     public Tomorrow getTomorrow(User user)
     {
-        Calendar today = CalendarUtils.create();
+        Calendar tomorrowDay = CalendarUtils.create();
+
+        if (tomorrowDay.get(Calendar.HOUR_OF_DAY) >= 15)
+        {
+            tomorrowDay.add(DAY_OF_MONTH, 1);
+            tomorrowDay.add(HOUR_OF_DAY, -3); // For late people
+        }
+
+        if (tomorrowDay.get(DAY_OF_WEEK) == Calendar.SUNDAY)
+        {
+            tomorrowDay.add(DAY_OF_MONTH, 1);
+        }
 
         List<Lesson> timetable = new ArrayList<>();
-        for (Lesson lesson : user.getTimetable()[today.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY ? 1 : 0].getContent())
+        for (Lesson lesson : user.getTimetable()[CalendarUtils.create().get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY ? 1 : 0].getContent())
         {
-            if (CalendarUtils.isTomorrow(lesson.getFromAsCalendar()))
+            if (CalendarUtils.isSameDay(tomorrowDay, lesson.getFromAsCalendar()))
             {
                 timetable.add(lesson);
             }
         }
 
         List<Reminder> reminders = new ArrayList<>();
-        reminders.addAll(user.getReminders().stream().filter(reminder -> CalendarUtils.isTomorrow(reminder.getTimeAsCalendar())).collect(Collectors.toList()));
-        reminders.addAll(user.studentClass().getReminders().stream().filter(reminder -> CalendarUtils.isTomorrow(reminder.getTimeAsCalendar())).collect(Collectors.toList()));
+        reminders.addAll(user.getReminders().stream().filter(reminder -> CalendarUtils.isSameDay(tomorrowDay, reminder.getTimeAsCalendar())).collect(Collectors.toList()));
+        reminders.addAll(user.studentClass().getReminders().stream().filter(reminder -> CalendarUtils.isSameDay(tomorrowDay, reminder.getTimeAsCalendar())).collect(Collectors.toList()));
 
         List<Homework> homeworks = new ArrayList<>();
         for (Homework homework : user.getHomeworks())
         {
-            if (CalendarUtils.isTomorrow(homework.getUntilAsCalendar()))
+            if (CalendarUtils.isSameDay(tomorrowDay, homework.getUntilAsCalendar()))
             {
                 homeworks.add(homework);
             }
         }
-        return new Tomorrow(timetable.toArray(new Lesson[]{}), reminders.toArray(new Reminder[]{}), homeworks.toArray(new Homework[]{}));
+        return new Tomorrow(tomorrowDay.getTimeInMillis(), timetable.toArray(new Lesson[]{}), reminders.toArray(new Reminder[]{}), homeworks.toArray(new Homework[]{}));
     }
 
     public Week[] getAway(User user)
