@@ -33,6 +33,7 @@ type User {
 
     nextLesson: [Lesson]!
     tomorrow: Tomorrow!
+    holidays: NextHolidays!
     away: [Week!]!
     reminders: [Reminder!]!
     isLong(homework: String!): Boolean!
@@ -143,4 +144,20 @@ type Tomorrow {
     timetable: [Lesson!]!
     reminders: [Reminder!]!
     homeworks: [Homework!]!
+}
+
+type NextHolidays {
+    day: DayHoliday
+    period: PeriodHoliday
+}
+
+type DayHoliday {
+    name: String!
+    time: Long!
+}
+
+type PeriodHoliday {
+    name: String!
+    from: Long!
+    to: Long!
 }

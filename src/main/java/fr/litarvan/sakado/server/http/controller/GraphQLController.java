@@ -19,14 +19,19 @@ package fr.litarvan.sakado.server.http.controller;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import fr.litarvan.commons.config.ConfigProvider;
 import fr.litarvan.sakado.server.SakadoServer;
 import fr.litarvan.sakado.server.data.StudentClass;
+import fr.litarvan.sakado.server.data.holiday.DayHoliday;
+import fr.litarvan.sakado.server.data.holiday.NextHolidays;
+import fr.litarvan.sakado.server.data.holiday.PeriodHoliday;
+import fr.litarvan.sakado.server.data.holiday.SavedDayHoliday;
+import fr.litarvan.sakado.server.data.holiday.SavedPeriodHoliday;
 import fr.litarvan.sakado.server.http.Controller;
 import fr.litarvan.sakado.server.http.error.APIError;
 import fr.litarvan.sakado.server.data.*;
@@ -63,6 +68,9 @@ public class GraphQLController extends Controller
 
     @Inject
     private PushService push;
+
+    @Inject
+    private ConfigProvider config;
 
     private GraphQL schema;
 
@@ -101,7 +109,8 @@ public class GraphQLController extends Controller
                                             .dataFetcher("tomorrow", environment -> getTomorrow(environment.getSource()))
                                             .dataFetcher("away", environment -> getAway(environment.getSource()))
                                             .dataFetcher("homeworksEnabled", environment -> areHomeworksEnabled(environment.getSource()))
-                                            .dataFetcher("class", environment -> getStudentClass(environment.getSource())))
+                                            .dataFetcher("class", environment -> getStudentClass(environment.getSource()))
+                                            .dataFetcher("holidays", environment -> getNextHolidays(environment.getSource())))
             .type("MutableUser", builder -> builder.dataFetcher("homework", environment -> getHomework(environment.getContext(), environment.getArgument("id")))
                                             .dataFetcher("class", environment -> getStudentClass(environment.getContext()))
                                             .dataFetcher("addReminder", environment -> addReminder(environment.getContext(), environment.getArgument("title"), environment.getArgument("content"), environment.getArgument("time"), false))
@@ -337,5 +346,46 @@ public class GraphQLController extends Controller
         }
 
         return content;
+    }
+
+    public NextHolidays getNextHolidays(User user)
+    {
+        Calendar today = CalendarUtils.create();
+
+        SavedDayHoliday[] dayHolidays = config.at("holidays.days", SavedDayHoliday[].class);
+        SavedPeriodHoliday[] periodHolidays = config.at("holidays.periods", SavedPeriodHoliday[].class);
+
+        DayHoliday nextDayHoliday = null;
+        PeriodHoliday nextPeriodHoliday = null;
+
+        for (SavedDayHoliday holiday : dayHolidays)
+        {
+            Calendar time = CalendarUtils.create();
+            time.set(Calendar.DAY_OF_MONTH, holiday.getDay());
+            time.set(Calendar.MONTH, holiday.getMonth() - 1);
+
+            if (time.after(today) && (nextDayHoliday == null || time.before(CalendarUtils.fromTimestamp(nextDayHoliday.getTime()))))
+            {
+                nextDayHoliday = new DayHoliday(holiday.getName(), time.getTimeInMillis());
+            }
+        }
+
+        for (SavedPeriodHoliday holiday : periodHolidays)
+        {
+            Calendar from = CalendarUtils.create();
+            from.set(Calendar.DAY_OF_MONTH, holiday.getFrom().getDay());
+            from.set(Calendar.MONTH, holiday.getFrom().getMonth() - 1);
+
+            Calendar to = CalendarUtils.create();
+            to.set(Calendar.DAY_OF_MONTH, holiday.getTo().getDay());
+            to.set(Calendar.MONTH, holiday.getTo().getMonth() - 1);
+
+            if (from.after(today) && (nextPeriodHoliday == null || from.before(CalendarUtils.fromTimestamp(nextPeriodHoliday.getFrom()))))
+            {
+                nextPeriodHoliday = new PeriodHoliday(holiday.getName(), from.getTimeInMillis(), to.getTimeInMillis());
+            }
+        }
+
+        return new NextHolidays(nextDayHoliday, nextPeriodHoliday);
     }
 }

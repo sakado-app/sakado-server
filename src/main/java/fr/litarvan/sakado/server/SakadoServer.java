@@ -47,7 +47,7 @@ import java.net.InetSocketAddress;
 
 public class SakadoServer implements App
 {
-    public static final String VERSION = "1.2.0-BETA";
+    public static final String VERSION = "1.3.0-BETA";
 
     private static final Logger log = LogManager.getLogger("SakadoServer");
 
@@ -86,6 +86,7 @@ public class SakadoServer implements App
         configs.from("config/proxy.json").defaultIn(IOSource.at("proxy.default.json"));
         configs.from("config/data.json").defaultIn(IOSource.at("data.default.json"));
         configs.from("config/fcm.json").defaultIn(IOSource.at("fcm.default.json"));
+        configs.from("config/holidays.json").defaultIn(IOSource.at("holidays.default.json"));
         configs.from("config/save.json").defaultIn(IOSource.at("save.default.json"));
 
         if (configs.at("proxy.enabled", boolean.class))
