@@ -23,6 +23,11 @@ public class LongHomeworkTask extends RefreshTask
     @Override
     public void refresh(User user)
     {
+        if (user.getHomeworks() == null)
+        {
+            return;
+        }
+
         List<Homework> longHomeworks = new ArrayList<>();
         Calendar current = CalendarUtils.create();
 
