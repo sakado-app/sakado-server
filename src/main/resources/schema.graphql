@@ -148,7 +148,9 @@ type Tomorrow {
 
 type NextHolidays {
     day: DayHoliday
+    untilDay: Long
     period: PeriodHoliday
+    untilPeriod: Long
 }
 
 type DayHoliday {

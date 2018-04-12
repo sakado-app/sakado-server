@@ -23,6 +23,11 @@ public class ReminderTask extends RefreshTask
     @Override
     public void refresh(User user)
     {
+        if (CalendarUtils.create().get(Calendar.HOUR_OF_DAY) < 19)
+        {
+            return;
+        }
+
         List<Reminder> reminders = new ArrayList<>();
 
         reminders.addAll(user.getReminders());

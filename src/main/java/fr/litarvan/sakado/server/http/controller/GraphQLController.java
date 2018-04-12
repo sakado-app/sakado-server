@@ -386,6 +386,19 @@ public class GraphQLController extends Controller
             }
         }
 
-        return new NextHolidays(nextDayHoliday, nextPeriodHoliday);
+        long untilDay = 0;
+        long untilPeriod = 0;
+
+        if (nextDayHoliday != null)
+        {
+            untilDay = (long) Math.ceil((float) ((nextDayHoliday.getTime() - today.getTimeInMillis()) / 1000 / 60 / 60 ) / 24f);
+        }
+
+        if (nextPeriodHoliday != null)
+        {
+            untilPeriod = (long) Math.ceil((float) ((nextPeriodHoliday.getFrom() - today.getTimeInMillis()) / 1000 / 60 / 60 ) / 24f);
+        }
+
+        return new NextHolidays(nextDayHoliday, untilDay, nextPeriodHoliday, untilPeriod);
     }
 }
