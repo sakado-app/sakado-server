@@ -188,18 +188,35 @@ public class GraphQLController extends Controller
             tomorrowDay.add(HOUR_OF_DAY, -3); // For late people
         }
 
+        if (tomorrowDay.get(DAY_OF_WEEK) == Calendar.SATURDAY && tomorrowDay.get(Calendar.HOUR_OF_DAY) >= 15)
+        {
+            tomorrowDay.add(DAY_OF_MONTH, 1);
+        }
+
         if (tomorrowDay.get(DAY_OF_WEEK) == Calendar.SUNDAY)
         {
             tomorrowDay.add(DAY_OF_MONTH, 1);
         }
 
         List<Lesson> timetable = new ArrayList<>();
-        for (Lesson lesson : user.getTimetable()[CalendarUtils.create().get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY ? 1 : 0].getContent())
+
+        if (tomorrowDay.get(Calendar.MONTH) < 6)
         {
-            if (CalendarUtils.isSameDay(tomorrowDay, lesson.getFromAsCalendar()))
+            do
             {
-                timetable.add(lesson);
-            }
+                for (Lesson lesson : user.getTimetable()[CalendarUtils.create().get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY ? 1 : 0].getContent())
+                {
+                    if (CalendarUtils.isSameDay(tomorrowDay, lesson.getFromAsCalendar()))
+                    {
+                        timetable.add(lesson);
+                    }
+                }
+
+                if (timetable.size() == 0)
+                {
+                    tomorrowDay.add(DAY_OF_MONTH, 1);
+                }
+            } while (timetable.size() == 0);
         }
 
         List<Reminder> reminders = new ArrayList<>();
