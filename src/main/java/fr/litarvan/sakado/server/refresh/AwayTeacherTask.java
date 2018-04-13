@@ -24,12 +24,14 @@ public class AwayTeacherTask extends RefreshTask
     @Override
     public void refresh(User user)
     {
+        Calendar today = CalendarUtils.create();
+
         List<Lesson> away = new ArrayList<>();
         for (Week week : user.getTimetable())
         {
             for (Lesson lesson : week.getContent())
             {
-                if (lesson.isAway())
+                if (lesson.isAway() && lesson.getFrom() > today.getTimeInMillis())
                 {
                     away.add(lesson);
                 }
