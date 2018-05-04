@@ -15,23 +15,36 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package fr.litarvan.sakado.server;
+package fr.litarvan.sakado.server.user;
 
-import fr.litarvan.paladin.Paladin;
-import fr.litarvan.paladin.PaladinBuilder;
+import fr.litarvan.paladin.ConfigManager;
 
-public class Main
+import javax.inject.Inject;
+import javax.inject.Singleton;
+import java.util.List;
+import java.util.Objects;
+
+@Singleton
+public class EstablishmentManager
 {
-    public static void main(String[] args)
-    {
-        Paladin paladin = PaladinBuilder.create(SakadoServer.class)
-            .setConfigFolder("config/")
-            .setRoutesFile("/routes.groovy")
-            .build();
+    private List<Establishment> establishments;
 
-        paladin.getSessionManager().setExpirationDelay(-1);
-        paladin.start();
+    @Inject
+    public EstablishmentManager(ConfigManager config)
+    {
+        this.establishments = config.at("establishments.establishments");
     }
 
-    // TODO: Pronote API : Delete double lessons, add subjects marks
+    public Establishment getAt(String name)
+    {
+        for (Establishment establishment : establishments)
+        {
+            if (Objects.equals(establishment.getName(), name))
+            {
+                return establishment;
+            }
+        }
+
+        return null;
+    }
 }

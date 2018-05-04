@@ -1,6 +1,7 @@
 .gradle/
 .idea/
 config/
+!config/app.config.groovy
 logs/
 build/
 out/

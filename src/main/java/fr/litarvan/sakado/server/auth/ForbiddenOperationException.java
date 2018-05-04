@@ -15,23 +15,14 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package fr.litarvan.sakado.server;
+package fr.litarvan.sakado.server.auth;
 
-import fr.litarvan.paladin.Paladin;
-import fr.litarvan.paladin.PaladinBuilder;
+import fr.litarvan.paladin.http.routing.RequestException;
 
-public class Main
+public class ForbiddenOperationException extends RequestException
 {
-    public static void main(String[] args)
+    public ForbiddenOperationException()
     {
-        Paladin paladin = PaladinBuilder.create(SakadoServer.class)
-            .setConfigFolder("config/")
-            .setRoutesFile("/routes.groovy")
-            .build();
-
-        paladin.getSessionManager().setExpirationDelay(-1);
-        paladin.start();
+        super("You can't do that without being logged");
     }
-
-    // TODO: Pronote API : Delete double lessons, add subjects marks
 }

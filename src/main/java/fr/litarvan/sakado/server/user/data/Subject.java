@@ -15,23 +15,37 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package fr.litarvan.sakado.server;
+package fr.litarvan.sakado.server.user.data;
 
-import fr.litarvan.paladin.Paladin;
-import fr.litarvan.paladin.PaladinBuilder;
-
-public class Main
+public class Subject
 {
-    public static void main(String[] args)
-    {
-        Paladin paladin = PaladinBuilder.create(SakadoServer.class)
-            .setConfigFolder("config/")
-            .setRoutesFile("/routes.groovy")
-            .build();
+    private String name;
+    private float average;
+    private Mark[] marks;
 
-        paladin.getSessionManager().setExpirationDelay(-1);
-        paladin.start();
+    public Subject()
+    {
     }
 
-    // TODO: Pronote API : Delete double lessons, add subjects marks
+    public Subject(String name, float average, Mark[] marks)
+    {
+        this.name = name;
+        this.average = average;
+        this.marks = marks;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public float getAverage()
+    {
+        return average;
+    }
+
+    public Mark[] getMarks()
+    {
+        return marks;
+    }
 }

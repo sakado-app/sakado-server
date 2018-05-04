@@ -15,23 +15,17 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package fr.litarvan.sakado.server;
+package fr.litarvan.sakado.server.fetch;
 
-import fr.litarvan.paladin.Paladin;
-import fr.litarvan.paladin.PaladinBuilder;
-
-public class Main
+public class FetchException extends Exception
 {
-    public static void main(String[] args)
+    public FetchException(String message)
     {
-        Paladin paladin = PaladinBuilder.create(SakadoServer.class)
-            .setConfigFolder("config/")
-            .setRoutesFile("/routes.groovy")
-            .build();
-
-        paladin.getSessionManager().setExpirationDelay(-1);
-        paladin.start();
+        super(message);
     }
 
-    // TODO: Pronote API : Delete double lessons, add subjects marks
+    public FetchException(String message, Throwable cause)
+    {
+        super(message, cause);
+    }
 }

@@ -10,7 +10,10 @@ Look for build/distributions/sakado-server-[version].zip then
 
 ## Usage
 
-Requires [sakado-data-server](https://github.com/sakado-app/sakado-data-server) to be launched on the port defined in config/userManager.json (config files are created at first run).
-Won't run without it.
+```
+$ unzip sakado-server-[version].zip
+$ cd sakado-server-[version]
+$ bin/sakado-server
+```
 
 Push notifications are disabled if Firebase Cloud Messaging is not configured in config/fcm.json
