@@ -2,22 +2,29 @@ package fr.litarvan.sakado.server.data;
 
 public class SubjectMarks
 {
-    private String subject;
+    private String name;
+    private float average;
     private Mark[] marks;
 
     public SubjectMarks()
     {
     }
 
-    public SubjectMarks(String subject, Mark[] marks)
+    public SubjectMarks(String name, float average, Mark[] marks)
     {
-        this.subject = subject;
+        this.name = name;
+        this.average = average;
         this.marks = marks;
     }
 
     public String getSubject()
     {
-        return subject;
+        return name;
+    }
+
+    public float getAverage()
+    {
+        return average;
     }
 
     public Mark[] getMarks()

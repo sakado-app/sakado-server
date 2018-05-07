@@ -1,10 +1,12 @@
 package fr.litarvan.sakado.server.refresh;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
 import fr.litarvan.sakado.server.data.Mark;
+import fr.litarvan.sakado.server.data.SubjectMarks;
 import fr.litarvan.sakado.server.data.User;
 import fr.litarvan.sakado.server.push.PushService;
 import fr.litarvan.sakado.server.push.PushType;
@@ -27,8 +29,14 @@ public class NewMarkTask extends RefreshTask
         max.add(Calendar.DAY_OF_MONTH, -2);
 
         List<Mark> marks = new ArrayList<>();
+        List<Mark> allMarks = new ArrayList<>();
 
-        for (Mark mark : user.getLastMarks())
+        for (SubjectMarks subject : user.getMarks())
+        {
+            allMarks.addAll(Arrays.asList(subject.getMarks()));
+        }
+
+        for (Mark mark : allMarks)
         {
             if (mark.getTimeAsCalendar().after(max))
             {

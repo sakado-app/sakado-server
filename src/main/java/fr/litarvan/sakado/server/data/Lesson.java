@@ -30,20 +30,22 @@ public class Lesson implements Identifiable
     private long from;
     private long to;
 
-    private String status;
+    private boolean away;
+    private boolean cancelled;
 
     public Lesson()
     {
     }
 
-    public Lesson(String subject, String teacher, String room, long from, long to, String status)
+    public Lesson(String subject, String teacher, String room, long from, long to, boolean away, boolean cancelled)
     {
         this.subject = subject;
         this.teacher = teacher;
         this.room = room;
         this.from = from;
         this.to = to;
-        this.status = status;
+        this.away = away;
+        this.cancelled = cancelled;
     }
 
     public String getSubject()
@@ -81,19 +83,14 @@ public class Lesson implements Identifiable
         return CalendarUtils.fromTimestamp(to);
     }
 
-    public String getStatus()
-    {
-        return status;
-    }
-
     public boolean isAway()
     {
-        return getStatus() != null && getStatus().equalsIgnoreCase("Prof. absent");
+        return away;
     }
 
     public boolean isCancelled()
     {
-        return getStatus() != null && getStatus().equalsIgnoreCase("Cours annulé");
+        return cancelled;
     }
 
     @Override

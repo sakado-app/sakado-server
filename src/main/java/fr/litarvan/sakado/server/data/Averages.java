@@ -4,18 +4,16 @@ public class Averages
 {
     private float student;
     private float studentClass;
-    private Average[] subjects;
     private int period;
 
     public Averages()
     {
     }
 
-    public Averages(float student, float studentClass, Average[] subjects, int period)
+    public Averages(float student, float studentClass, int period)
     {
         this.student = student;
         this.studentClass = studentClass;
-        this.subjects = subjects;
         this.period = period;
     }
 
@@ -27,11 +25,6 @@ public class Averages
     public float getStudentClass()
     {
         return studentClass;
-    }
-
-    public Average[] getSubjects()
-    {
-        return subjects;
     }
 
     public int getPeriod()

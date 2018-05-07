@@ -46,7 +46,6 @@ public class User
     private Week[] timetable;
     private Homework[] homeworks;
     private SubjectMarks[] marks;
-    private Mark[] lastMarks;
     private Averages averages;
 
     private ArrayList<Reminder> reminders;
@@ -75,7 +74,6 @@ public class User
 
         this.homeworks = response.getHomeworks();
         this.marks = response.getMarks();
-        this.lastMarks = response.getLastMarks();
         this.averages = response.getAverages();
 
         Week[] weeks = new Week[2];
@@ -166,11 +164,6 @@ public class User
     public SubjectMarks[] getMarks()
     {
         return marks;
-    }
-
-    public Mark[] getLastMarks()
-    {
-        return lastMarks;
     }
 
     public Averages getAverages()

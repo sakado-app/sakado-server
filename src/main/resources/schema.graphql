@@ -28,9 +28,9 @@ type User {
     timetable: [Week!]!
     homeworks: [Homework!]
     marks: [SubjectMarks!]!
-    lastMarks: [Mark!]!
     averages: Averages
 
+    lastMarks: [Mark!]!
     nextLesson: [Lesson]!
     tomorrow: Tomorrow!
     holidays: NextHolidays!
@@ -106,6 +106,7 @@ type Mark {
     subject: String!
     title: String
     value: Float!
+    away: Boolean!
     max: Float!
     time: Long!
     average: Float
@@ -116,20 +117,15 @@ type Mark {
 }
 
 type SubjectMarks {
-    subject: String!
+    name: String!
+    average: Float!
     marks: [Mark!]!
 }
 
 type Averages {
     student: Float!
     studentClass: Float!
-    subjects: [Average!]!
     period: Int!
-}
-
-type Average {
-    subject: String!
-    value: Float!
 }
 
 type Reminder {

@@ -26,6 +26,7 @@ public class Mark implements Identifiable
     private String subject;
     private String title;
     private float value;
+    private boolean away;
     private float max;
     private float average;
     private float higher;
@@ -38,7 +39,7 @@ public class Mark implements Identifiable
     {
     }
 
-    public Mark(String subject, String title, float value, float max, float average, float higher, float lower, float coefficient, int period, long time)
+    public Mark(String subject, String title, float value, boolean away, float max, float average, float higher, float lower, float coefficient, int period, long time)
     {
         this.subject = subject;
         this.title = title;
@@ -65,6 +66,11 @@ public class Mark implements Identifiable
     public float getValue()
     {
         return value;
+    }
+
+    public boolean isAway()
+    {
+        return away;
     }
 
     public float getMax()

@@ -20,6 +20,7 @@ package fr.litarvan.sakado.server.http.controller;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -105,6 +106,7 @@ public class GraphQLController extends Controller
             .type("Mutation", builder -> builder.dataFetcher("user", DataFetchingEnvironment::getContext))
             .type("User", builder -> builder.dataFetcher("admin", environment -> isAdmin(environment.getSource()))
                                             .dataFetcher("representative", environment -> isRepresentative(environment.getSource()))
+                                            .dataFetcher("lastMarks", environment -> getLastMarks(environment.getSource()))
                                             .dataFetcher("nextLesson", environment -> getNextLesson(environment.getSource()))
                                             .dataFetcher("tomorrow", environment -> getTomorrow(environment.getSource()))
                                             .dataFetcher("away", environment -> getAway(environment.getSource()))
@@ -150,6 +152,26 @@ public class GraphQLController extends Controller
     public boolean isRepresentative(User user)
     {
         return user.studentClass().getRepresentatives().contains(user.getUsername());
+    }
+
+    public Mark[] getLastMarks(User user)
+    {
+        List<Mark> marks = new ArrayList<>();
+        Calendar max = CalendarUtils.create();
+        max.add(Calendar.WEEK_OF_YEAR, -2);
+
+        for (SubjectMarks subject : user.getMarks())
+        {
+            for (Mark mark : subject.getMarks())
+            {
+                if (mark.getTimeAsCalendar().after(max))
+                {
+                    marks.add(mark);
+                }
+            }
+        }
+
+        return marks.toArray(new Mark[0]);
     }
 
     public Lesson[] getNextLesson(User user)
