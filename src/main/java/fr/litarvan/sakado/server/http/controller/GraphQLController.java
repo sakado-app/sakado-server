@@ -222,24 +222,26 @@ public class GraphQLController extends Controller
 
         List<Lesson> timetable = new ArrayList<>();
 
-        if (tomorrowDay.get(Calendar.MONTH) < 6)
+        do
         {
-            do
+            for (Lesson lesson : user.getTimetable()[CalendarUtils.create().get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY ? 1 : 0].getContent())
             {
-                for (Lesson lesson : user.getTimetable()[CalendarUtils.create().get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY ? 1 : 0].getContent())
+                if (CalendarUtils.isSameDay(tomorrowDay, lesson.getFromAsCalendar()))
                 {
-                    if (CalendarUtils.isSameDay(tomorrowDay, lesson.getFromAsCalendar()))
-                    {
-                        timetable.add(lesson);
-                    }
+                    timetable.add(lesson);
                 }
+            }
 
-                if (timetable.size() == 0)
-                {
-                    tomorrowDay.add(DAY_OF_MONTH, 1);
-                }
-            } while (timetable.size() == 0);
-        }
+            if (timetable.size() == 0)
+            {
+                tomorrowDay.add(DAY_OF_MONTH, 1);
+            }
+
+            if (tomorrowDay.get(Calendar.MONTH) >= 7)
+            {
+                break;
+            }
+        } while (timetable.size() == 0);
 
         List<Reminder> reminders = new ArrayList<>();
         reminders.addAll(user.getReminders().stream().filter(reminder -> CalendarUtils.isSameDay(tomorrowDay, reminder.getTimeAsCalendar())).collect(Collectors.toList()));
