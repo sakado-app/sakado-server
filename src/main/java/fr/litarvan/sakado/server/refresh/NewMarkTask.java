@@ -26,7 +26,7 @@ public class NewMarkTask extends RefreshTask
     public void refresh(User user)
     {
         Calendar max = CalendarUtils.create();
-        max.add(Calendar.DAY_OF_MONTH, -2);
+        max.add(Calendar.DAY_OF_MONTH, -7);
 
         List<Mark> marks = new ArrayList<>();
         List<Mark> allMarks = new ArrayList<>();
@@ -64,7 +64,7 @@ public class NewMarkTask extends RefreshTask
             Mark mark = marks.get(0);
 
             title = "Nouvelle note";
-            message = mark.getSubject() + " - " + mark.getValue() + "/" + mark.getMax() + (mark.getTitle() != null ? "(" + mark.getTitle() + ")" : "");
+            message = mark.getSubject() + " - " + mark.getValue() + "/" + mark.getMax() + (mark.getTitle() != null ? " (" + mark.getTitle() + ")" : "");
         }
 
         try
