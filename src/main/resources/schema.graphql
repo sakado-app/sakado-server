@@ -54,8 +54,8 @@ type StudentClass {
 }
 
 type MutableStudentClass {
-    addRepresentative(username: String!): String!
-    removeRepresentative(username: String!): String!
+    addRepresentative(user: String!): String!
+    removeRepresentative(user: String!): String!
 
     addReminder(title: String!, content: String!, time: Long!): Reminder!
     removeReminder(title: String!): Reminder!

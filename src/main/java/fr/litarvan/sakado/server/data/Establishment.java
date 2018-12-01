@@ -28,7 +28,7 @@ public class Establishment
     {
         for (StudentClass cl : classes)
         {
-            if (cl.getMembers().contains(user.getUsername()) && cl.getEstablishment() == user.getEstablishment())
+            if (cl.getMembers().contains(user.getName()) && cl.getEstablishment() == user.getEstablishment())
             {
                 return cl;
             }

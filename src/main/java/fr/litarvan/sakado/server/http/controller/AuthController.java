@@ -59,7 +59,10 @@ public class AuthController extends Controller
 
     public Object validate(Request request, Response response) throws APIError
     {
-        return json(apply(this.requireLogged(request)), response);
+        User user = this.requireLogged(request);
+        user.setLastLogin(System.currentTimeMillis());
+
+        return json(apply(user), response);
     }
 
     public Object logout(Request request, Response response) throws IOException, RequestException, APIError

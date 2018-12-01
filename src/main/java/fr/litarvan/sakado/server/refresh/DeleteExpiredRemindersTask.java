@@ -7,7 +7,7 @@ import fr.litarvan.sakado.server.data.Reminder;
 import fr.litarvan.sakado.server.data.User;
 import fr.litarvan.sakado.server.util.CalendarUtils;
 
-public class DeleteExpiredRemindersTask extends RefreshTask
+public class DeleteExpiredRemindersTask extends BaseRefreshTask
 {
     @Override
     public void refresh(User user)

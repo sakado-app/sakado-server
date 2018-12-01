@@ -5,10 +5,8 @@ import java.util.TimerTask;
 
 import fr.litarvan.commons.config.ConfigProvider;
 import fr.litarvan.sakado.server.Main;
-import fr.litarvan.sakado.server.data.StudentClass;
-import fr.litarvan.sakado.server.data.Establishment;
-import fr.litarvan.sakado.server.data.SakadoData;
 import fr.litarvan.sakado.server.data.User;
+import fr.litarvan.sakado.server.data.UserManager;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.logging.log4j.LogManager;
@@ -34,7 +32,7 @@ public class RefreshService
     private ConfigProvider config;
 
     @Inject
-    private SakadoData data;
+    private UserManager users;
 
     private RefreshTask[] tasks;
 
@@ -59,40 +57,40 @@ public class RefreshService
         log.info("Started refresh service at a rate of " + rate + "ms");
     }
 
-    protected void refresh()
+    private void refresh()
     {
-        for (Establishment establishment : data.getEstablishments())
-        {
-            for (StudentClass studentClass : establishment.getClasses())
-            {
-                studentClass.getLoggedUsers().forEach(this::refresh);
-            }
-        }
-    }
+        User[] users = this.users.getLoggedUsers();
+        log.info("Refreshing {} users", users.length);
 
-    private void refresh(User user)
-    {
-        try
+        for (User user : users)
         {
-            user.update();
-        }
-        catch (Exception e)
-        {
-            log.error("Exception while updating user data of '" + user.getName() + "', skipping refreshing", e);
-            return;
+            log.info("Refreshing user '{}'...", user.getName());
+            try
+            {
+                user.update();
+            }
+            catch (Exception e)
+            {
+                log.error("Exception while updating user data of '" + user.getName() + "', skipping refreshing", e);
+                return;
+            }
+
+            log.info("Data of user '{}' refreshed, starting {} tasks...", user.getName(), tasks.length);
         }
 
         for (RefreshTask task : tasks)
         {
             try
             {
-                task.refresh(user);
+                task.refresh(this.users);
             }
             catch (Exception e)
             {
-                log.error("Exception during task '" + task.getClass().getSimpleName() + "' for user '" + user.getName() + "'", e);
+                log.error("Exception during task '" + task.getClass().getSimpleName() + "'", e);
             }
         }
+
+        log.info("Refreshing done");
     }
 
     protected RefreshTask[] getTasks()
@@ -105,7 +103,7 @@ public class RefreshService
 
             if (!RefreshTask.class.isInstance(object))
             {
-                throw new IllegalArgumentException(object.getClass().getName() + " must be a runnable");
+                throw new IllegalArgumentException(object.getClass().getName() + " must be a RefreshTask");
             }
 
             tasks[i] = (RefreshTask) object;

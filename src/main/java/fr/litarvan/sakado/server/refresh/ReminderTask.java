@@ -13,7 +13,7 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ReminderTask extends RefreshTask
+public class ReminderTask extends BaseRefreshTask
 {
     private static final Logger log = LogManager.getLogger("ReminderTask");
 

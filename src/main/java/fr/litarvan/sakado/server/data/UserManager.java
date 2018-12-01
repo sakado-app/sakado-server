@@ -48,13 +48,24 @@ public class UserManager
         this.users = new ArrayList<>();
     }
 
+    public void load()
+    {
+        User[] saved = config.at("save.loggedUsers", User[].class);
+        if (saved == null)
+        {
+            saved = new User[0];
+        }
+
+        this.users = new ArrayList<>(Arrays.asList(saved));
+    }
+
     public User login(String establishmentName, String username, String password, String deviceToken) throws IOException, RequestException
     {
         Establishment establishment = data.getEstablishment(establishmentName);
 
         if (establishment == null)
         {
-            throw new IllegalArgumentException("Unknown etablishment '" + establishmentName + "'");
+            throw new IllegalArgumentException("Unknown establishment '" + establishmentName + "'");
         }
 
         log.info("Logging in '{}' (from {})", username, establishment.getName());
@@ -81,7 +92,7 @@ public class UserManager
 
             if (studentClass == null)
             {
-                studentClass = createClass(establishment, user.getStudentClass(), user.getUsername());
+                studentClass = createClass(establishment, user.getStudentClass(), user.getName());
                 establishment.getClasses().add(studentClass);
 
                 log.info("Created class '{}' on {} (for {}) ", user.getStudentClass(), establishment.getName(), user.getName());
@@ -102,10 +113,16 @@ public class UserManager
         return user;
     }
 
-    protected StudentClass createClass(Establishment establishment, String name, String adminUsername)
+    protected StudentClass createClass(Establishment establishment, String name, String adminName)
     {
-        StudentClass studentClass = new StudentClass(establishment, name, adminUsername);
+        StudentClass studentClass = new StudentClass(establishment, name, adminName);
         String[] savedRepresentatives = config.at("save.classes." + studentClass.getId() + ".representatives", String[].class);
+        String savedAdmin = config.at("save.classes." + studentClass.getId() + ".admin");
+
+        if (savedAdmin != null)
+        {
+            studentClass.setAdmin(savedAdmin);
+        }
 
         if (savedRepresentatives != null)
         {
@@ -157,5 +174,10 @@ public class UserManager
     {
         user.studentClass().getLoggedUsers().remove(user);
         this.users.remove(user);
+    }
+
+    public User[] getLoggedUsers()
+    {
+        return this.users.toArray(new User[0]);
     }
 }

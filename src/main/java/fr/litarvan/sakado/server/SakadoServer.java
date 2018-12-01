@@ -24,6 +24,7 @@ import fr.litarvan.commons.config.ConfigProvider;
 import fr.litarvan.commons.crash.ExceptionHandler;
 import fr.litarvan.commons.io.IOSource;
 import fr.litarvan.sakado.server.data.SakadoData;
+import fr.litarvan.sakado.server.data.UserManager;
 import fr.litarvan.sakado.server.http.Controller;
 import fr.litarvan.sakado.server.http.Routes;
 import fr.litarvan.sakado.server.http.error.APIError;
@@ -47,7 +48,7 @@ import java.net.InetSocketAddress;
 
 public class SakadoServer implements App
 {
-    public static final String VERSION = "1.4.0-BETA";
+    public static final String VERSION = "1.4.1-BETA";
 
     private static final Logger log = LogManager.getLogger("SakadoServer");
 
@@ -69,6 +70,9 @@ public class SakadoServer implements App
     @Inject
     private RefreshService refresh;
 
+    @Inject
+    private UserManager userManager;
+
     @Override
     public void start()
     {
@@ -88,6 +92,8 @@ public class SakadoServer implements App
         configs.from("config/fcm.json").defaultIn(IOSource.at("fcm.default.json"));
         configs.from("config/holidays.json").defaultIn(IOSource.at("holidays.default.json"));
         configs.from("config/save.json").defaultIn(IOSource.at("save.default.json"));
+
+        //userManager.load();
 
         if (configs.at("proxy.enabled", boolean.class))
         {

@@ -54,9 +54,9 @@ public class StudentClass implements Identifiable
 
     public void add(User user)
     {
-        if (!this.members.contains(user.getUsername()))
+        if (!this.members.contains(user.getName()))
         {
-            this.members.add(user.getUsername());
+            this.members.add(user.getName());
         }
 
         this.loggedUsers.add(user);
@@ -97,6 +97,11 @@ public class StudentClass implements Identifiable
     public String getAdmin()
     {
         return admin;
+    }
+
+    public void setAdmin(String admin)
+    {
+        this.admin = admin;
     }
 
     public ArrayList<String> getLongHomeworks()

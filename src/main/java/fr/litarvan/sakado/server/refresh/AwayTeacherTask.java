@@ -14,7 +14,7 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class AwayTeacherTask extends RefreshTask
+public class AwayTeacherTask extends BaseRefreshTask
 {
     private static final Logger log = LogManager.getLogger("AwayTeacherTask");
 

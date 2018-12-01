@@ -22,6 +22,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -117,8 +119,8 @@ public class GraphQLController extends Controller
                                             .dataFetcher("class", environment -> getStudentClass(environment.getContext()))
                                             .dataFetcher("addReminder", environment -> addReminder(environment.getContext(), environment.getArgument("title"), environment.getArgument("content"), environment.getArgument("time"), false))
                                             .dataFetcher("removeReminder", environment -> removeReminder(environment.getContext(), environment.getArgument("title"), false)))
-            .type("MutableStudentClass", builder -> builder.dataFetcher("addRepresentative", environment -> addRepresentative(environment.getContext(), environment.getArgument("username")))
-                                            .dataFetcher("removeRepresentative", environment -> removeRepresentative(environment.getContext(), environment.getArgument("username")))
+            .type("MutableStudentClass", builder -> builder.dataFetcher("addRepresentative", environment -> addRepresentative(environment.getContext(), environment.getArgument("user")))
+                                            .dataFetcher("removeRepresentative", environment -> removeRepresentative(environment.getContext(), environment.getArgument("user")))
                                             .dataFetcher("addReminder", environment -> addReminder(environment.getContext(), environment.getArgument("title"), environment.getArgument("content"), environment.getArgument("time"), true))
                                             .dataFetcher("removeReminder", environment -> removeReminder(environment.getContext(), environment.getArgument("title"), true))
                                             .dataFetcher("notify", environment -> notify(environment.getSource(), environment.getArgument("content"))))
@@ -146,12 +148,12 @@ public class GraphQLController extends Controller
 
     public boolean isAdmin(User user)
     {
-        return user.studentClass().getAdmin().equalsIgnoreCase(user.getUsername());
+        return user.studentClass().getAdmin().equalsIgnoreCase(user.getName());
     }
 
     public boolean isRepresentative(User user)
     {
-        return user.studentClass().getRepresentatives().contains(user.getUsername());
+        return user.studentClass().getRepresentatives().contains(user.getName());
     }
 
     public Mark[] getLastMarks(User user)
@@ -170,6 +172,8 @@ public class GraphQLController extends Controller
                 }
             }
         }
+
+        marks.sort((m1, m2) -> -m1.getTimeAsCalendar().compareTo(m2.getTimeAsCalendar()));
 
         return marks.toArray(new Mark[0]);
     }
@@ -202,7 +206,10 @@ public class GraphQLController extends Controller
 
     public Tomorrow getTomorrow(User user)
     {
+        log.info("Getting 'tomorrow' of user '{}'", user.getName());
         Calendar tomorrowDay = CalendarUtils.create();
+
+        boolean pastWeek = false;
 
         if (tomorrowDay.get(Calendar.HOUR_OF_DAY) >= 15)
         {
@@ -218,13 +225,14 @@ public class GraphQLController extends Controller
         if (tomorrowDay.get(DAY_OF_WEEK) == Calendar.SUNDAY)
         {
             tomorrowDay.add(DAY_OF_MONTH, 1);
+            pastWeek = true;
         }
 
         List<Lesson> timetable = new ArrayList<>();
 
         do
         {
-            for (Lesson lesson : user.getTimetable()[CalendarUtils.create().get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY ? 1 : 0].getContent())
+            for (Lesson lesson : user.getTimetable()[pastWeek ? 1 : 0].getContent())
             {
                 if (CalendarUtils.isSameDay(tomorrowDay, lesson.getFromAsCalendar()))
                 {
@@ -255,6 +263,9 @@ public class GraphQLController extends Controller
                 homeworks.add(homework);
             }
         }
+
+        log.info("Tomorrow of '{}' is at '{}' ({}) with {} lessons", user.getName(), tomorrowDay.getTime().toString(), tomorrowDay.getTimeInMillis(), timetable.size());
+
         return new Tomorrow(tomorrowDay.getTimeInMillis(), timetable.toArray(new Lesson[]{}), reminders.toArray(new Reminder[]{}), homeworks.toArray(new Homework[]{}));
     }
 
@@ -298,32 +309,46 @@ public class GraphQLController extends Controller
         return user.studentClass();
     }
 
-    public String addRepresentative(User user, String username)
+    public String addRepresentative(User user, String name)
     {
         StudentClass theClass = user.studentClass();
 
-        if (!theClass.getAdmin().equalsIgnoreCase(user.getUsername()))
+        if (!theClass.getAdmin().equalsIgnoreCase(user.getName()))
         {
             throw new RuntimeException("You can't do this without being admin");
         }
 
-        theClass.getRepresentatives().add(username);
+        name = name.trim();
 
-        return username;
+        if (theClass.getLoggedUsers().size() > 0 && theClass.getLoggedUsers().get(0).getDataServer().getName().equals("pronote"))
+        {
+            String[] split = name.split(" ");
+
+            if (split.length > 1)
+            {
+                name = split[1].toUpperCase() + " " + Character.toUpperCase(split[0].charAt(0)) + split[0].substring(1);
+            }
+        }
+
+        log.info("Adding representative '{}' to class '{}'", name, theClass.getName());
+
+        theClass.getRepresentatives().add(name);
+
+        return name;
     }
 
-    public String removeRepresentative(User user, String username)
+    public String removeRepresentative(User user, String name)
     {
         StudentClass theClass = user.studentClass();
 
-        if (!theClass.getAdmin().equalsIgnoreCase(user.getUsername()))
+        if (!theClass.getAdmin().equalsIgnoreCase(user.getName()))
         {
             throw new RuntimeException("You can't do this without being admin");
         }
 
-        theClass.getRepresentatives().remove(username);
+        theClass.getRepresentatives().remove(name);
 
-        return username;
+        return name;
     }
 
     public Homework getHomework(User user, String id)

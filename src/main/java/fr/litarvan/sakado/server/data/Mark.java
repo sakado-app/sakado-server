@@ -44,6 +44,7 @@ public class Mark implements Identifiable
         this.subject = subject;
         this.title = title;
         this.value = value;
+        this.away = away;
         this.max = max;
         this.average = average;
         this.higher = higher;

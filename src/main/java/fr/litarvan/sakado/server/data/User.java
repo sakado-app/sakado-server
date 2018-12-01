@@ -151,6 +151,11 @@ public class User
         this.avatar = avatar;
     }
 
+    public DataServer getDataServer()
+    {
+        return server;
+    }
+
     public Week[] getTimetable()
     {
         return timetable;

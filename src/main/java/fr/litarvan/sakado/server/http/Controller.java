@@ -79,7 +79,7 @@ public class Controller
         User user = requireLogged(request);
         StudentClass theClass = user.studentClass();
 
-        if (!theClass.getRepresentatives().contains(user.getUsername()) && !user.studentClass().getAdmin().equalsIgnoreCase(user.getUsername()))
+        if (!theClass.getRepresentatives().contains(user.getName()) && !user.studentClass().getAdmin().equalsIgnoreCase(user.getName()))
         {
             throw new APIError(APIError.UNAUTHORIZED, "You must be representative to do that");
         }
@@ -91,7 +91,7 @@ public class Controller
     {
         User user = requireLogged(request);
 
-        if (!user.studentClass().getAdmin().equalsIgnoreCase(user.getUsername()))
+        if (!user.studentClass().getAdmin().equalsIgnoreCase(user.getName()))
         {
             throw new APIError(APIError.UNAUTHORIZED, "You must be admin to do that");
         }

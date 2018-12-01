@@ -19,11 +19,12 @@ package fr.litarvan.sakado.server.push;
 
 public enum PushType
 {
-    AWAY("#bb0000", "sakado"),
-    MARK("#1E6ADD", "sakado"),
-    REMINDER("#DD7200", "sakado"),
-    HOMEWORK("#41A12E", "sakado"),
-    NOTIFY("#E7DA18", "sakado");
+    AWAY("#BB0000", "sakado_notify"),
+    MARK("#1E6ADD", "sakado_notify"),
+    REMINDER("#DD7200", "sakado_notify"),
+    HOMEWORK("#41A12E", "sakado_notify"),
+    NOTIFY("#E7DA18", "sakado_notify"),
+    DISCONNECT("#FF7900", "sakado_notify");
 
     private String color;
     private String icon;
