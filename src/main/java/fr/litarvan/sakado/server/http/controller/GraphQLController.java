@@ -213,6 +213,11 @@ public class GraphQLController extends Controller
 
         if (tomorrowDay.get(Calendar.HOUR_OF_DAY) >= 15)
         {
+            if (tomorrowDay.get(DAY_OF_WEEK) == Calendar.SUNDAY)
+            {
+                pastWeek = true;
+            }
+
             tomorrowDay.add(DAY_OF_MONTH, 1);
             tomorrowDay.add(HOUR_OF_DAY, -3); // For late people
         }
