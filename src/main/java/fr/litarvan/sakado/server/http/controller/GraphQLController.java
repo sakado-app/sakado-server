@@ -430,6 +430,11 @@ public class GraphQLController extends Controller
             time.set(Calendar.DAY_OF_MONTH, holiday.getDay());
             time.set(Calendar.MONTH, holiday.getMonth() - 1);
 
+            if (time.get(MONTH) < 8 && today.get(MONTH) > 8)
+            {
+                time.add(YEAR, 1);
+            }
+
             if (time.after(today) && (nextDayHoliday == null || time.before(CalendarUtils.fromTimestamp(nextDayHoliday.getTime()))))
             {
                 nextDayHoliday = new DayHoliday(holiday.getName(), time.getTimeInMillis());
@@ -442,9 +447,19 @@ public class GraphQLController extends Controller
             from.set(Calendar.DAY_OF_MONTH, holiday.getFrom().getDay());
             from.set(Calendar.MONTH, holiday.getFrom().getMonth() - 1);
 
+            if (from.get(MONTH) < 8 && today.get(MONTH) > 8)
+            {
+                from.add(YEAR, 1);
+            }
+
             Calendar to = CalendarUtils.create();
             to.set(Calendar.DAY_OF_MONTH, holiday.getTo().getDay());
             to.set(Calendar.MONTH, holiday.getTo().getMonth() - 1);
+
+            if (to.get(MONTH) < 8 && today.get(MONTH) > 8)
+            {
+                to.add(YEAR, 1);
+            }
 
             if (from.after(today) && (nextPeriodHoliday == null || from.before(CalendarUtils.fromTimestamp(nextPeriodHoliday.getFrom()))))
             {
@@ -462,7 +477,7 @@ public class GraphQLController extends Controller
 
         if (nextPeriodHoliday != null)
         {
-            untilPeriod = (long) Math.ceil((float) ((nextPeriodHoliday.getFrom() - today.getTimeInMillis()) / 1000 / 60 / 60 ) / 24f);
+            untilPeriod = (long) Math.round((float) ((nextPeriodHoliday.getFrom() - today.getTimeInMillis()) / 1000 / 60 / 60 ) / 24f);
         }
 
         return new NextHolidays(nextDayHoliday, untilDay, nextPeriodHoliday, untilPeriod);
