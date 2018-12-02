@@ -85,7 +85,7 @@ public class PushService
         conn.setRequestMethod("POST");
         conn.setDoOutput(true);
 
-        JsonObject data = new JsonObject();
+        /*JsonObject data = new JsonObject();
         data.addProperty("title", "Sakado - " + title);
         data.addProperty("message", message);
         data.addProperty("priority", "high");
@@ -103,15 +103,30 @@ public class PushService
         if (type != null)
         {
             data.addProperty("type", type);
-        }
+        }*/
 
         JsonObject notification = new JsonObject();
-        notification.addProperty("body", title);
-        notification.addProperty("title", message);
+        notification.addProperty("title", "Sakado - " + title);
+        notification.addProperty("body", message);
+
+        if (color != null)
+        {
+            notification.addProperty("color", color);
+        }
+
+        if (icon != null)
+        {
+            notification.addProperty("icon", icon);
+        }
+
+        if (type != null)
+        {
+            notification.addProperty("type", type);
+        }
 
         JsonObject request = new JsonObject();
         request.addProperty("to", user.getDeviceToken());
-        request.add("data", data);
+        //request.add("data", data);
         request.add("notification", notification);
 
         String requestContent = gson.toJson(request);
