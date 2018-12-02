@@ -1,9 +1,16 @@
 package fr.litarvan.sakado.server.refresh;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import fr.litarvan.commons.config.Config;
 import fr.litarvan.commons.config.ConfigProvider;
 import fr.litarvan.sakado.server.data.Establishment;
+import fr.litarvan.sakado.server.data.Reminder;
 import fr.litarvan.sakado.server.data.SakadoData;
+import fr.litarvan.sakado.server.data.saved.SavedEstablishment;
+import fr.litarvan.sakado.server.data.saved.SavedStudentClass;
+import fr.litarvan.sakado.server.data.saved.SavedUser;
 import fr.litarvan.sakado.server.data.StudentClass;
 import fr.litarvan.sakado.server.data.User;
 import fr.litarvan.sakado.server.data.UserManager;
@@ -22,21 +29,37 @@ public class SaveTask extends RefreshTask
     {
         Config config = this.config.get("save");
 
+        List<SavedEstablishment> savedEstablishments = new ArrayList<>();
+
         for (Establishment establishment : data.getEstablishments())
         {
-            for (StudentClass studentClass : establishment.getClasses())
-            {
-                config.set("classes." + studentClass.getId() + ".admin", studentClass.getAdmin());
-                config.set("classes." + studentClass.getId() + ".representatives", studentClass.getRepresentatives());
-                config.set("classes." + studentClass.getId() + ".reminders", studentClass.getReminders());
+            SavedStudentClass[] studentClasses = establishment.getClasses().stream().map(studentClass -> {
+                String[] members = studentClass.getMembers().toArray(new String[0]);
+                ArrayList<SavedUser> memberList = new ArrayList<>();
 
-                for (User user : studentClass.getLoggedUsers())
+                for (String member : members)
                 {
-                    config.set("classes." + studentClass.getId() + ".users." + user.getUsername() + ".reminders", user.getReminders());
+                    for (User user : userManager.getLoggedUsers())
+                    {
+                        if (user.getName().equals(member))
+                        {
+                            memberList.add(new SavedUser(user.getToken(), user.getEstablishment().getName(), user.getUsername(), user.getPassword(), user.getLastLogin()));
+                            break;
+                        }
+                    }
                 }
-            }
+
+                return new SavedStudentClass(studentClass.getName(),
+                                             studentClass.getAdmin(),
+                                             memberList.toArray(new SavedUser[0]),
+                                             studentClass.getReminders().toArray(new Reminder[0]),
+                                             studentClass.getLongHomeworks().toArray(new String[0]),
+                                             studentClass.getRepresentatives().toArray(new String[0]));
+            }).toArray(SavedStudentClass[]::new);
+
+            savedEstablishments.add(new SavedEstablishment(establishment.getName(), studentClasses));
         }
 
-        //config.set("loggedUsers", userManager.getLoggedUsers());
+        config.set("establishments", savedEstablishments.toArray(new SavedEstablishment[0]));
     }
 }

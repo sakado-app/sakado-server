@@ -19,6 +19,7 @@ package fr.litarvan.sakado.server.data;
 
 import fr.litarvan.commons.config.ConfigProvider;
 import fr.litarvan.sakado.server.data.network.RequestException;
+import fr.litarvan.sakado.server.data.saved.SavedEstablishment;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,13 +51,8 @@ public class UserManager
 
     public void load()
     {
-        User[] saved = config.at("save.loggedUsers", User[].class);
-        if (saved == null)
-        {
-            saved = new User[0];
-        }
-
-        this.users = new ArrayList<>(Arrays.asList(saved));
+        SavedEstablishment[] establishments = config.at("save.establishments", SavedEstablishment[].class);
+        // TODO: Load every establishments and student class, refresh every user of it
     }
 
     public User login(String establishmentName, String username, String password, String deviceToken) throws IOException, RequestException

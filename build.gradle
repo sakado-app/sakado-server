@@ -1,5 +1,5 @@
 group 'fr.litarvan.sakado'
-version '1.4.1-BETA'
+version '1.5.0-BETA'
 
 apply plugin: 'java'
 apply plugin: 'application'
