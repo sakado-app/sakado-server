@@ -79,12 +79,8 @@ public class PushService
         }
 
         URL url = new URL(FCM_SEND_URL);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestProperty("Authorization", "key=" + key);
-        conn.setRequestProperty("Content-Type", "application/json");
-        conn.setRequestMethod("POST");
-        conn.setDoOutput(true);
 
+        // Android
         JsonObject data = new JsonObject();
         data.addProperty("title", "Sakado - " + title);
         data.addProperty("message", message);
@@ -105,9 +101,27 @@ public class PushService
             data.addProperty("type", type);
         }
 
+        send(url, key, user.getDeviceToken(), "data", data);
+
+        // iOS
+        JsonObject notification = new JsonObject();
+        notification.addProperty("body", message);
+        notification.addProperty("title", title);
+
+        send(url, key, user.getDeviceToken(), "notification", notification);
+    }
+
+    protected void send(URL url, String key, String token, String field, JsonObject data) throws IOException, IllegalStateException
+    {
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestProperty("Authorization", "key=" + key);
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestMethod("POST");
+        conn.setDoOutput(true);
+
         JsonObject request = new JsonObject();
-        request.addProperty("to", user.getDeviceToken());
-        request.add("data", data);
+        request.addProperty("to", token);
+        request.add(field, data);
 
         String requestContent = gson.toJson(request);
 
