@@ -168,6 +168,11 @@ public class User
         return timetable;
     }
 
+    public String[][] getMenu()
+    {
+        return menu;
+    }
+
     public Homework[] getHomeworks()
     {
         return homeworks;
