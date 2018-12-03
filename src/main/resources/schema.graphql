@@ -26,6 +26,7 @@ type User {
     homeworksEnabled: Boolean!
 
     timetable: [Week!]!
+    menu: [[String!]]
     homeworks: [Homework!]
     marks: [SubjectMarks!]!
     averages: Averages

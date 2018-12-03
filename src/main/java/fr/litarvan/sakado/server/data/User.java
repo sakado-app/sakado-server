@@ -44,6 +44,7 @@ public class User
     private DataServer server;
 
     private Week[] timetable;
+    private String[][] menu;
     private Homework[] homeworks;
     private SubjectMarks[] marks;
     private Averages averages;
@@ -72,6 +73,7 @@ public class User
         this.studentClass = response.getStudentClass();
         this.avatar = response.getAvatar();
 
+        this.menu = response.getMenu();
         this.homeworks = response.getHomeworks();
         this.marks = response.getMarks();
         this.averages = response.getAverages();

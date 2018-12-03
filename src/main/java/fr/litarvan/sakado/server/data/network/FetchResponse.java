@@ -33,6 +33,8 @@ public class FetchResponse
 
     private Week[] timetable;
 
+    private String[][] menu;
+
     private SubjectMarks[] marks;
     private Averages averages;
 
@@ -42,13 +44,14 @@ public class FetchResponse
     {
     }
 
-    public FetchResponse(String error, String studentClass, String name, String avatar, Week[] timetable, SubjectMarks[] marks, Averages averages, Homework[] homeworks)
+    public FetchResponse(String error, String studentClass, String name, String avatar, Week[] timetable, String[][] menu, SubjectMarks[] marks, Averages averages, Homework[] homeworks)
     {
         this.error = error;
         this.studentClass = studentClass;
         this.name = name;
         this.avatar = avatar;
         this.timetable = timetable;
+        this.menu = menu;
         this.marks = marks;
         this.averages = averages;
         this.homeworks = homeworks;
@@ -77,6 +80,11 @@ public class FetchResponse
     public Week[] getTimetable()
     {
         return timetable;
+    }
+
+    public String[][] getMenu()
+    {
+        return menu;
     }
 
     public SubjectMarks[] getMarks()
