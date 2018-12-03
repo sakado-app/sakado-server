@@ -120,6 +120,9 @@ type Mark {
 type SubjectMarks {
     name: String!
     average: Float!
+    studentClassAverage: Float!
+    maxAverage: Float!
+    minAverage: Float!
     marks: [Mark!]!
 }
 
