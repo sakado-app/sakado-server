@@ -39,6 +39,12 @@ public class LongHomeworkTask extends BaseRefreshTask
             }
 
             Calendar date = homework.getUntilAsCalendar();
+
+            if (CalendarUtils.isSameDay(date, current))
+            {
+                continue;
+            }
+
             date.add(Calendar.HOUR_OF_DAY, -6); // 18h, the last day before
 
             if (current.after(date))

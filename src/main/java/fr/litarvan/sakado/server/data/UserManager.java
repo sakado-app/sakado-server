@@ -18,8 +18,11 @@
 package fr.litarvan.sakado.server.data;
 
 import fr.litarvan.commons.config.ConfigProvider;
+import fr.litarvan.sakado.server.data.network.DataServer;
 import fr.litarvan.sakado.server.data.network.RequestException;
 import fr.litarvan.sakado.server.data.saved.SavedEstablishment;
+import fr.litarvan.sakado.server.data.saved.SavedStudentClass;
+import fr.litarvan.sakado.server.data.saved.SavedUser;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,7 +55,56 @@ public class UserManager
     public void load()
     {
         SavedEstablishment[] establishments = config.at("save.establishments", SavedEstablishment[].class);
-        // TODO: Load every establishments and student class, refresh every user of it
+        log.info("Restoration started : {} establishments to restore", establishments.length);
+
+        for (SavedEstablishment saved : establishments)
+        {
+            Establishment establishment = data.getEstablishment(saved.getName());
+            if (establishment == null)
+            {
+                log.warn("Can't restore establishment '{}' as it doesn't exist anymore", saved.getName());
+                continue;
+            }
+
+            SavedStudentClass[] classes = saved.getStudentClasses();
+
+            log.info("Restoring establishment '{}' with {} classes...", saved.getName(), classes.length);
+
+            for (SavedStudentClass savedStudentClass : classes)
+            {
+                StudentClass studentClass = new StudentClass(establishment, savedStudentClass.getName(), savedStudentClass.getAdmin());
+
+                for (SavedUser member : savedStudentClass.getMembers())
+                {
+                    User user = new User(data.getServer(establishment.getMethod().getServer()), member.getToken(), establishment, member.getUsername(), member.getPassword(), member.getDeviceToken());
+                    user.getReminders().addAll(Arrays.asList(member.getReminders()));
+                    user.setLastLogin(member.getLastLogin());
+
+                    log.info("Restoring user '{}'...", user.getUsername());
+
+                    try
+                    {
+                        user.update();
+                    }
+                    catch (IOException | RequestException e)
+                    {
+                        log.warn("Couldn't restore user '{}' ! Skipping", user.getUsername());
+                        continue;
+                    }
+
+                    studentClass.add(user);
+                    this.users.add(user);
+                }
+
+                studentClass.getRepresentatives().addAll(Arrays.asList(savedStudentClass.getRepresentatives()));
+                studentClass.getReminders().addAll(Arrays.asList(savedStudentClass.getReminders()));
+                studentClass.getLongHomeworks().addAll(Arrays.asList(savedStudentClass.getLongHomeworks()));
+
+                establishment.getClasses().add(studentClass);
+            }
+
+            log.info("Restored establishment '{}' with {} classes", establishment.getName(), establishment.getClasses().size());
+        }
     }
 
     public User login(String establishmentName, String username, String password, String deviceToken) throws IOException, RequestException

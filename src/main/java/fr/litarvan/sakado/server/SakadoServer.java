@@ -93,7 +93,6 @@ public class SakadoServer implements App
         configs.from("config/holidays.json").defaultIn(IOSource.at("holidays.default.json"));
         configs.from("config/save.json").defaultIn(IOSource.at("save.default.json"));
 
-        userManager.load();
 
         if (configs.at("proxy.enabled", boolean.class))
         {
@@ -119,6 +118,7 @@ public class SakadoServer implements App
 
         log.info("Starting data services...");
         data.init();
+        userManager.load();
         refresh.start();
 
         log.info("Configuring HTTP server...");

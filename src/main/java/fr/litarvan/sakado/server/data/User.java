@@ -67,7 +67,26 @@ public class User
 
     public void update() throws IOException, RequestException
     {
-        FetchResponse response = server.fetch(new FetchRequest(username, password, establishment.getMethod().getUrl(), establishment.getMethod().getCas()));
+        FetchRequest request = new FetchRequest(username, password, establishment.getMethod().getUrl(), establishment.getMethod().getCas());
+        FetchResponse response;
+
+        try
+        {
+            response = server.fetch(request);
+        }
+        catch (RequestException e)
+        {
+            String msg = e.getMessage().toLowerCase();
+
+            if (!msg.contains("identifiant") && !msg.contains("mot de passe"))
+            {
+                response = server.fetch(request); // Try again
+            }
+            else
+            {
+                throw e;
+            }
+        }
 
         this.name = response.getName();
         this.studentClass = response.getStudentClass();

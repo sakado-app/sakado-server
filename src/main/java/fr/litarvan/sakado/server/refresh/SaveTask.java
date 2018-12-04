@@ -11,7 +11,6 @@ import fr.litarvan.sakado.server.data.SakadoData;
 import fr.litarvan.sakado.server.data.saved.SavedEstablishment;
 import fr.litarvan.sakado.server.data.saved.SavedStudentClass;
 import fr.litarvan.sakado.server.data.saved.SavedUser;
-import fr.litarvan.sakado.server.data.StudentClass;
 import fr.litarvan.sakado.server.data.User;
 import fr.litarvan.sakado.server.data.UserManager;
 import javax.inject.Inject;
@@ -43,7 +42,13 @@ public class SaveTask extends RefreshTask
                     {
                         if (user.getName().equals(member))
                         {
-                            memberList.add(new SavedUser(user.getToken(), user.getEstablishment().getName(), user.getUsername(), user.getPassword(), user.getLastLogin()));
+                            memberList.add(new SavedUser(user.getToken(),
+                                                         user.getEstablishment().getName(),
+                                                         user.getUsername(),
+                                                         user.getPassword(),
+                                                         user.getDeviceToken(),
+                                                         user.getReminders().toArray(new Reminder[0]),
+                                                         user.getLastLogin()));
                             break;
                         }
                     }
