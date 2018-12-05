@@ -73,7 +73,6 @@ public class RefreshService
             catch (Exception e)
             {
                 log.error("Exception while updating user data of '" + user.getName() + "', skipping refreshing", e);
-                continue;
             }
         }
 
