@@ -68,14 +68,13 @@ public class RefreshService
             try
             {
                 user.update();
+                log.info("Data of user '{}' refreshed, starting {} tasks...", user.getName(), tasks.length);
             }
             catch (Exception e)
             {
                 log.error("Exception while updating user data of '" + user.getName() + "', skipping refreshing", e);
-                return;
+                continue;
             }
-
-            log.info("Data of user '{}' refreshed, starting {} tasks...", user.getName(), tasks.length);
         }
 
         for (RefreshTask task : tasks)
@@ -101,7 +100,7 @@ public class RefreshService
         {
             Object object = Main.injector().getInstance(TASKS[i]);
 
-            if (!RefreshTask.class.isInstance(object))
+            if (!(object instanceof RefreshTask))
             {
                 throw new IllegalArgumentException(object.getClass().getName() + " must be a RefreshTask");
             }
