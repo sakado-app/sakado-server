@@ -120,7 +120,7 @@ public class UserManager
         User user = new User(data.getServer(establishment.getMethod().getServer()), RandomStringUtils.randomAlphanumeric(128), establishment, username, password, deviceToken);
         user.update();
 
-        User current = get(username);
+        User current = get(username, user.getName());
 
         if (current != null)
         {
@@ -187,11 +187,11 @@ public class UserManager
         return studentClass;
     }
 
-    public User get(String username)
+    public User get(String username, String name)
     {
         for (User user : users)
         {
-            if (user.getUsername().equalsIgnoreCase(username))
+            if (user.getUsername().equalsIgnoreCase(username) || user.getName().equalsIgnoreCase(name))
             {
                 return user;
             }
