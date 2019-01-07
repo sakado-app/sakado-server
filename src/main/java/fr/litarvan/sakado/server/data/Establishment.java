@@ -8,6 +8,7 @@ public class Establishment
 {
     private String name;
     private FetchMethod method;
+    private int zone;
 
     private transient List<StudentClass> classes;
 
@@ -16,12 +17,13 @@ public class Establishment
         this.classes = new ArrayList<>();
     }
 
-    public Establishment(String name, FetchMethod method)
+    public Establishment(String name, FetchMethod method, int zone)
     {
         this();
 
         this.name = name;
         this.method = method;
+        this.zone = zone;
     }
 
     public StudentClass classOf(User user)
@@ -58,6 +60,11 @@ public class Establishment
     public FetchMethod getMethod()
     {
         return method;
+    }
+
+    public int getZone()
+    {
+        return zone;
     }
 
     public List<StudentClass> getClasses()

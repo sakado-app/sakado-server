@@ -25,6 +25,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import fr.litarvan.commons.config.ConfigProvider;
@@ -470,6 +471,15 @@ public class GraphQLController extends Controller
             {
                 nextPeriodHoliday = new PeriodHoliday(holiday.getName(), from.getTimeInMillis(), to.getTimeInMillis());
             }
+        }
+
+        int shift = (user.getEstablishment().getZone() - 1) * 7;
+        long shiftMillis = TimeUnit.DAYS.toMillis(shift);
+
+        if (nextPeriodHoliday != null)
+        {
+            nextPeriodHoliday.setFrom(nextPeriodHoliday.getFrom() + shiftMillis);
+            nextPeriodHoliday.setTo(nextPeriodHoliday.getTo() + shiftMillis);
         }
 
         long untilDay = 0;
