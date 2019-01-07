@@ -5,16 +5,18 @@ public class SavedPeriodHoliday
     private String name;
     private Day from;
     private Day to;
+    private boolean offset;
 
     public SavedPeriodHoliday()
     {
     }
 
-    public SavedPeriodHoliday(String name, Day from, Day to)
+    public SavedPeriodHoliday(String name, Day from, Day to, boolean offset)
     {
         this.name = name;
         this.from = from;
         this.to = to;
+        this.offset = offset;
     }
 
     public String getName()
@@ -30,6 +32,11 @@ public class SavedPeriodHoliday
     public Day getTo()
     {
         return to;
+    }
+
+    public boolean isOffset()
+    {
+        return offset;
     }
 
     public static class Day

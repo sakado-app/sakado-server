@@ -430,6 +430,8 @@ public class GraphQLController extends Controller
         DayHoliday nextDayHoliday = null;
         PeriodHoliday nextPeriodHoliday = null;
 
+        boolean offset = false;
+
         for (SavedDayHoliday holiday : dayHolidays)
         {
             Calendar time = CalendarUtils.create();
@@ -470,13 +472,14 @@ public class GraphQLController extends Controller
             if (from.after(today) && (nextPeriodHoliday == null || from.before(CalendarUtils.fromTimestamp(nextPeriodHoliday.getFrom()))))
             {
                 nextPeriodHoliday = new PeriodHoliday(holiday.getName(), from.getTimeInMillis(), to.getTimeInMillis());
+                offset = holiday.isOffset();
             }
         }
 
         int shift = (user.getEstablishment().getZone() - 1) * 7;
         long shiftMillis = TimeUnit.DAYS.toMillis(shift);
 
-        if (nextPeriodHoliday != null)
+        if (nextPeriodHoliday != null && offset)
         {
             nextPeriodHoliday.setFrom(nextPeriodHoliday.getFrom() + shiftMillis);
             nextPeriodHoliday.setTo(nextPeriodHoliday.getTo() + shiftMillis);
