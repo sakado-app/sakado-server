@@ -60,7 +60,7 @@ public final class CalendarUtils
                 int val = calendar.get(field);
                 if (field == Calendar.HOUR_OF_DAY)
                 {
-                    val += 2; // Time zone fix...
+                    val += 1; // Time zone fix...
                 }
 
                 res = String.valueOf(val);

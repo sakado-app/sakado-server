@@ -60,11 +60,9 @@ public class AwayTeacherTask extends BaseRefreshTask
             Lesson lesson = away.get(0);
             Calendar day = lesson.getFromAsCalendar();
 
-            int start = day.get(Calendar.HOUR_OF_DAY);
-
             message = lesson.getTeacher();
             message += " : " + CalendarUtils.parse(day, Calendar.DAY_OF_WEEK, Calendar.DAY_OF_MONTH, Calendar.MONTH);
-            message += " - " + start + "h-" + CalendarUtils.parse(lesson.getToAsCalendar(), Calendar.HOUR_OF_DAY) + "h";
+            message += " - " + CalendarUtils.parse(day, Calendar.HOUR_OF_DAY) + "h-" + CalendarUtils.parse(lesson.getToAsCalendar(), Calendar.HOUR_OF_DAY) + "h";
         }
 
         try
