@@ -43,6 +43,7 @@ public final class Routes
             get("/login", auth::login);
             get("/validate", auth::validate);
             get("/logout", auth::logout);
+            get("/fetch", auth::fetch);
         });
     }
 }

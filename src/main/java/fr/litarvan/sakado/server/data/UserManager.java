@@ -107,7 +107,7 @@ public class UserManager
         }
     }
 
-    public User login(String establishmentName, String username, String password, String deviceToken) throws IOException, RequestException
+    public User login(String establishmentName, String username, String password, String deviceToken)
     {
         Establishment establishment = data.getEstablishment(establishmentName);
 
@@ -118,6 +118,17 @@ public class UserManager
 
         log.info("Logging in '{}' (from {})", username, establishment.getName());
         User user = new User(data.getServer(establishment.getMethod().getServer()), RandomStringUtils.randomAlphanumeric(128), establishment, username, password, deviceToken);
+
+        log.info("Successfully logged user '{}'", username);
+
+        return user;
+    }
+
+    public User update(User user) throws IOException, RequestException
+    {
+        String username = user.getUsername();
+        Establishment establishment = user.getEstablishment();
+
         user.update();
 
         User current = get(username, user.getName());
@@ -130,7 +141,7 @@ public class UserManager
         user.setLastLogin(System.currentTimeMillis());
         this.users.add(user);
 
-        log.info("Successfully logged user '{}' : {} ({})", username, user.getName(), user.getStudentClass());
+        log.info("Successfully updated user '{}' : {} ({})", username, user.getName(), user.getStudentClass());
 
         StudentClass studentClass = user.studentClass();
 

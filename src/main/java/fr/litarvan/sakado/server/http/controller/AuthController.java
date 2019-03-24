@@ -35,7 +35,7 @@ public class AuthController extends Controller
     @Inject
     private UserManager userManager;
 
-    public Object login(Request request, Response response) throws IOException, RequestException, APIError
+    public Object login(Request request, Response response) throws APIError
     {
         String username = require(request, "username");
         String password = require(request, "password");
@@ -43,16 +43,7 @@ public class AuthController extends Controller
 
         String establishment = require(request, "establishment");
 
-        User user;
-
-        try
-        {
-            user = userManager.login(establishment, username, password, deviceToken);
-        }
-        catch (LoginException e)
-        {
-            throw new APIError(APIError.INVALID_CREDENTIALS, e.getMessage());
-        }
+        User user = userManager.login(establishment, username, password, deviceToken);
 
         return json(apply(user), response);
     }
@@ -65,10 +56,25 @@ public class AuthController extends Controller
         return json(apply(user), response);
     }
 
-    public Object logout(Request request, Response response) throws IOException, RequestException, APIError
+    public Object logout(Request request, Response response) throws APIError
     {
         this.userManager.remove(requireLogged(request));
         return success(response);
+    }
+
+    public Object fetch(Request request, Response response) throws APIError, IOException {
+        User user = this.requireLogged(request);
+
+        try
+        {
+            user = userManager.update(user);
+        }
+        catch (RequestException e)
+        {
+            throw new APIError(APIError.INVALID_CREDENTIALS, e.getMessage());
+        }
+
+        return json(apply(user), response);
     }
 
     protected JsonObject apply(User user)
