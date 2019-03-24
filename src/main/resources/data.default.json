@@ -3,8 +3,8 @@
   "servers": [
     {
       "name": "pronote",
-      "host": "127.0.0.1",
-      "port": 13556
+      "url": "http://127.0.0.1:13556/",
+      "storePassword": true
     }
   ],
 

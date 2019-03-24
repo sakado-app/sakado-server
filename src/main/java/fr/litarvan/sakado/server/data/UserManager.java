@@ -18,6 +18,7 @@
 package fr.litarvan.sakado.server.data;
 
 import fr.litarvan.commons.config.ConfigProvider;
+import fr.litarvan.sakado.server.data.network.DataServer;
 import fr.litarvan.sakado.server.data.network.RequestException;
 import fr.litarvan.sakado.server.data.saved.SavedEstablishment;
 import fr.litarvan.sakado.server.data.saved.SavedStudentClass;
@@ -114,9 +115,15 @@ public class UserManager
             throw new IllegalArgumentException("Unknown establishment '" + establishmentName + "'");
         }
 
+        DataServer dataServer = data.getServer(establishment.getMethod().getServer());
+
         log.info("Logging in '{}' (from {})", username, establishment.getName());
-        User user = new User(data.getServer(establishment.getMethod().getServer()), RandomStringUtils.randomAlphanumeric(128), establishment, username, password, deviceToken);
+        User user = new User(dataServer, RandomStringUtils.randomAlphanumeric(128), establishment, username, password, deviceToken);
         user.login();
+        if(!dataServer.shouldStorePassword())
+        {
+            user.setPassword("");
+        }
 
         log.info("Successfully logged user '{}'", username);
 
