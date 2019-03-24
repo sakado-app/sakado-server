@@ -27,7 +27,17 @@ public class DataServer
         this.url = url;
     }
 
-    public FetchResponse fetch(FetchRequest request) throws IOException, RequestException
+    public LoginResponse login(DataRequest request) throws IOException, RequestException
+    {
+        return request(request, LoginResponse.class);
+    }
+
+    public FetchResponse fetch(DataRequest request) throws IOException, RequestException
+    {
+        return request(request, FetchResponse.class);
+    }
+
+    private <R extends Response> R request(Object request, Class<?> responseClass) throws IOException, RequestException
     {
         URL url = new URL(this.url);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -57,7 +67,7 @@ public class DataServer
 
         connection.disconnect();
 
-        FetchResponse response = gson.fromJson(content.toString(), FetchResponse.class);
+        R response = (R) gson.fromJson(content.toString(), responseClass);
         if (response.getError() != null)
         {
             throw new RequestException(new Exception(response.getError()));

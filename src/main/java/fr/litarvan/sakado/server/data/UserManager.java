@@ -18,7 +18,6 @@
 package fr.litarvan.sakado.server.data;
 
 import fr.litarvan.commons.config.ConfigProvider;
-import fr.litarvan.sakado.server.data.network.DataServer;
 import fr.litarvan.sakado.server.data.network.RequestException;
 import fr.litarvan.sakado.server.data.saved.SavedEstablishment;
 import fr.litarvan.sakado.server.data.saved.SavedStudentClass;
@@ -107,8 +106,7 @@ public class UserManager
         }
     }
 
-    public User login(String establishmentName, String username, String password, String deviceToken)
-    {
+    public User login(String establishmentName, String username, String password, String deviceToken) throws IOException, RequestException {
         Establishment establishment = data.getEstablishment(establishmentName);
 
         if (establishment == null)
@@ -118,6 +116,7 @@ public class UserManager
 
         log.info("Logging in '{}' (from {})", username, establishment.getName());
         User user = new User(data.getServer(establishment.getMethod().getServer()), RandomStringUtils.randomAlphanumeric(128), establishment, username, password, deviceToken);
+        user.login();
 
         log.info("Successfully logged user '{}'", username);
 

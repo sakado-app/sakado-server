@@ -23,10 +23,8 @@ import fr.litarvan.sakado.server.data.SubjectMarks;
 import fr.litarvan.sakado.server.data.Averages;
 import fr.litarvan.sakado.server.data.Week;
 
-public class FetchResponse
+public class FetchResponse extends Response
 {
-    private String error;
-
     private String studentClass;
     private String name;
     private String avatar;
@@ -55,11 +53,6 @@ public class FetchResponse
         this.marks = marks;
         this.averages = averages;
         this.homeworks = homeworks;
-    }
-
-    public String getError()
-    {
-        return error;
     }
 
     public String getStudentClass()
