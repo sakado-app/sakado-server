@@ -15,35 +15,13 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package fr.litarvan.sakado.server.http;
+package fr.litarvan.sakado.server.data.network;
 
-import fr.litarvan.sakado.server.http.controller.*;
-
-import javax.inject.Inject;
-
-import static spark.Spark.*;
-
-public final class Routes
+public abstract class Response
 {
-    @Inject
-    private AuthController auth;
+    protected String error;
 
-    @Inject
-    private GraphQLController graphql;
-
-    @Inject
-    private VersionController version;
-
-    public void load()
-    {
-        get("/graphql", graphql::graphql);
-        get("/version", version::version);
-
-        path("/auth", () -> {
-            get("/login", auth::login);
-            get("/validate", auth::validate);
-            get("/logout", auth::logout);
-            get("/fetch", auth::fetch);
-        });
+    public String getError() {
+        return error;
     }
 }

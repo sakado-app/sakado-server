@@ -15,35 +15,46 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package fr.litarvan.sakado.server.http;
+package fr.litarvan.sakado.server.data.network;
 
-import fr.litarvan.sakado.server.http.controller.*;
-
-import javax.inject.Inject;
-
-import static spark.Spark.*;
-
-public final class Routes
+public class DataRequest
 {
-    @Inject
-    private AuthController auth;
+    private String type;
+    private String username;
+    private String password;
+    private String url;
+    private String cas;
 
-    @Inject
-    private GraphQLController graphql;
-
-    @Inject
-    private VersionController version;
-
-    public void load()
+    public DataRequest(String type, String username, String password, String url, String cas)
     {
-        get("/graphql", graphql::graphql);
-        get("/version", version::version);
+        this.type = type;
+        this.username = username;
+        this.password = password;
+        this.url = url;
+        this.cas = cas;
+    }
 
-        path("/auth", () -> {
-            get("/login", auth::login);
-            get("/validate", auth::validate);
-            get("/logout", auth::logout);
-            get("/fetch", auth::fetch);
-        });
+    public String getType() {
+        return type;
+    }
+
+    public String getUsername()
+    {
+        return username;
+    }
+
+    public String getPassword()
+    {
+        return password;
+    }
+
+    public String getUrl()
+    {
+        return url;
+    }
+
+    public String getCas()
+    {
+        return cas;
     }
 }

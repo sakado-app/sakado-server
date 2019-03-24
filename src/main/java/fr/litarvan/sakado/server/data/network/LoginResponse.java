@@ -17,38 +17,15 @@
  */
 package fr.litarvan.sakado.server.data.network;
 
-public class FetchRequest
+public class LoginResponse extends Response
 {
-    private String username;
-    private String password;
-    private String url;
-    private String cas;
 
-    public FetchRequest(String username, String password, String url, String cas)
+    public LoginResponse()
     {
-        this.username = username;
-        this.password = password;
-        this.url = url;
-        this.cas = cas;
     }
 
-    public String getUsername()
+    public LoginResponse(String error)
     {
-        return username;
-    }
-
-    public String getPassword()
-    {
-        return password;
-    }
-
-    public String getUrl()
-    {
-        return url;
-    }
-
-    public String getCas()
-    {
-        return cas;
+        this.error = error;
     }
 }

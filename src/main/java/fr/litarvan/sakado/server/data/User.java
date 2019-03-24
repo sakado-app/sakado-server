@@ -17,10 +17,7 @@
  */
 package fr.litarvan.sakado.server.data;
 
-import fr.litarvan.sakado.server.data.network.DataServer;
-import fr.litarvan.sakado.server.data.network.FetchResponse;
-import fr.litarvan.sakado.server.data.network.FetchRequest;
-import fr.litarvan.sakado.server.data.network.RequestException;
+import fr.litarvan.sakado.server.data.network.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -65,9 +62,33 @@ public class User
         this.reminders = new ArrayList<>();
     }
 
+    public void login() throws IOException, RequestException
+    {
+        DataRequest request = new DataRequest("login", username, password, establishment.getMethod().getUrl(), establishment.getMethod().getCas());
+        LoginResponse response;
+
+        try
+        {
+            response = server.login(request);
+        }
+        catch (RequestException e)
+        {
+            String msg = e.getMessage().toLowerCase();
+
+            if (!msg.contains("identifiant") && !msg.contains("mot de passe"))
+            {
+                response = server.login(request); // Try again
+            }
+            else
+            {
+                throw e;
+            }
+        }
+    }
+
     public void update() throws IOException, RequestException
     {
-        FetchRequest request = new FetchRequest(username, password, establishment.getMethod().getUrl(), establishment.getMethod().getCas());
+        DataRequest request = new DataRequest("fetch", username, password, establishment.getMethod().getUrl(), establishment.getMethod().getCas());
         FetchResponse response;
 
         try
