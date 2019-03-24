@@ -16,15 +16,17 @@ public class DataServer
 
     private String name;
     private String url;
+    private boolean storePassword;
 
     public DataServer()
     {
     }
 
-    public DataServer(String name, String url)
+    public DataServer(String name, String url, boolean storePassword)
     {
         this.name = name;
         this.url = url;
+        this.storePassword = storePassword;
     }
 
     public LoginResponse login(DataRequest request) throws IOException, RequestException
@@ -84,5 +86,9 @@ public class DataServer
     public String getUrl()
     {
         return url;
+    }
+
+    public boolean shouldStorePassword() {
+        return storePassword;
     }
 }
