@@ -88,7 +88,8 @@ public class DataServer
         return url;
     }
 
-    public boolean shouldStorePassword() {
+    public boolean shouldStorePassword()
+    {
         return storePassword;
     }
 }

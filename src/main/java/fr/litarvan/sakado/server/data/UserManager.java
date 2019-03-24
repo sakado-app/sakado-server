@@ -120,7 +120,8 @@ public class UserManager
         log.info("Logging in '{}' (from {})", username, establishment.getName());
         User user = new User(dataServer, RandomStringUtils.randomAlphanumeric(128), establishment, username, password, deviceToken);
         user.login();
-        if(!dataServer.shouldStorePassword()) {
+        if(!dataServer.shouldStorePassword())
+        {
             user.setPassword("");
         }
 
