@@ -125,6 +125,16 @@ public class UserManager
             user.setPassword("");
         }
 
+        /*User current = get(username, user.getName());
+
+        if (current != null && current.studentClass() != null)
+        {
+            this.remove(current);
+        }*/
+
+        user.setLastLogin(System.currentTimeMillis());
+        this.users.add(user);
+
         log.info("Successfully logged user '{}'", username);
 
         return user;
@@ -136,16 +146,6 @@ public class UserManager
         Establishment establishment = user.getEstablishment();
 
         user.update();
-
-        User current = get(username, user.getName());
-
-        if (current != null)
-        {
-            this.remove(current);
-        }
-
-        user.setLastLogin(System.currentTimeMillis());
-        this.users.add(user);
 
         log.info("Successfully updated user '{}' : {} ({})", username, user.getName(), user.getStudentClass());
 
