@@ -35,8 +35,7 @@ public class AuthController extends Controller
     @Inject
     private UserManager userManager;
 
-    public Object login(Request request, Response response) throws APIError
-    {
+    public Object login(Request request, Response response) throws APIError, IOException, RequestException {
         String username = require(request, "username");
         String password = require(request, "password");
         String deviceToken = require(request, "deviceToken");
