@@ -2,7 +2,7 @@
   "refresh-rate": 900000,
   "servers": [
     {
-      "name": "pronote",
+      "name": "iledefrance",
       "url": "http://127.0.0.1:13556/",
       "storePassword": true
     }
@@ -10,11 +10,11 @@
 
   "establishments": [
     {
-      "name": "Lycee Joffre (Montpellier)",
+      "name": "Lycee Michelet (Vanves)",
       "method": {
-        "server": "pronote",
-        "url": "http://notes.lyc-joffre-montpellier.ac-montpellier.fr/",
-        "cas": "ac-montpellier"
+        "server": "iledefrance",
+        "url": "",
+        "cas": ""
       }
     }
   ]
