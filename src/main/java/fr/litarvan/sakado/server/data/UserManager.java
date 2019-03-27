@@ -55,9 +55,15 @@ public class UserManager
     public void load()
     {
         SavedEstablishment[] establishments = config.at("save.establishments", SavedEstablishment[].class);
-        log.info("Restoration started : {} establishments to restore", establishments.length);
+		if (establishments == null)
+		{
+			log.warn("No previous save, restoration cancelled");
+			return;
+		}
 
-        for (SavedEstablishment saved : establishments)
+		log.info("Restoration started : {} establishments to restore", establishments.length);
+
+		for (SavedEstablishment saved : establishments)
         {
             Establishment establishment = data.getEstablishment(saved.getName());
             if (establishment == null)
@@ -120,17 +126,20 @@ public class UserManager
         log.info("Logging in '{}' (from {})", username, establishment.getName());
         User user = new User(dataServer, RandomStringUtils.randomAlphanumeric(128), establishment, username, password, deviceToken);
         user.login();
+
         if(!dataServer.shouldStorePassword())
         {
             user.setPassword("");
         }
 
-        /*User current = get(username, user.getName());
-
-        if (current != null && current.studentClass() != null)
-        {
-            this.remove(current);
-        }*/
+        // Removing duplicated sessions
+        for (User u : getLoggedUsers())
+		{
+			if (u.getEstablishment() == user.getEstablishment() && u.getName().equals(user.getName()))
+			{
+				this.remove(u);
+			}
+		}
 
         user.setLastLogin(System.currentTimeMillis());
         this.users.add(user);
@@ -202,19 +211,6 @@ public class UserManager
         }
 
         return studentClass;
-    }
-
-    public User get(String username, String name)
-    {
-        for (User user : users)
-        {
-            if (user.getUsername().equalsIgnoreCase(username) || user.getName().equalsIgnoreCase(name))
-            {
-                return user;
-            }
-        }
-
-        return null;
     }
 
     public User getByToken(String token)
