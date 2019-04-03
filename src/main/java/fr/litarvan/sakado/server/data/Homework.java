@@ -27,17 +27,19 @@ public class Homework implements Identifiable
     private String content;
     private long since;
     private long until;
+    private FileUpload[] files;
 
     public Homework()
     {
     }
 
-    public Homework(String subject, String content, long since, long until)
+    public Homework(String subject, String content, long since, long until, FileUpload[] files)
     {
         this.subject = subject;
         this.content = content;
         this.since = since;
         this.until = until;
+        this.files = files;
     }
 
     public String getSubject()
@@ -70,7 +72,12 @@ public class Homework implements Identifiable
         return CalendarUtils.fromTimestamp(until);
     }
 
-    @Override
+	public FileUpload[] getFiles()
+	{
+		return files;
+	}
+
+	@Override
     public String getId()
     {
         return "H" + since + "" + until + getSubject().substring(0, 2) + getContent().substring(0, 5);

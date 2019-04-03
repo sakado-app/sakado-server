@@ -17,10 +17,12 @@
  */
 package fr.litarvan.sakado.server.data.network;
 
+import java.util.Map;
+
+import fr.litarvan.sakado.server.data.CompleteFileUpload;
 import fr.litarvan.sakado.server.data.Homework;
-import fr.litarvan.sakado.server.data.Mark;
-import fr.litarvan.sakado.server.data.SubjectMarks;
-import fr.litarvan.sakado.server.data.Averages;
+import fr.litarvan.sakado.server.data.Marks;
+import fr.litarvan.sakado.server.data.Report;
 import fr.litarvan.sakado.server.data.Week;
 
 public class FetchResponse extends Response
@@ -33,29 +35,33 @@ public class FetchResponse extends Response
 
     private String[][] menu;
 
-    private SubjectMarks[] marks;
-    private Averages averages;
-
+    private Map<String, Marks> marks;
     private Homework[] homeworks;
+	private Map<String, Report> reports;
+
+    private CompleteFileUpload[] files;
+
+    private int defaultPeriod;
 
     public FetchResponse()
     {
     }
 
-    public FetchResponse(String error, String studentClass, String name, String avatar, Week[] timetable, String[][] menu, SubjectMarks[] marks, Averages averages, Homework[] homeworks)
-    {
-        this.error = error;
-        this.studentClass = studentClass;
-        this.name = name;
-        this.avatar = avatar;
-        this.timetable = timetable;
-        this.menu = menu;
-        this.marks = marks;
-        this.averages = averages;
-        this.homeworks = homeworks;
-    }
+	public FetchResponse(String studentClass, String name, String avatar, Week[] timetable, String[][] menu, Map<String, Marks> marks, Homework[] homeworks, Map<String, Report> reports, CompleteFileUpload[] files, int defaultPeriod)
+	{
+		this.studentClass = studentClass;
+		this.name = name;
+		this.avatar = avatar;
+		this.timetable = timetable;
+		this.menu = menu;
+		this.marks = marks;
+		this.homeworks = homeworks;
+		this.reports = reports;
+		this.files = files;
+		this.defaultPeriod = defaultPeriod;
+	}
 
-    public String getStudentClass()
+	public String getStudentClass()
     {
         return studentClass;
     }
@@ -80,18 +86,28 @@ public class FetchResponse extends Response
         return menu;
     }
 
-    public SubjectMarks[] getMarks()
-    {
-        return marks;
-    }
+	public Map<String, Marks> getMarks()
+	{
+		return marks;
+	}
 
-    public Averages getAverages()
-    {
-        return averages;
-    }
-
-    public Homework[] getHomeworks()
+	public Homework[] getHomeworks()
     {
         return homeworks;
     }
+
+	public Map<String, Report> getReports()
+	{
+		return reports;
+	}
+
+	public CompleteFileUpload[] getFiles()
+	{
+		return files;
+	}
+
+	public int getDefaultPeriod()
+	{
+		return defaultPeriod;
+	}
 }
