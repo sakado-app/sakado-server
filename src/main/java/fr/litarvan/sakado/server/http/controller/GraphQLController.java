@@ -115,6 +115,7 @@ public class GraphQLController extends Controller
                                             .dataFetcher("away", environment -> getAway(environment.getSource()))
                                             .dataFetcher("homeworksEnabled", environment -> areHomeworksEnabled(environment.getSource()))
 											.dataFetcher("averagesEnabled", environment -> areAveragesEnabled(environment.getSource()))
+											.dataFetcher("filesEnabled", environment -> areFilesEnabled(environment.getSource()))
                                             .dataFetcher("class", environment -> getStudentClass(environment.getSource()))
                                             .dataFetcher("holidays", environment -> getNextHolidays(environment.getSource())))
             .type("MutableUser", builder -> builder.dataFetcher("homework", environment -> getHomework(environment.getContext(), environment.getArgument("id")))
@@ -157,16 +158,19 @@ public class GraphQLController extends Controller
         Calendar max = CalendarUtils.create();
         max.add(Calendar.WEEK_OF_YEAR, -2);
 
-        for (SubjectMarks subject : user.getMarks())
-        {
-            for (Mark mark : subject.getMarks())
-            {
-                if (mark.getTimeAsCalendar().after(max))
-                {
-                    marks.add(mark);
-                }
-            }
-        }
+		for (Marks period : user.getMarks())
+		{
+			for (SubjectMarks subject : period.getMarks())
+			{
+				for (Mark mark : subject.getMarks())
+				{
+					if (mark.getTimeAsCalendar().after(max))
+					{
+						marks.add(mark);
+					}
+				}
+			}
+		}
 
         marks.sort((m1, m2) -> -m1.getTimeAsCalendar().compareTo(m2.getTimeAsCalendar()));
 
@@ -371,7 +375,12 @@ public class GraphQLController extends Controller
 
 	public boolean areAveragesEnabled(User user)
 	{
-		return user.getAverages() != null;
+		return user.getMarks().length > 0 && user.getMarks()[0].getAverages() != null;
+	}
+
+	public boolean areFilesEnabled(User user)
+	{
+		return user.getFiles() != null;
 	}
 
     public Reminder addReminder(User user, String title, String content, long time, boolean studentClass)

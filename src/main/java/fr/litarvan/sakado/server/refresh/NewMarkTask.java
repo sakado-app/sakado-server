@@ -6,6 +6,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import fr.litarvan.sakado.server.data.Mark;
+import fr.litarvan.sakado.server.data.Marks;
+import fr.litarvan.sakado.server.data.Period;
 import fr.litarvan.sakado.server.data.SubjectMarks;
 import fr.litarvan.sakado.server.data.User;
 import fr.litarvan.sakado.server.push.PushService;
@@ -31,10 +33,13 @@ public class NewMarkTask extends BaseRefreshTask
         List<Mark> marks = new ArrayList<>();
         List<Mark> allMarks = new ArrayList<>();
 
-        for (SubjectMarks subject : user.getMarks())
-        {
-            allMarks.addAll(Arrays.asList(subject.getMarks()));
-        }
+		for (Marks period : user.getMarks())
+		{
+			for (SubjectMarks subject : period.getMarks())
+			{
+				allMarks.addAll(Arrays.asList(subject.getMarks()));
+			}
+		}
 
         for (Mark mark : allMarks)
         {
@@ -62,8 +67,18 @@ public class NewMarkTask extends BaseRefreshTask
         else
         {
             Mark mark = marks.get(0);
+            int p = mark.getPeriod();
+            String period = "";
 
-            title = "Nouvelle note";
+			for (Period userPeriod : user.getPeriods())
+			{
+				if (userPeriod.getId() == p)
+				{
+					period = " (" + userPeriod.getName() + ")";
+				}
+			}
+
+            title = "Nouvelle note" + period;
             message = mark.getSubject() + " - " + mark.getValue() + "/" + mark.getMax() + (mark.getTitle() != null ? " (" + mark.getTitle() + ")" : "");
         }
 
