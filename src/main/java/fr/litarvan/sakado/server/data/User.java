@@ -42,11 +42,13 @@ public class User
 
     private DataServer server;
 
+    private Period[] periods;
     private Week[] timetable;
     private String[][] menu;
     private Homework[] homeworks;
-    private SubjectMarks[] marks;
-    private Averages averages;
+    private Marks[] marks;
+    private Report[] reports;
+    private CompleteFileUpload[] files;
 
     private ArrayList<Reminder> reminders;
 
@@ -116,10 +118,12 @@ public class User
         this.studentClass = response.getStudentClass();
         this.avatar = response.getAvatar();
 
+        this.periods = response.getPeriods();
         this.menu = response.getMenu();
         this.homeworks = response.getHomeworks();
         this.marks = response.getMarks();
-        this.averages = response.getAverages();
+        this.reports = response.getReports();
+        this.files = response.getFiles();
 
         Week[] weeks = new Week[2];
         for (int i = 0; i < weeks.length; i++)
@@ -216,7 +220,12 @@ public class User
         return server;
     }
 
-    public Week[] getTimetable()
+	public Period[] getPeriods()
+	{
+		return periods;
+	}
+
+	public Week[] getTimetable()
     {
         return timetable;
     }
@@ -231,17 +240,22 @@ public class User
         return homeworks;
     }
 
-    public SubjectMarks[] getMarks()
-    {
-        return marks;
-    }
+	public Marks[] getMarks()
+	{
+		return marks;
+	}
 
-    public Averages getAverages()
-    {
-        return averages;
-    }
+	public Report[] getReports()
+	{
+		return reports;
+	}
 
-    public String getDeviceToken()
+	public CompleteFileUpload[] getFiles()
+	{
+		return files;
+	}
+
+	public String getDeviceToken()
     {
         return deviceToken;
     }

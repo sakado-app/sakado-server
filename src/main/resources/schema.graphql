@@ -34,12 +34,15 @@ type User {
 
     homeworksEnabled: Boolean!
     averagesEnabled: Boolean!
+    filesEnabled: Boolean!
 
+    periods: [Period!]!
     timetable: [Week!]!
     menu: [[String!]]
     homeworks: [Homework!]
-    marks: [SubjectMarks!]!
-    averages: Averages
+    marks: [Marks!]!
+    reports: [Report!]!
+    files: [File!]
 
     lastMarks: [Mark!]!
     nextLesson: [Lesson]!
@@ -74,6 +77,19 @@ type MutableStudentClass {
     notify(content: String!): String!
 }
 
+type Period {
+    id: Int!
+    name: String!
+    isDefault: Boolean!
+}
+
+type File {
+    time: Long
+    name: String!
+    subject: String
+    url: String!
+}
+
 type Week {
     id: String!
 
@@ -103,12 +119,28 @@ type Homework {
     content: String!
     since: Long!
     until: Long!
+    files: [File!]
     long: Boolean!
 }
 
 type MutableHomework {
     id: String!
     long(long: Boolean!): Boolean!
+}
+
+type Marks {
+    period: Int!
+    marks: [SubjectMarks!]!
+    averages: Averages!
+}
+
+type SubjectMarks {
+    name: String!
+    average: Float!
+    studentClassAverage: Float!
+    maxAverage: Float!
+    minAverage: Float!
+    marks: [Mark!]!
 }
 
 type Mark {
@@ -127,19 +159,32 @@ type Mark {
     period: Int!
 }
 
-type SubjectMarks {
+type Averages {
+    student: Float!
+    studentClass: Float!
+    period: Int!
+}
+
+type Report {
+    period: Int!
+    subjects: [ReportSubject!]!
+    averages: Averages!
+    comments: [Comment!]!
+}
+
+type ReportSubject {
     name: String!
     average: Float!
     studentClassAverage: Float!
     maxAverage: Float!
     minAverage: Float!
-    marks: [Mark!]!
+    comment: String!
+    coefficient: Float!
 }
 
-type Averages {
-    student: Float!
-    studentClass: Float!
-    period: Int!
+type Comment {
+    title: String!
+    value: String!
 }
 
 type Reminder {

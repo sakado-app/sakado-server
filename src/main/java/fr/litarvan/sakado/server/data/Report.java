@@ -2,6 +2,7 @@ package fr.litarvan.sakado.server.data;
 
 public class Report
 {
+	private int period;
 	private ReportSubject[] subjects;
 	private Averages averages;
 	private Comment[] comments;
@@ -10,11 +11,17 @@ public class Report
 	{
 	}
 
-	public Report(ReportSubject[] subjects, Averages averages, Comment[] comments)
+	public Report(int period, ReportSubject[] subjects, Averages averages, Comment[] comments)
 	{
+		this.period = period;
 		this.subjects = subjects;
 		this.averages = averages;
 		this.comments = comments;
+	}
+
+	public int getPeriod()
+	{
+		return period;
 	}
 
 	public ReportSubject[] getSubjects()
@@ -40,13 +47,13 @@ public class Report
 		private float maxAverage;
 		private float minAverage;
 		private String comment;
-		private int coefficient;
+		private float coefficient;
 
 		public ReportSubject()
 		{
 		}
 
-		public ReportSubject(String name, float average, float studentClassAverage, float maxAverage, float minAverage, String comment, int coefficient)
+		public ReportSubject(String name, float average, float studentClassAverage, float maxAverage, float minAverage, String comment, float coefficient)
 		{
 			this.name = name;
 			this.average = average;
@@ -87,7 +94,7 @@ public class Report
 			return comment;
 		}
 
-		public int getCoefficient()
+		public float getCoefficient()
 		{
 			return coefficient;
 		}

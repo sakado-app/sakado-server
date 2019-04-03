@@ -17,11 +17,10 @@
  */
 package fr.litarvan.sakado.server.data.network;
 
-import java.util.Map;
-
 import fr.litarvan.sakado.server.data.CompleteFileUpload;
 import fr.litarvan.sakado.server.data.Homework;
 import fr.litarvan.sakado.server.data.Marks;
+import fr.litarvan.sakado.server.data.Period;
 import fr.litarvan.sakado.server.data.Report;
 import fr.litarvan.sakado.server.data.Week;
 
@@ -31,34 +30,34 @@ public class FetchResponse extends Response
     private String name;
     private String avatar;
 
+	private Period[] periods;
+
     private Week[] timetable;
 
     private String[][] menu;
 
-    private Map<String, Marks> marks;
+    private Marks[] marks;
     private Homework[] homeworks;
-	private Map<String, Report> reports;
+	private Report[] reports;
 
     private CompleteFileUpload[] files;
-
-    private int defaultPeriod;
 
     public FetchResponse()
     {
     }
 
-	public FetchResponse(String studentClass, String name, String avatar, Week[] timetable, String[][] menu, Map<String, Marks> marks, Homework[] homeworks, Map<String, Report> reports, CompleteFileUpload[] files, int defaultPeriod)
+	public FetchResponse(String studentClass, String name, String avatar, Period[] periods, Week[] timetable, String[][] menu, Marks[] marks, Homework[] homeworks, Report[] reports, CompleteFileUpload[] files)
 	{
 		this.studentClass = studentClass;
 		this.name = name;
 		this.avatar = avatar;
+		this.periods = periods;
 		this.timetable = timetable;
 		this.menu = menu;
 		this.marks = marks;
 		this.homeworks = homeworks;
 		this.reports = reports;
 		this.files = files;
-		this.defaultPeriod = defaultPeriod;
 	}
 
 	public String getStudentClass()
@@ -76,7 +75,12 @@ public class FetchResponse extends Response
         return avatar;
     }
 
-    public Week[] getTimetable()
+	public Period[] getPeriods()
+	{
+		return periods;
+	}
+
+	public Week[] getTimetable()
     {
         return timetable;
     }
@@ -86,7 +90,7 @@ public class FetchResponse extends Response
         return menu;
     }
 
-	public Map<String, Marks> getMarks()
+	public Marks[] getMarks()
 	{
 		return marks;
 	}
@@ -96,7 +100,7 @@ public class FetchResponse extends Response
         return homeworks;
     }
 
-	public Map<String, Report> getReports()
+	public Report[] getReports()
 	{
 		return reports;
 	}
@@ -104,10 +108,5 @@ public class FetchResponse extends Response
 	public CompleteFileUpload[] getFiles()
 	{
 		return files;
-	}
-
-	public int getDefaultPeriod()
-	{
-		return defaultPeriod;
 	}
 }
