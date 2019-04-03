@@ -15,37 +15,30 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package fr.litarvan.sakado.server.data.holiday;
+package fr.litarvan.sakado.server.data;
 
-public class SavedDayHoliday
+public class Absences
 {
-    private String name;
-    private int day;
-    private int month;
+	private int period;
+	private Absence[] absences;
 
-    public SavedDayHoliday()
-    {
-    }
+	public Absences()
+	{
+	}
 
-    public SavedDayHoliday(String name, int day, int month)
-    {
-        this.name = name;
-        this.day = day;
-        this.month = month;
-    }
+	public Absences(int period, Absence[] absences)
+	{
+		this.period = period;
+		this.absences = absences;
+	}
 
-    public String getName()
-    {
-        return name;
-    }
+	public int getPeriod()
+	{
+		return period;
+	}
 
-    public int getDay()
-    {
-        return day;
-    }
-
-    public int getMonth()
-    {
-        return month;
-    }
+	public Absence[] getAbsences()
+	{
+		return absences;
+	}
 }

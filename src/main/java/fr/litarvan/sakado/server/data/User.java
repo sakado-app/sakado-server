@@ -48,6 +48,7 @@ public class User
     private Homework[] homeworks;
     private Marks[] marks;
     private Report[] reports;
+    private Absences[] absences;
     private CompleteFileUpload[] files;
 
     private ArrayList<Reminder> reminders;
@@ -123,6 +124,7 @@ public class User
         this.homeworks = response.getHomeworks();
         this.marks = response.getMarks();
         this.reports = response.getReports();
+        this.absences = response.getAbsences();
         this.files = response.getFiles();
 
         Week[] weeks = new Week[2];
@@ -250,7 +252,12 @@ public class User
 		return reports;
 	}
 
-	public CompleteFileUpload[] getFiles()
+    public Absences[] getAbsences()
+    {
+        return absences;
+    }
+
+    public CompleteFileUpload[] getFiles()
 	{
 		return files;
 	}

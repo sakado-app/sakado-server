@@ -15,37 +15,51 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package fr.litarvan.sakado.server.data.holiday;
+package fr.litarvan.sakado.server.data;
 
-public class SavedDayHoliday
+public class Absence
 {
-    private String name;
-    private int day;
-    private int month;
+	private long from;
+	private long to;
+	private boolean solved;
+	private boolean justified;
+	private String reason;
 
-    public SavedDayHoliday()
-    {
-    }
+	public Absence()
+	{
+	}
 
-    public SavedDayHoliday(String name, int day, int month)
-    {
-        this.name = name;
-        this.day = day;
-        this.month = month;
-    }
+	public Absence(long from, long to, boolean solved, boolean justified, String reason)
+	{
+		this.from = from;
+		this.to = to;
+		this.solved = solved;
+		this.justified = justified;
+		this.reason = reason;
+	}
 
-    public String getName()
-    {
-        return name;
-    }
+	public long getFrom()
+	{
+		return from;
+	}
 
-    public int getDay()
-    {
-        return day;
-    }
+	public long getTo()
+	{
+		return to;
+	}
 
-    public int getMonth()
-    {
-        return month;
-    }
+	public boolean isSolved()
+	{
+		return solved;
+	}
+
+	public boolean isJustified()
+	{
+		return justified;
+	}
+
+	public String getReason()
+	{
+		return reason;
+	}
 }

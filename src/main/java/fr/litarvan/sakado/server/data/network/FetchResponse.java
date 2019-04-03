@@ -17,6 +17,7 @@
  */
 package fr.litarvan.sakado.server.data.network;
 
+import fr.litarvan.sakado.server.data.Absences;
 import fr.litarvan.sakado.server.data.CompleteFileUpload;
 import fr.litarvan.sakado.server.data.Homework;
 import fr.litarvan.sakado.server.data.Marks;
@@ -39,6 +40,7 @@ public class FetchResponse extends Response
     private Marks[] marks;
     private Homework[] homeworks;
 	private Report[] reports;
+	private Absences[] absences;
 
     private CompleteFileUpload[] files;
 
@@ -46,7 +48,7 @@ public class FetchResponse extends Response
     {
     }
 
-	public FetchResponse(String studentClass, String name, String avatar, Period[] periods, Week[] timetable, String[][] menu, Marks[] marks, Homework[] homeworks, Report[] reports, CompleteFileUpload[] files)
+	public FetchResponse(String studentClass, String name, String avatar, Period[] periods, Week[] timetable, String[][] menu, Marks[] marks, Homework[] homeworks, Report[] reports, Absences[] absences, CompleteFileUpload[] files)
 	{
 		this.studentClass = studentClass;
 		this.name = name;
@@ -57,6 +59,7 @@ public class FetchResponse extends Response
 		this.marks = marks;
 		this.homeworks = homeworks;
 		this.reports = reports;
+		this.absences = absences;
 		this.files = files;
 	}
 
@@ -103,6 +106,11 @@ public class FetchResponse extends Response
 	public Report[] getReports()
 	{
 		return reports;
+	}
+
+	public Absences[] getAbsences()
+	{
+		return absences;
 	}
 
 	public CompleteFileUpload[] getFiles()
