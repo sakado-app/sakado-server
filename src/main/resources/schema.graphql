@@ -42,6 +42,7 @@ type User {
     homeworks: [Homework!]
     marks: [Marks!]!
     reports: [Report!]!
+    absences: [Absences!]!
     files: [File!]
 
     lastMarks: [Mark!]!
@@ -81,6 +82,8 @@ type Period {
     id: Int!
     name: String!
     isDefault: Boolean!
+    from: Long!
+    to: Long!
 }
 
 type File {
@@ -119,6 +122,7 @@ type Homework {
     content: String!
     since: Long!
     until: Long!
+    toGive: Boolean
     files: [File!]
     long: Boolean!
 }
@@ -185,6 +189,19 @@ type ReportSubject {
 type Comment {
     title: String!
     value: String!
+}
+
+type Absences {
+    period: Int!
+    absences: [Absence!]!
+}
+
+type Absence {
+    from: Long!
+    to: Long!
+    solved: Boolean!
+    justified: Boolean!
+    reason: String!
 }
 
 type Reminder {

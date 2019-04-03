@@ -27,18 +27,20 @@ public class Homework implements Identifiable
     private String content;
     private long since;
     private long until;
+    private boolean toGive;
     private FileUpload[] files;
 
     public Homework()
     {
     }
 
-    public Homework(String subject, String content, long since, long until, FileUpload[] files)
+    public Homework(String subject, String content, long since, long until, boolean toGive, FileUpload[] files)
     {
         this.subject = subject;
         this.content = content;
         this.since = since;
         this.until = until;
+        this.toGive = toGive;
         this.files = files;
     }
 
@@ -72,7 +74,12 @@ public class Homework implements Identifiable
         return CalendarUtils.fromTimestamp(until);
     }
 
-	public FileUpload[] getFiles()
+    public boolean isToGive()
+    {
+        return toGive;
+    }
+
+    public FileUpload[] getFiles()
 	{
 		return files;
 	}
