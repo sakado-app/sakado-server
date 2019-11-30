@@ -485,7 +485,7 @@ public class GraphQLController extends Controller
             }
         }
 
-        int shift = (user.getEstablishment().getZone() - 1) * 7;
+        int shift = (3 - user.getEstablishment().getZone()) * 7;
         long shiftMillis = TimeUnit.DAYS.toMillis(shift);
 
         if (nextPeriodHoliday != null && offset)
